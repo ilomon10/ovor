@@ -31,7 +31,8 @@ const Dashboards = () => {
       title: 'Dashboards',
       path: location.pathname
     })
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <div style={{ width: 1024, margin: '0 auto', paddingTop: 24 }}>
       <div style={{ margin: "0 -8px" }} className="flex flex--wrap">

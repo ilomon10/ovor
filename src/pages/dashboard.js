@@ -12,14 +12,18 @@ import {
   updateTree
 } from 'react-mosaic-component';
 import { Navbar, Button, Classes, Icon, EditableText } from '@blueprintjs/core';
+import { DateInput } from '@blueprintjs/datetime';
 import { dropRight } from '../components/helper';
 import { AppContext } from '../App';
+import moment from 'moment';
 
 let windowCount = 3;
 
 const Dashboard = () => {
   const { tab } = useContext(AppContext);
   const location = useLocation();
+  const [dashboardTitle, setDashboardTitle] = useState("New Dashboard");
+  const [timeRange, setTimeRange] = useState([new Date(), new Date()]);
   const [currentNode, setCurrentNode] = useState({
     direction: 'row',
     first: 1,
@@ -32,10 +36,11 @@ const Dashboard = () => {
   })
   useEffect(() => {
     tab.setCurrentTabState({
-      title: `Dashboard ${location.pathname}`,
+      title: dashboardTitle,
       path: location.pathname
     })
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dashboardTitle])
   const createNode = () => ++windowCount;
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);
@@ -73,16 +78,30 @@ const Dashboard = () => {
   }
   return (
     <div style={{ height: '100%', width: '100%' }}>
-      <Navbar>
-        <Navbar.Group>
-          <Navbar.Heading>
-            <h4 className={Classes.HEADING} style={{ margin: 0 }}>
-              <Icon icon="document" style={{ verticalAlign: 'middle', marginRight: 8 }} />
-              <EditableText selectAllOnFocus />
+      <Navbar className="flex">
+        <Navbar.Group className="flex-grow" style={{ width: 0 }}>
+          <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
+            <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
+              <Icon className='flex-shrink-0' icon="document" style={{ verticalAlign: 'middle', marginRight: 8 }} />
+              <EditableText selectAllOnFocus value={dashboardTitle} onChange={v => setDashboardTitle(v)} />
             </h4>
           </Navbar.Heading>
         </Navbar.Group>
-        <Navbar.Group align="right">
+        <Navbar.Group className="flex-shrink-0">
+          <div style={{ marginRight: 8 }}>
+            <DateInput
+              formatDate={date => moment(date).format('dddd, DD MMM YY\'')}
+              parseDate={str => moment(str)}
+              onChange={v => setTimeRange([v, timeRange[1]])}
+              value={timeRange[0]} />
+          </div>
+          <Icon style={{ marginRight: 8 }} icon="arrow-right" />
+          <DateInput
+            formatDate={date => moment(date).format('dddd, DD MMM YY\'')}
+            parseDate={str => moment(str)}
+            onChange={v => setTimeRange([timeRange[0], v])}
+            value={timeRange[1]} />
+          <Navbar.Divider />
           <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
           <Navbar.Divider />
           <Button icon="insert" onClick={addNewWindow} text="Add New Window" />

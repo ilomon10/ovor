@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppContext } from '../App';
 
@@ -10,6 +10,7 @@ const Settings = () => {
       title: 'Settings',
       path: location.pathname
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return ('Settings')
 }

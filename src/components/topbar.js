@@ -2,17 +2,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom';
-import { Navbar, Button, Classes } from '@blueprintjs/core';
+import { Navbar, Button, Classes, Icon } from '@blueprintjs/core';
 
 import TabButton from './tabButton';
 import { AppContext } from '../App';
 
 const Comp = ({ className }) => {
-  const [realTimeClock, setRealTimeClock] = useState(null);
+  const [realTimeClock, setRealTimeClock] = useState(new Date());
   const { tab } = useContext(AppContext);
   useEffect(() => {
     const interval = setInterval(() => {
-      setRealTimeClock(() => moment().format('dddd, DD MMMM YYYY, hh:mm:ss A'));
+      setRealTimeClock(() => new Date());
     }, 1000);
     return () => clearInterval(interval);
   }, [])
@@ -33,7 +33,12 @@ const Comp = ({ className }) => {
         ))}
       </Navbar.Group>
       <Navbar.Group align="right" className="flex-shrink-0">
-        {realTimeClock}
+        <div style={{ textAlign: 'right' }}>
+          <div>{moment(realTimeClock).format('hh:mm:ss A')}</div>
+          <div>{moment(realTimeClock).format('dddd, DD MMMM YYYY')}</div>
+        </div>
+        <Icon style={{ marginLeft: 8 }}
+          icon="calendar" iconSize={20} />
       </Navbar.Group>
     </Navbar>
   )

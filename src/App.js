@@ -61,13 +61,16 @@ const App = () => {
     path: '/settings',
     component: Settings
   }]
-  const addNewTab = () => setTabs(() => {
-    history.push('/');
-    return ([{
-      title: "New Tab",
-      path: "/"
-    }, ...tabs])
-  })
+  const addNewTab = () => {
+    changeActiveTab(0);
+    setTabs(() => {
+      history.push('/');
+      return ([{
+        title: "New Tab",
+        path: "/"
+      }, ...tabs])
+    })
+  }
   const changeActiveTab = (id) => setActiveTab(id);
   const removeTab = (id) => setTabs(() => ([
     ...tabs.filter((...x) => x[1] !== id)
@@ -82,8 +85,8 @@ const App = () => {
   })
   useEffect(() => {
     if (tabs.length === 0) addNewTab();
-    return () => { };
-  }, [tabs]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabs.length]);
   return (
     <Container className="flex">
       <AppContext.Provider value={{
