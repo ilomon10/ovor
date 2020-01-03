@@ -82,7 +82,7 @@ const Dashboard = () => {
         <Navbar.Group className="flex-grow" style={{ width: 0 }}>
           <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
             <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
-              <Icon className='flex-shrink-0' icon="document" style={{ verticalAlign: 'middle', marginRight: 8 }} />
+              <Icon className='flex-shrink-0' icon="full-stacked-chart" style={{ verticalAlign: 'middle', marginRight: 8 }} />
               <EditableText selectAllOnFocus value={dashboardTitle} onChange={v => setDashboardTitle(v)} />
             </h4>
           </Navbar.Heading>

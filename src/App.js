@@ -1,6 +1,7 @@
 import React, {
   useState,
-  useEffect
+  useEffect,
+  useCallback
 } from 'react';
 import {
   Switch,
@@ -35,8 +36,8 @@ export const AppContext = React.createContext({
 });
 
 const App = () => {
-  const [tabs, setTabs] = useState([]);
-  const [activeTab, setActiveTab] = useState(0);
+  const [tabs, setTabs] = useState(JSON.parse(localStorage.getItem('ovor.tabs')) || []);
+  const [activeTab, setActiveTab] = useState(JSON.parse(localStorage.getItem('ovor.activeTab')) || 0);
   const history = useHistory();
   const navigation = [{
     hide: true,
@@ -61,7 +62,8 @@ const App = () => {
     path: '/settings',
     component: Settings
   }]
-  const addNewTab = () => {
+  const changeActiveTab = useCallback((id) => setActiveTab(id), []);
+  const addNewTab = useCallback(() => {
     changeActiveTab(0);
     setTabs(() => {
       history.push('/');
@@ -70,23 +72,27 @@ const App = () => {
         path: "/"
       }, ...tabs])
     })
-  }
-  const changeActiveTab = (id) => setActiveTab(id);
-  const removeTab = (id) => setTabs(() => ([
+  }, [tabs, history, changeActiveTab]);
+  const removeTab = useCallback((id) => setTabs(() => ([
     ...tabs.filter((...x) => x[1] !== id)
-  ]));
-  const setCurrentTabState = ({ title, path }) => setTabs(() => {
+  ])), [tabs]);
+  const setCurrentTabState = useCallback(({ title, path }) => setTabs(() => {
     return ([
       ...tabs.map((v, i) => {
         if (i === activeTab) return { title, path };
         return v;
       })
     ])
-  })
+  }), [activeTab, tabs])
   useEffect(() => {
-    if (tabs.length === 0) addNewTab();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabs.length]);
+    const tabsStore = JSON.parse(localStorage.getItem('ovor.tabs'));
+    if (tabsStore.length === 0) addNewTab();
+    if (JSON.stringify(tabsStore) !== JSON.stringify(tabs)) localStorage.setItem('ovor.tabs', JSON.stringify(tabs));
+  }, [tabs, addNewTab]);
+  useEffect(() => {
+    const activeTabStore = parseInt(localStorage.getItem('ovor.activeTab'));
+    if (activeTabStore !== activeTab) localStorage.setItem('ovor.activeTab', activeTab);
+  }, [activeTab])
   return (
     <Container className="flex">
       <AppContext.Provider value={{
