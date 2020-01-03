@@ -22,7 +22,7 @@ let windowCount = 3;
 const Dashboard = () => {
   const { tab } = useContext(AppContext);
   const location = useLocation();
-  const [dashboardTitle, setDashboardTitle] = useState("New Dashboard");
+  const [dashboardTitle, setDashboardTitle] = useState(tab.tabs[tab.activeTab].title || "New Dashboard");
   const [timeRange, setTimeRange] = useState([new Date(), new Date()]);
   const [currentNode, setCurrentNode] = useState({
     direction: 'row',
@@ -77,8 +77,8 @@ const Dashboard = () => {
     setCurrentNode(curNode);
   }
   return (
-    <div style={{ height: '100%', width: '100%' }}>
-      <Navbar className="flex">
+    <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
+      <Navbar className="flex flex-shrink-0">
         <Navbar.Group className="flex-grow" style={{ width: 0 }}>
           <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
             <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
@@ -107,17 +107,20 @@ const Dashboard = () => {
           <Button icon="insert" onClick={addNewWindow} text="Add New Window" />
         </Navbar.Group>
       </Navbar>
-      <Mosaic
-        renderTile={(count, path) => (
-          <MosaicWindow
-            title={`Window ${count}`}
-            createNode={createNode}
-            path={path}>
-            <div>Bijon</div>
-          </MosaicWindow>
-        )}
-        onChange={currentNode => { setCurrentNode(currentNode) }}
-        value={currentNode} />
+      <div className="flex-grow">
+        <Mosaic
+          renderTile={(count, path) => (
+            <MosaicWindow
+              title={`Window ${count}`}
+              createNode={createNode}
+              path={path}>
+              <div>Bijon</div>
+            </MosaicWindow>
+          )}
+          // style={{ width: 0, height: 0 }}
+          onChange={currentNode => { setCurrentNode(currentNode) }}
+          value={currentNode} />
+      </div>
     </div>
   )
 }
