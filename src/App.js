@@ -1,7 +1,8 @@
 import React, {
   useState,
   useEffect,
-  useCallback
+  useCallback,
+  useRef
 } from 'react';
 import {
   Switch,
@@ -39,6 +40,7 @@ const App = () => {
   const [tabs, setTabs] = useState(JSON.parse(localStorage.getItem('ovor.tabs')) || []);
   const [activeTab, setActiveTab] = useState(JSON.parse(localStorage.getItem('ovor.activeTab')) || 0);
   const history = useHistory();
+  const prevTabs = useRef([]);
   const navigation = [{
     hide: true,
     title: 'Dashboard',
@@ -62,32 +64,44 @@ const App = () => {
     path: '/settings',
     component: Settings
   }]
-  const changeActiveTab = useCallback((id) => setActiveTab(id), []);
+  const changeActiveTab = useCallback((id) => {
+    let index = id;
+    let tab = tabs[index];
+    if (tab === undefined) {
+      index = tabs.length - 1;
+      index = index < 0 ? 0 : index;
+      tab = tabs[index];
+    };
+    setActiveTab(index);
+    history.push(tab.path);
+  }, [tabs, history]);
   const addNewTab = useCallback(() => {
-    changeActiveTab(0);
     setTabs(() => {
-      history.push('/');
       return ([{
         title: "New Tab",
         path: "/"
       }, ...tabs])
-    })
-  }, [tabs, history, changeActiveTab]);
-  const removeTab = useCallback((id) => setTabs(() => ([
-    ...tabs.filter((...x) => x[1] !== id)
-  ])), [tabs]);
+    });
+  }, [tabs, changeActiveTab]);
+  const removeTab = useCallback((id) => {
+    if (id < activeTab) setActiveTab(activeTab - 1);
+    setTabs(() => ([...tabs.filter((...x) => x[1] !== id)]));
+  }, [activeTab, tabs]);
   const setCurrentTabState = useCallback(({ title, path }) => setTabs(() => {
     return ([
       ...tabs.map((v, i) => {
         if (i === activeTab) return { title, path };
         return v;
       })
-    ])
-  }), [activeTab, tabs])
+    ]);
+  }), [activeTab, tabs]);
   useEffect(() => {
     const tabsStore = JSON.parse(localStorage.getItem('ovor.tabs'));
-    if (tabsStore.length === 0) addNewTab();
+    if (localStorage.getItem('ovor.tabs') === null) addNewTab();
     if (JSON.stringify(tabsStore) !== JSON.stringify(tabs)) localStorage.setItem('ovor.tabs', JSON.stringify(tabs));
+    if (prevTabs.current.length !== 0
+      && JSON.stringify(tabs[activeTab]) !== JSON.stringify(prevTabs.current[activeTab])) changeActiveTab(activeTab);
+    prevTabs.current = tabs;
   }, [tabs, addNewTab]);
   useEffect(() => {
     const activeTabStore = parseInt(localStorage.getItem('ovor.activeTab'));
@@ -100,6 +114,7 @@ const App = () => {
           tabs: [...tabs],
           activeTab,
           changeActiveTab,
+          setActiveTab,
           addNewTab,
           removeTab,
           setCurrentTabState

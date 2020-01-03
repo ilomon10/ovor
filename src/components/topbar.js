@@ -27,7 +27,7 @@ const Comp = ({ className }) => {
               disableCloseButton={!(tab.tabs.length > 1)}
               active={tab.activeTab === i}
               text={v.title} to={v.path}
-              onClick={() => tab.changeActiveTab(i)}
+              onClick={() => tab.setActiveTab(i)}
               onClickClose={() => tab.removeTab(i)} />
           </React.Fragment>
         ))}
