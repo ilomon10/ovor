@@ -5,11 +5,11 @@ import { withRouter } from 'react-router-dom';
 import { Navbar, Button, Classes, Icon } from '@blueprintjs/core';
 
 import TabButton from './tabButton';
-import { AppContext } from '../App';
+import { TabContext } from './tabSystem';
 
 const Comp = ({ className }) => {
   const [realTimeClock, setRealTimeClock] = useState(new Date());
-  const { tab } = useContext(AppContext);
+  const tab = useContext(TabContext);
   useEffect(() => {
     const interval = setInterval(() => {
       setRealTimeClock(() => new Date());

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
@@ -14,13 +15,12 @@ import {
 import { Navbar, Button, Classes, Icon, EditableText } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { dropRight } from '../components/helper';
-import { AppContext } from '../App';
-import moment from 'moment';
+import { TabContext } from "../components/tabSystem";
 
 let windowCount = 3;
 
 const Dashboard = () => {
-  const { tab } = useContext(AppContext);
+  const tab = useContext(TabContext);
   const location = useLocation();
   const [dashboardTitle, setDashboardTitle] = useState(tab.tabs[tab.activeTab].title || "New Dashboard");
   const [timeRange, setTimeRange] = useState([new Date(), new Date()]);
@@ -39,8 +39,7 @@ const Dashboard = () => {
       title: dashboardTitle,
       path: location.pathname
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dashboardTitle])
+  }, [dashboardTitle]);// eslint-disable-line react-hooks/exhaustive-deps
   const createNode = () => ++windowCount;
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);

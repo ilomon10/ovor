@@ -4,10 +4,10 @@ import { Card } from '@blueprintjs/core';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import AspectRatio from "../components/aspectratio";
-import { AppContext } from "../App";
+import { TabContext } from "../components/tabSystem";
 
 const Dashboards = () => {
-  const { tab } = useContext(AppContext);
+  const tab = useContext(TabContext);
   const location = useLocation();
   const list = [{
     name: "Lampu Rumah",

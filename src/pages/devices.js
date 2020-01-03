@@ -1,9 +1,9 @@
 import { useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AppContext } from '../App';
+import { TabContext } from "../components/tabSystem";
 
 const Devices = () => {
-  const { tab } = useContext(AppContext);
+  const tab = useContext(TabContext);
   const location = useLocation();
   useEffect(() => {
     tab.setCurrentTabState({
