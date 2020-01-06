@@ -18,6 +18,7 @@
     "react-mosaic-component": "^3.2.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
+    "react-vis": "^1.11.7",
     "styled-components": "^4.4.1"
   },
   "scripts": {

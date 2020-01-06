@@ -12,8 +12,7 @@ const TabButton = ({ text, active, minimal, to, onClickClose, onClick, disableCl
         to={to} tabIndex={0}>
         {text}
       </Link>
-      {isHover && !disableCloseButton &&
-        <Button minimal={minimal} active={active} icon="cross" onClick={onClickClose} />}
+      <Button minimal={minimal} active={active} icon={isHover && !disableCloseButton ? "cross" : ""} onClick={onClickClose} />
     </ButtonGroup>
   )
 }

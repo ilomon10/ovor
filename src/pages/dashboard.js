@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import {
   Corner,
   Mosaic,
-  MosaicWindow,
+  MosaicZeroState,
   getLeaves,
   createBalancedTreeFromLeaves,
   getPathToCorner,
@@ -16,6 +16,56 @@ import { Navbar, Button, Classes, Icon, EditableText } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { dropRight } from '../components/helper';
 import { TabContext } from "../components/tabSystem";
+import Widget from '../components/widget';
+
+const getRandomData = (l = 10, type) => {
+  let result = [];
+  let date = new Date().getTime();
+  for (let i = 0; i < l; i++) {
+    const x = type ? date : i;
+    const y = Math.abs(Math.random());
+    result.push([x, y]);
+    date += 60000;
+  }
+  return [...result];
+}
+
+const bbb = {
+  '1': {
+    title: 'Line Chart',
+    type: 'plot.line',
+    series: [{
+      name: 'data 1',
+      data: getRandomData(25, true)
+    }, {
+      name: 'data 2',
+      data: getRandomData(25, true)
+    }]
+  }, '2': {
+    title: 'Bar Chart',
+    type: 'plot.bar',
+    series: [{
+      name: 'data 1',
+      data: getRandomData(5, true)
+    }, {
+      name: 'data 2',
+      data: getRandomData(5, true)
+    }, {
+      name: 'data 3',
+      data: getRandomData(5, true)
+    }]
+  }, '3': {
+    title: 'Line 3 Chart',
+    type: 'plot.line',
+    series: [{
+      name: 'data 1',
+      data: getRandomData(25, true)
+    }, {
+      name: 'data 2',
+      data: getRandomData(25, true)
+    }]
+  }
+}
 
 let windowCount = 3;
 
@@ -33,21 +83,21 @@ const Dashboard = () => {
       second: 3,
     },
     splitPercentage: 50
-  })
+  });
   useEffect(() => {
     tab.setCurrentTabState({
       title: dashboardTitle,
       path: location.pathname
     })
   }, [dashboardTitle]);// eslint-disable-line react-hooks/exhaustive-deps
-  const createNode = () => ++windowCount;
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);
     setCurrentNode(createBalancedTreeFromLeaves(leaves));
   }
+  const createNode = () => ++windowCount;
   const addNewWindow = () => {
     let curNode = { ...currentNode };
-    if (curNode) {
+    if (curNode && currentNode !== null) {
       const path = getPathToCorner(curNode, Corner.TOP_RIGHT);
       const parent = getNodeAtPath(curNode, dropRight(path));
       const destination = getNodeAtPath(curNode, path);
@@ -56,10 +106,6 @@ const Dashboard = () => {
       let second = destination;
       if (direction === 'row') {
         first = destination;
-        second = ++windowCount;
-      }
-      if (Object.entries(curNode).length === 0) {
-        first = ++windowCount;
         second = ++windowCount;
       }
       curNode = updateTree(curNode, [
@@ -108,15 +154,10 @@ const Dashboard = () => {
       </Navbar>
       <div className="flex-grow">
         <Mosaic
-          renderTile={(count, path) => (
-            <MosaicWindow
-              title={`Window ${count}`}
-              createNode={createNode}
-              path={path}>
-              <div>Bijon</div>
-            </MosaicWindow>
+          renderTile={(id, path) => (
+            <Widget path={path} {...bbb[id]} />
           )}
-          // style={{ width: 0, height: 0 }}
+          zeroStateView={<MosaicZeroState createNode={createNode} />}
           onChange={currentNode => { setCurrentNode(currentNode) }}
           value={currentNode} />
       </div>

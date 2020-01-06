@@ -19,7 +19,7 @@ const Comp = ({ className, items }) => {
           </Navbar.Group>
         </Navbar>
         {navList.map((v) => (
-          <NavLink className={`${Classes.BUTTON} ${Classes.FILL} ${Classes.MINIMAL} ${Classes.ALIGN_LEFT} ${Classes.LARGE}`}
+          <NavLink className={`${Classes.BUTTON} ${Classes.FILL} ${Classes.MINIMAL} ${Classes.ALIGN_LEFT}`}
             key={v.path}
             activeClassName={Classes.ACTIVE}
             role="button" to={v.path}>
@@ -30,14 +30,15 @@ const Comp = ({ className, items }) => {
         ))}
         <Divider vertical="true" />
         <div style={{ textAlign: "center" }}>
-          <Button minimal icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
+          <Button minimal style={{padding: 'inherit'}}
+          icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
         </div>
       </div>
       <div className="flex-shrink-0">
         <Divider vertical="true" />
-        <Button alignText="left" large minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
-        <Button alignText="left" large minimal fill icon="user" text={isToggled ? "Imanuel Pundoko" : null} />
-        <Button alignText="left" large minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
+        <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
+        <Button alignText="left" minimal fill icon="user" text={isToggled ? "Imanuel Pundoko" : null} />
+        <Button alignText="left" minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
       </div>
     </div>
   )
