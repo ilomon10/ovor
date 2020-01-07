@@ -1,6 +1,8 @@
 import React from 'react';
 import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
 
+// [x, y]
+
 const PlotBar = ({ series, ...props }) => {
   return (
     <FlexibleXYPlot

@@ -1,6 +1,8 @@
 import React from 'react';
 import { FlexibleXYPlot, LineSeries, XAxis, YAxis } from 'react-vis';
 
+// [x, y]
+
 const PlotLine = ({ series, ...props }) => {
   return (
     <FlexibleXYPlot

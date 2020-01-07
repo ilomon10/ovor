@@ -64,6 +64,22 @@ const bbb = {
       name: 'data 2',
       data: getRandomData(25, true)
     }]
+  }, '4': {
+    title: 'Radial',
+    type: 'radial',
+    series: [{
+      name: 'data 1',
+      data: getRandomData(25)
+    }]
+  }, '5': {
+    title: 'Gauge',
+    type: 'radial',
+    innerRadius: 90,
+    radius: 100,
+    series: [{
+      name: 'data 1',
+      data: getRandomData(7)
+    }]
   }
 }
 
@@ -76,11 +92,19 @@ const Dashboard = () => {
   const [timeRange, setTimeRange] = useState([new Date(), new Date()]);
   const [currentNode, setCurrentNode] = useState({
     direction: 'row',
-    first: 1,
-    second: {
+    first: {
       direction: 'column',
+      first: 1,
+      second: 4,
+    },
+    second: {
+      direction: 'row',
       first: 2,
-      second: 3,
+      second: {
+        direction: 'column',
+        first: 3,
+        second: 5,
+      },
     },
     splitPercentage: 50
   });
