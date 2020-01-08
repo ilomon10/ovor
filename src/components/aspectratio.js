@@ -1,7 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 
-const Comp = ({ children, className, ratio, style }) => {
+const AspectRatio = ({ children, className, ratio, style }) => {
   const r = ratio.split(":");
   const val = 100 / parseFloat(r[0]) * parseFloat(r[1]);
   return (
@@ -9,8 +8,6 @@ const Comp = ({ children, className, ratio, style }) => {
       <div style={{ position: 'absolute', top: 0, left: 0, height: "100%", width: "100%" }}>{children}</div>
     </div>
   )
-}
-
-const AspectRatio = styled(Comp)``;
+};
 
 export default AspectRatio;

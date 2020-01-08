@@ -12,7 +12,7 @@ const Radial = ({ series, ...props }) => {
   return (
     <>
       {series.map((v, i) => {
-        const data = v.data.map((z) => ({ angle: z[0], radius: z[0] }))
+        const data = v.data.map((z) => ({ angle: z[0], radius: z[1] }))
         return (
           <ResizeSensor
             key={i}

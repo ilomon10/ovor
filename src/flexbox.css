@@ -32,6 +32,14 @@
 .flex--i-baseline  { align-items: baseline; }
 
 
+/* Align content */
+.flex--c-start { align-content: flex-start; } /* Default */
+.flex--c-center  { align-content: center; }
+.flex--c-end { align-content: flex-end; }
+.flex--c-around  { align-content: space-around; }
+.flex--c-between  { align-content: space-between; }
+
+
 /* Flex grow */
 .flex-grow--0 { flex-grow: 0; } /* Default */
 .flex-grow { flex-grow: 1; }

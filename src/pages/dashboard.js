@@ -74,8 +74,6 @@ const bbb = {
   }, '5': {
     title: 'Gauge',
     type: 'radial',
-    innerRadius: 90,
-    radius: 100,
     series: [{
       name: 'data 1',
       data: getRandomData(7)
