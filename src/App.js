@@ -12,6 +12,7 @@ import Dashboards from './pages/dashboards';
 import Dashboard from './pages/dashboard';
 import Devices from './pages/devices';
 import Settings from './pages/settings';
+import Device from './pages/device';
 
 const Container = styled.div`
   position: fixed;
@@ -29,6 +30,12 @@ const App = () => {
     component: Dashboard,
     exact: true
   }, {
+    hide: true,
+    title: 'Device',
+    path: '/devices/:id',
+    component: Device,
+    exact: true
+  }, {
     title: 'Dashboards',
     icon: 'application',
     path: '/dashboards',
@@ -38,7 +45,8 @@ const App = () => {
     title: 'Devices',
     icon: 'helper-management',
     path: '/devices',
-    component: Devices
+    component: Devices,
+    exact: true
   }, {
     title: 'Settings',
     icon: 'cog',

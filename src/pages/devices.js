@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { TabContext } from "../components/tabSystem";
 import { Colors, Card, Switch, Icon, Classes, Tooltip, Position, Tag } from '@blueprintjs/core';
 import AspectRatio from '../components/aspectratio';
@@ -7,6 +7,7 @@ import AspectRatio from '../components/aspectratio';
 const Devices = () => {
   const tab = useContext(TabContext);
   const location = useLocation();
+  const history = useHistory();
   useEffect(() => {
     tab.setCurrentTabState({
       title: 'Devices',
@@ -16,23 +17,23 @@ const Devices = () => {
   }, [])
   return (
     <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%' }}>
-      <div style={{ width: 1024, margin: '0 auto', paddingTop: 24 }}>
-        <div style={{ margin: '0 -8px' }} className="flex flex--wrap">
+      <div style={{ maxWidth: 1024, margin: '0 auto', paddingTop: 12 }}>
+        <div style={{ padding: '0 8px' }} className="flex flex--wrap">
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v, i) =>
             (<div key={i}
               style={{ width: `${100 / 4}%`, padding: "0 8px", marginBottom: 16 }}>
-              <Card>
+              <Card interactive onClick={() => history.push(`/devices/${i}`)}>
                 <AspectRatio ratio="4:3">
                   <div className="flex flex--col" style={{ height: "100%" }}>
                     <div className="flex-shrink-0 flex">
                       <div className="flex-grow">
-                        <Tooltip content="OFFLINE" position={Position.RIGHT}>
+                        <Tooltip content={<div className={Classes.TEXT_SMALL}>Offline</div>} position={Position.RIGHT}>
                           <Switch style={{ pointerEvents: "none", margin: 0 }}
                             innerLabelChecked="on" innerLabel="off" />
                         </Tooltip>
                       </div>
                       <div className="flex-shrink-0">
-                        <Tooltip content="Event Name" position={Position.LEFT}>
+                        <Tooltip content={<div className={Classes.TEXT_SMALL}>Event Name</div>} position={Position.LEFT}>
                           <Tag minimal className={Classes.MONOSPACE_TEXT}>device-{v}</Tag>
                         </Tooltip>
                       </div>

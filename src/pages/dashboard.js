@@ -12,7 +12,7 @@ import {
   getOtherDirection,
   updateTree
 } from 'react-mosaic-component';
-import { Navbar, Button, Classes, Icon, EditableText } from '@blueprintjs/core';
+import { Navbar, Classes, Icon, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { dropRight } from '../components/helper';
 import { TabContext } from "../components/tabSystem";
@@ -80,32 +80,37 @@ const bbb = {
     }]
   }
 }
+const cNodes = {
+  direction: 'row',
+  first: {
+    direction: 'column',
+    first: {
+      direction: 'row',
+      first: 1,
+      second: 6
+    },
+    second: 4,
+  },
+  second: {
+    direction: 'row',
+    first: 2,
+    second: {
+      direction: 'column',
+      first: 3,
+      second: 5,
+    },
+  },
+  splitPercentage: 50
+}
 
-let windowCount = 3;
+let windowCount = 7;
 
 const Dashboard = () => {
   const tab = useContext(TabContext);
   const location = useLocation();
-  const [dashboardTitle, setDashboardTitle] = useState(tab.tabs[tab.activeTab].title || "New Dashboard");
+  const [dashboardTitle, setDashboardTitle] = useState("New Dashboard");
   const [timeRange, setTimeRange] = useState([new Date(), new Date()]);
-  const [currentNode, setCurrentNode] = useState({
-    direction: 'row',
-    first: {
-      direction: 'column',
-      first: 1,
-      second: 4,
-    },
-    second: {
-      direction: 'row',
-      first: 2,
-      second: {
-        direction: 'column',
-        first: 3,
-        second: 5,
-      },
-    },
-    splitPercentage: 50
-  });
+  const [currentNode, setCurrentNode] = useState(cNodes);
   useEffect(() => {
     tab.setCurrentTabState({
       title: dashboardTitle,
@@ -155,19 +160,20 @@ const Dashboard = () => {
           </Navbar.Heading>
         </Navbar.Group>
         <Navbar.Group className="flex-shrink-0">
-          <div style={{ marginRight: 8 }}>
-            <DateInput
-              formatDate={date => moment(date).format('dddd, DD MMM YY\'')}
+          <ControlGroup className="flex--i-center">
+            <HTMLSelect options={['Range', 'Realtime']} />
+            <DateInput style={{ textAlign: 'center' }}
+              formatDate={date => moment(date).format('DD-MMM YY\'')}
               parseDate={str => moment(str)}
               onChange={v => setTimeRange([v, timeRange[1]])}
               value={timeRange[0]} />
-          </div>
-          <Icon style={{ marginRight: 8 }} icon="arrow-right" />
-          <DateInput
-            formatDate={date => moment(date).format('dddd, DD MMM YY\'')}
-            parseDate={str => moment(str)}
-            onChange={v => setTimeRange([timeRange[0], v])}
-            value={timeRange[1]} />
+            <span className={Classes.INPUT}>to</span>
+            <DateInput
+              formatDate={date => moment(date).format('DD-MMM YY\'')}
+              parseDate={str => moment(str)}
+              onChange={v => setTimeRange([timeRange[0], v])}
+              value={timeRange[1]} />
+          </ControlGroup>
           <Navbar.Divider />
           <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
           <Navbar.Divider />
@@ -176,9 +182,9 @@ const Dashboard = () => {
       </Navbar>
       <div className="flex-grow">
         <Mosaic
-          renderTile={(id, path) => (
-            <Widget path={path} {...bbb[id]} />
-          )}
+          renderTile={(id, path) => {
+            return (<Widget path={path} {...bbb[id]} />)
+          }}
           zeroStateView={<MosaicZeroState createNode={createNode} />}
           onChange={currentNode => { setCurrentNode(currentNode) }}
           value={currentNode} />

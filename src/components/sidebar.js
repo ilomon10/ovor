@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Comp = ({ className, items }) => {
   const navList = items.filter((v) => !v.hide) || [];
-  const [isToggled, setIsToggled] = useState(true);
+  const [isToggled, setIsToggled] = useState(false);
   return (
     <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ width: isToggled ? 240 : "auto" }}>
       <div className="flex-grow">
