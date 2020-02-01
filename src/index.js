@@ -14,7 +14,6 @@ import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import '@blueprintjs/datetime/lib/css/blueprint-datetime.css';
 import 'react-mosaic-component/react-mosaic-component.css';
-import 'react-vis/dist/style.css';
 import './flexbox.css';
 
 import ovorLogo from './components/icons/ovor';

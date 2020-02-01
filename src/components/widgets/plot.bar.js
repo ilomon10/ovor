@@ -1,21 +1,11 @@
 import React from 'react';
-import { FlexibleXYPlot, VerticalBarSeries, XAxis, YAxis } from 'react-vis';
+import Chart from 'react-apexcharts';
 
 // [x, y]
 
-const PlotBar = ({ series, ...props }) => {
+const PlotBar = ({ series, options }) => {
   return (
-    <FlexibleXYPlot
-      xType="time">
-      <XAxis />
-      <YAxis />
-      {series.map((v, i) => {
-        let data = v.data.map((z) => ({ x: z[0], y: z[1] }));
-        return (
-          <VerticalBarSeries key={i} data={data} />
-        )
-      })}
-    </FlexibleXYPlot>
+    <Chart options={options} series={series} type='bar' height="100%" width="100%"/>
   );
 }
 

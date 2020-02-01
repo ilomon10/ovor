@@ -1,36 +1,11 @@
 import React, { useState } from 'react';
-import { ResizeSensor } from '@blueprintjs/core'
-import { RadialChart } from 'react-vis';
+import Chart from 'react-apexcharts';
 
 // [angle, radius]
 
-const Radial = ({ series, ...props }) => {
-  const [sizing, setSizing] = useState({
-    width: 0,
-    height: 0
-  });
+const Radial = ({ series, options }) => {
   return (
-    <>
-      {series.map((v, i) => {
-        const data = v.data.map((z) => ({ angle: z[0], radius: z[1] }))
-        return (
-          <ResizeSensor
-            key={i}
-            onResize={(e) => {
-              let rect = e[0].contentRect;
-              setSizing({ width: rect.width, height: rect.height });
-            }}>
-            <div style={{ width: '100%', height: '100%' }}>
-              <RadialChart
-                {...props}
-                height={sizing.height}
-                width={sizing.width}
-                data={data} />
-            </div>
-          </ResizeSensor>
-        )
-      })}
-    </>
+    <Chart type="pie" series={series} options={options} height={"100%"} width={"100%"} />
   );
 }
 

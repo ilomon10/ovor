@@ -1,22 +1,11 @@
 import React from 'react';
-import { FlexibleXYPlot, LineSeries, XAxis, YAxis } from 'react-vis';
+import Chart from 'react-apexcharts';
 
 // [x, y]
 
-const PlotLine = ({ series, ...props }) => {
+const PlotLine = ({ series, options }) => {
   return (
-    <FlexibleXYPlot
-      xType="time">
-      <XAxis />
-      <YAxis />
-      {series.map((v, i) => {
-        const data = v.data.map((z) => ({ x: z[0], y: z[1] }))
-        // console.log(data);
-        return (
-          <LineSeries key={i} data={data} />
-        )
-      })}
-    </FlexibleXYPlot>
+    <Chart options={options} series={series} type="line" height="100%" width="100%" />
   );
 }
 

@@ -34,6 +34,19 @@ const bbb = {
   '1': {
     title: 'Line Chart',
     type: 'plot.line',
+    options: {
+      chart: {
+        id: 'Line Chart'
+      },
+      xaxis: {
+        type: 'datetime'
+      },
+      yaxis: {
+        labels: {
+          formatter: (v) => (v.toFixed(2))
+        }
+      },
+    },
     series: [{
       name: 'data 1',
       data: getRandomData(25, true)
@@ -44,6 +57,19 @@ const bbb = {
   }, '2': {
     title: 'Bar Chart',
     type: 'plot.bar',
+    options: {
+      chart: {
+        id: 'Bar Chart'
+      },
+      xaxis: {
+        type: 'datetime'
+      },
+      yaxis: {
+        labels: {
+          formatter: (v) => (v.toFixed(2))
+        }
+      }
+    },
     series: [{
       name: 'data 1',
       data: getRandomData(5, true)
@@ -57,6 +83,19 @@ const bbb = {
   }, '3': {
     title: 'Line 3 Chart',
     type: 'plot.line',
+    options: {
+      chart: {
+        id: 'Line 3 Chart'
+      },
+      yaxis: {
+        labels: {
+          formatter: (v) => (v.toFixed(2))
+        }
+      },
+      xaxis: {
+        type: 'datetime'
+      }
+    },
     series: [{
       name: 'data 1',
       data: getRandomData(25, true)
@@ -67,17 +106,23 @@ const bbb = {
   }, '4': {
     title: 'Radial',
     type: 'radial',
-    series: [{
-      name: 'data 1',
-      data: getRandomData(25)
-    }]
+    options: {
+      chart: {
+        id: 'Radial'
+      },
+      labels: ['a', 'b', 'c', 'd', 'e']
+    },
+    series: [1, 2, 3, 4, 5]
   }, '5': {
     title: 'Gauge',
     type: 'radial',
-    series: [{
-      name: 'data 1',
-      data: getRandomData(7)
-    }]
+    options: {
+      chart: {
+        id: 'Gauge'
+      },
+      labels: ['a', 'b', 'c', 'd', 'e']
+    },
+    series: [1, 2, 3, 4, 5]
   }
 }
 const cNodes = {
@@ -166,13 +211,13 @@ const Dashboard = () => {
               formatDate={date => moment(date).format('DD-MMM YY\'')}
               parseDate={str => moment(str)}
               onChange={v => setTimeRange([v, timeRange[1]])}
-              value={timeRange[0]} />
+              value={timeRange[0]} inputProps={{ size: 6 }} />
             <span className={Classes.INPUT}>to</span>
             <DateInput
               formatDate={date => moment(date).format('DD-MMM YY\'')}
               parseDate={str => moment(str)}
               onChange={v => setTimeRange([timeRange[0], v])}
-              value={timeRange[1]} />
+              value={timeRange[1]} inputProps={{ size: 6 }} />
           </ControlGroup>
           <Navbar.Divider />
           <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
