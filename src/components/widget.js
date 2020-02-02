@@ -10,6 +10,7 @@ import { Button, Dialog } from '@blueprintjs/core';
 import Empty from './widgets/empty';
 import Settings from './widgets/settings';
 import WidgetContext from './widgets/hocs';
+import Table from './widgets/table';
 
 const Widget = ({ type, title = "Empty Window", path, ...props }) => {
   let ret = null;
@@ -23,6 +24,9 @@ const Widget = ({ type, title = "Empty Window", path, ...props }) => {
       break;
     case 'radial':
       ret = (<Radial {...props} />);
+      break;
+    case 'table':
+      ret = (<Table {...props} />);
       break;
     default:
       ret = (<Empty />);
