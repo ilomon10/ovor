@@ -14,21 +14,9 @@ import {
 } from 'react-mosaic-component';
 import { Navbar, Classes, Icon, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
-import { dropRight } from '../components/helper';
+import { dropRight, getRandomData } from '../components/helper';
 import { TabContext } from "../components/tabSystem";
 import Widget from '../components/widget';
-
-const getRandomData = (l = 10, type) => {
-  let result = [];
-  let date = new Date().getTime();
-  for (let i = 0; i < l; i++) {
-    const x = type ? date : i;
-    const y = Math.abs(Math.random());
-    result.push([x, y]);
-    date += 60000;
-  }
-  return [...result];
-}
 
 const bbb = {
   '1': {
@@ -49,10 +37,10 @@ const bbb = {
     },
     series: [{
       name: 'data 1',
-      data: getRandomData(25, true)
+      data: getRandomData(15, true)
     }, {
       name: 'data 2',
-      data: getRandomData(25, true)
+      data: getRandomData(10, true)
     }]
   }, '2': {
     title: 'Bar Chart',

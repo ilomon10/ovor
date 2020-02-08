@@ -9,15 +9,17 @@ const Comp = ({ className, items }) => {
   const navList = items.filter((v) => !v.hide) || [];
   const [isToggled, setIsToggled] = useState(false);
   return (
-    <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ width: isToggled ? 240 : "auto" }}>
+    <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ maxWidth: isToggled ? 240 : "auto" }}>
       <div className="flex-grow">
         <Navbar>
           <Navbar.Group align="center" style={{ textAlign: "center", justifyContent: "center" }}>
             <FontAwesomeIcon style={{ marginRight: isToggled ? 8 : 0, color: Colors.GRAY1 }} icon={['ovor', 'logo']} size="2x" />
             {isToggled &&
-              <H5 style={{ margin: 0 }}>OVOR</H5>}
+              <H5 style={{ margin: 0 }}>OVORD</H5>}
           </Navbar.Group>
         </Navbar>
+        <Button minimal fill alignText="left" text={isToggled ? 'Menu' : null}
+          icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
         {navList.map((v) => (
           <NavLink className={`${Classes.BUTTON} ${Classes.FILL} ${Classes.MINIMAL} ${Classes.ALIGN_LEFT}`}
             key={v.path}
@@ -28,11 +30,6 @@ const Comp = ({ className, items }) => {
               <span className={Classes.BUTTON_TEXT}>{v.title}</span>}
           </NavLink>
         ))}
-        <Divider vertical="true" />
-        <div style={{ textAlign: "center" }}>
-          <Button minimal style={{padding: 'inherit'}}
-          icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
-        </div>
       </div>
       <div className="flex-shrink-0">
         <Divider vertical="true" />
