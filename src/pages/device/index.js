@@ -1,14 +1,14 @@
 import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
-import { TabContext } from '../components/tabSystem';
-import Table from '../components/exp.table';
-import PlotLine from '../components/widgets/plot.line';
-import PlotBar from '../components/widgets/plot.bar';
-import { getRandomData } from '../components/helper'
+import { TabContext } from '../../components/tabSystem';
+import Table from '../../components/exp.table';
+import PlotLine from '../../components/widgets/plot.line';
+import PlotBar from '../../components/widgets/plot.bar';
+import { getRandomData } from '../../components/helper'
 import moment from 'moment';
-import Wrapper from '../components/wrapper';
-import Container from '../components/container';
+import Wrapper from '../../components/wrapper';
+import Container from '../../components/container';
 
 const data = {
   incoming: {
@@ -197,7 +197,7 @@ const Device = () => {
                   </Card>
                 </div>
               </div>
-              <Card className="flex flex--col" style={{ height: contentHeight - 24 }}>
+              <Card className="flex flex--col" style={{ height: contentHeight - 36 }}>
                 <div className="flex-shrink-0 flex">
                   <H4 className="flex-grow" style={{ margin: 0 }}>Recent Incoming Data</H4>
                   <div>

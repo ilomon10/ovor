@@ -10,9 +10,9 @@ import Topbar from './components/topbar';
 import TabSystem from './components/tabSystem';
 import Dashboards from './pages/dashboards';
 import Dashboard from './pages/dashboard';
-import Devices from './pages/devices';
+import Devices from './pages/device/browse';
+import Device from './pages/device/';
 import Settings from './pages/settings';
-import Device from './pages/device';
 
 const Container = styled.div`
   position: fixed;

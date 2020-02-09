@@ -5,6 +5,9 @@ export const groupBy = (arr, by) => arr.reduce((r, a) => {
   return r;
 }, {});
 
+export const generateUniqueId = () => {
+  return '_' + Math.random().toString(36).substr(2, 9);
+};
 
 export const getRandomData = (l = 10, type) => {
   let result = [];

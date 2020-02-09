@@ -1,10 +1,11 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
-import { TabContext } from "../components/tabSystem";
-import { Colors, Card, Switch, Icon, Classes, Tooltip, Position, Tag } from '@blueprintjs/core';
-import AspectRatio from '../components/aspectratio';
-import Container from '../components/container';
-import Wrapper from '../components/wrapper';
+import { Colors, Card, Switch, Icon, Classes, Tooltip, Position, Tag, Dialog } from '@blueprintjs/core';
+import { TabContext } from "../../components/tabSystem";
+import AspectRatio from '../../components/aspectratio';
+import Container from '../../components/container';
+import Wrapper from '../../components/wrapper';
+import AddNewDevice from './addNewDevice';
 
 const Devices = () => {
   const tab = useContext(TabContext);
@@ -16,12 +17,24 @@ const Devices = () => {
       path: location.pathname
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
+  const [isDialogOpen, setIsDialogOpen] = useState(true);
   return (
     <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
       <Wrapper style={{ overflowY: "auto" }}>
         <Container style={{ paddingTop: 12 }}>
           <div style={{ padding: '0 8px' }} className="flex flex--wrap">
+            <div style={{ width: `${100 / 4}%`, padding: "0 8px", marginBottom: 16 }}>
+              <Card interactive
+                style={{ backgroundColor: "transparent" }}
+                onClick={() => setIsDialogOpen(true)}>
+                <AspectRatio ratio="4:3">
+                  <div className="flex flex--j-center flex--i-center" style={{ height: "100%" }}>
+                    <Icon iconSize={64} icon="plus" color={Colors.GRAY1} />
+                  </div>
+                </AspectRatio>
+              </Card>
+            </div>
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v, i) =>
               (<div key={i}
                 style={{ width: `${100 / 4}%`, padding: "0 8px", marginBottom: 16 }}>
@@ -55,6 +68,13 @@ const Devices = () => {
           </div>
         </Container>
       </Wrapper>
+      <Dialog isOpen={isDialogOpen}
+        usePortal={true}
+        canOutsideClickClose={false}
+        title="Add New Device"
+        onClose={() => setIsDialogOpen(false)}>
+        <AddNewDevice onClose={() => setIsDialogOpen(false)} />
+      </Dialog>
     </div>
   )
 }
