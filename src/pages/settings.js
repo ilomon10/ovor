@@ -1,6 +1,6 @@
 import { useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
-import { TabContext } from "../components/tabSystem";
+import { TabContext } from "components/tabSystem";
 
 const Settings = () => {
   const tab = useContext(TabContext);

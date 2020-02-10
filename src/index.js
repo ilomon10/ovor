@@ -6,7 +6,7 @@ import {
   Switch
 } from 'react-router-dom';
 import App from './App';
-import Login from './pages/login';
+import Login from 'pages/login';
 import * as serviceWorker from './serviceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {

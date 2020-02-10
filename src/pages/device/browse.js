@@ -1,10 +1,10 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import { Colors, Card, Switch, Icon, Classes, Tooltip, Position, Tag, Dialog } from '@blueprintjs/core';
-import { TabContext } from "../../components/tabSystem";
-import AspectRatio from '../../components/aspectratio';
-import Container from '../../components/container';
-import Wrapper from '../../components/wrapper';
+import { TabContext } from "components/tabSystem";
+import AspectRatio from 'components/aspectratio';
+import Container from 'components/container';
+import Wrapper from 'components/wrapper';
 import AddNewDevice from './addNewDevice';
 
 const Devices = () => {
@@ -12,13 +12,10 @@ const Devices = () => {
   const location = useLocation();
   const history = useHistory();
   useEffect(() => {
-    tab.setCurrentTabState({
-      title: 'Devices',
-      path: location.pathname
-    })
+    tab.setCurrentTabState({ title: 'Devices', path: location.pathname })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [isDialogOpen, setIsDialogOpen] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
       <Wrapper style={{ overflowY: "auto" }}>
@@ -59,7 +56,7 @@ const Devices = () => {
                         <p className={`${Classes.TEXT_SMALL}`}>
                           <Icon iconSize={11} icon="map-marker" /><span> Indonesia</span>
                         </p>
-                        <div style={{ color: Colors.GRAY1 }}>IP: 192.168.43.{parseInt(Math.random(v) * 255)}</div>
+                        <div style={{ color: Colors.GRAY1 }}>IP: 192.168.43.{Math.floor(Math.random() * 255)}</div>
                       </div>
                     </div>
                   </AspectRatio>

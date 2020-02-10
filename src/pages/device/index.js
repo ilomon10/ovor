@@ -1,14 +1,14 @@
 import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
-import { TabContext } from '../../components/tabSystem';
-import Table from '../../components/exp.table';
-import PlotLine from '../../components/widgets/plot.line';
-import PlotBar from '../../components/widgets/plot.bar';
-import { getRandomData } from '../../components/helper'
+import { TabContext } from 'components/tabSystem';
+import Table from 'components/exp.table';
+import PlotLine from 'components/widgets/plot.line';
+import PlotBar from 'components/widgets/plot.bar';
+import { getRandomData } from 'components/helper'
 import moment from 'moment';
-import Wrapper from '../../components/wrapper';
-import Container from '../../components/container';
+import Wrapper from 'components/wrapper';
+import Container from 'components/container';
 
 const data = {
   incoming: {
@@ -17,6 +17,9 @@ const data = {
         show: false
       },
       chart: {
+        zoom: {
+          enabled: false
+        },
         toolbar: {
           show: false
         }
@@ -67,6 +70,9 @@ const data = {
   mini: {
     options: {
       chart: {
+        zoom: {
+          enabled: false
+        },
         toolbar: {
           show: false
         }
@@ -107,7 +113,8 @@ const Device = () => {
   }, [])
   const copyToClipboard = useCallback(
     (e) => {
-      eventIdRef.current.select();
+      let eventIdRefCurrent = eventIdRef.current;
+      eventIdRefCurrent.select();
       document.execCommand('copy');
       e.target.focus();
     },
@@ -126,19 +133,19 @@ const Device = () => {
           <Navbar.Group align="right" style={{ textAlign: "right" }}>
             <div style={{ marginLeft: 16 }}>
               <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>IP ADDRESS</div>
-              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>192.168.43.{parseInt(Math.random() * 255)}</div>
+              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>192.168.43.{Math.floor(Math.random() * 255)}</div>
             </div>
             <div style={{ marginLeft: 16 }}>
               <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>IMEI</div>
-              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>{parseInt(Math.random() * 99999999999)}</div>
+              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>{Math.floor(Math.random() * 99999999999)}</div>
             </div>
             <div style={{ marginLeft: 16 }}>
               <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
-              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>{parseInt(Math.random() * 99999)}</div>
+              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>{Math.floor(Math.random() * 99999)}</div>
             </div>
             <div style={{ marginLeft: 16 }}>
               <ControlGroup>
-                <InputGroup readOnly defaultValue={`device-023`} inputRef={eventIdRef} size={10} />
+                <InputGroup readOnly defaultValue={`device-023`} inputRef={eventIdRef} size={10} />   
                 <Button icon="clipboard" onClick={copyToClipboard} />
               </ControlGroup>
             </div>

@@ -14,9 +14,9 @@ import {
 } from 'react-mosaic-component';
 import { Navbar, Classes, Icon, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
-import { dropRight, getRandomData } from '../components/helper';
-import { TabContext } from "../components/tabSystem";
-import Widget from '../components/widget';
+import { dropRight, getRandomData } from 'components/helper';
+import { TabContext } from "components/tabSystem";
+import Widget from 'components/widget';
 
 const bbb = {
   '1': {

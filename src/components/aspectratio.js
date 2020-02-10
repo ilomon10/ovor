@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AspectRatio = ({ children, className, ratio, style }) => {
+const AspectRatio = ({ children, className = "", ratio, style = {} }) => {
   const r = ratio.split(":");
   const val = 100 / parseFloat(r[0]) * parseFloat(r[1]);
   return (

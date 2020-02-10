@@ -2,7 +2,6 @@ import React from 'react';
 import { HTMLTable } from '@blueprintjs/core';
 
 const Table = ({ options, series, style, ...props }) => {
-  console.log(style);
   const heading = options.labels.map((v, i) => (
     <td key={i}>{v}</td>
   ))

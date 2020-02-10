@@ -3,9 +3,9 @@ import React, { useContext, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import { Card, Classes, Colors } from '@blueprintjs/core';
 import { Link } from "react-router-dom";
-import AspectRatio from "../components/aspectratio";
-import { TabContext } from "../components/tabSystem";
-import Container from "../components/container";
+import AspectRatio from "components/aspectratio";
+import { TabContext } from "components/tabSystem";
+import Container from "components/container";
 
 const Dashboards = () => {
   const tab = useContext(TabContext);

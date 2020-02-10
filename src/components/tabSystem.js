@@ -11,16 +11,21 @@ import {
 export const TabContext = React.createContext({
   tabs: [],
   activeTab: null,
+  setCurrentTabState: (tab) => { },
   setActiveTab: () => { },
   addNewTab: () => { },
-  removeTab: () => { }
+  removeTab: () => { },
+  changeActiveTab: () => { },
 });
 
 const TabSystem = ({ children }) => {
   const [tabs, setTabs] = useState(JSON.parse(localStorage.getItem('ovor.tabs')) || []);
-  const [activeTab, setActiveTab] = useState(JSON.parse(localStorage.getItem('ovor.activeTab')) || 0);
+  const [activeTab, setActiveTabState] = useState(JSON.parse(localStorage.getItem('ovor.activeTab')) || 0);
   const history = useHistory();
   const prevTabs = useRef([]);
+  const setActiveTab = useCallback((v) => {
+    setActiveTabState(v);
+  }, [setActiveTabState]);
   const changeActiveTab = useCallback((id) => {
     let index = id;
     let tab = tabs[index];
@@ -31,7 +36,7 @@ const TabSystem = ({ children }) => {
     };
     setActiveTab(index);
     history.push(tab.path);
-  }, [tabs, history]);
+  }, [tabs, history, setActiveTab]);
   const addNewTab = useCallback(() => {
     setTabs(() => {
       return ([{
@@ -43,7 +48,7 @@ const TabSystem = ({ children }) => {
   const removeTab = useCallback((id) => {
     if (id < activeTab) setActiveTab(activeTab - 1);
     setTabs(() => ([...tabs.filter((...x) => x[1] !== id)]));
-  }, [activeTab, tabs]);
+  }, [activeTab, tabs, setActiveTab]);
   const setCurrentTabState = useCallback(({ title, path }) => setTabs(() => {
     return ([
       ...tabs.map((v, i) => {
@@ -69,10 +74,10 @@ const TabSystem = ({ children }) => {
       tabs: [...tabs],
       activeTab,
       changeActiveTab,
+      setCurrentTabState,
       setActiveTab,
       addNewTab,
       removeTab,
-      setCurrentTabState
     }}>
       {children}
     </TabContext.Provider>

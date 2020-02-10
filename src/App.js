@@ -5,14 +5,14 @@ import {
 } from 'react-router-dom';
 import styled from 'styled-components';
 
-import Sidebar from './components/sidebar';
-import Topbar from './components/topbar';
-import TabSystem from './components/tabSystem';
-import Dashboards from './pages/dashboards';
-import Dashboard from './pages/dashboard';
-import Devices from './pages/device/browse';
-import Device from './pages/device/';
-import Settings from './pages/settings';
+import Sidebar from 'components/sidebar';
+import Topbar from 'components/topbar';
+import TabSystem from 'components/tabSystem';
+import Dashboards from 'pages/dashboard/browse';
+import Dashboard from 'pages/dashboard/';
+import Devices from 'pages/device/browse';
+import Device from 'pages/device/';
+import Settings from 'pages/settings';
 
 const Container = styled.div`
   position: fixed;
@@ -61,7 +61,7 @@ const App = () => {
           <Topbar className="flex-shrink-0" />
           <div className="flex-grow">
             <Switch>
-              {navigation.map((v, i) => (
+              {navigation.map((v) => (
                 <Route key={v.path} path={v.path} name={v.title} component={v.component} exact={v.exact} />
               ))}
             </Switch>

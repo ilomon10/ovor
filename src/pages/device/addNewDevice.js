@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect, Button } from '@blueprintjs/core';
-import { generateUniqueId } from '../../components/helper';
+import { generateUniqueId } from 'components/helper';
 
 const AddDevice = ({ onClose }) => {
   const fieldType = [
@@ -35,7 +35,7 @@ const AddDevice = ({ onClose }) => {
   const cancle = useCallback(() => {
     onClose();
     setSending(false);
-  }, [fields])
+  }, [onClose])
   return (
     <>
       <div className={Classes.DIALOG_BODY}>
@@ -45,12 +45,13 @@ const AddDevice = ({ onClose }) => {
           <InputGroup id="device-name" name="device-name" type="text" />
         </FormGroup>
         <FormGroup
-          label="Fields">
+          label="Fields"
+          labelInfo={`(${fields.length-1})`}>
           {fields.map((v, i) => (
             <div key={v.unique} className="flex" style={{ marginBottom: i !== fields.length - 1 ? 12 : 0 }}>
               <ControlGroup fill className="flex-grow">
                 <InputGroup type="text" onChange={onChange.bind(this, 'name', i)} value={v.name} placeholder={i === fields.length - 1 ? "Enter a new field name" : null} />
-                <HTMLSelect type="text" onChange={onChange.bind(this, 'type', i)} value={v.type} options={fieldType} />
+                <HTMLSelect onChange={onChange.bind(this, 'type', i)} value={v.type} options={fieldType} />
               </ControlGroup>
               <Button minimal icon="trash" intent={i === fields.length - 1 ? null : "danger"}
                 onClick={removeField.bind(this, v.unique)}
@@ -61,8 +62,8 @@ const AddDevice = ({ onClose }) => {
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-          <Button text="Close" onClick={cancle} />
-          <Button text="Create" onClick={createDevice} loading={sending} />
+          <Button text="Close" onClick={cancle} minimal intent="danger" />
+          <Button text="Create" onClick={createDevice} loading={sending} intent="primary" />
         </div>
       </div>
     </>
