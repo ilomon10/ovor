@@ -29,7 +29,7 @@ const Widget = ({ type, title = "Empty Window", path, ...props }) => {
       ret = (<Table {...props} />);
       break;
     default:
-      ret = (<Empty />);
+      ret = (<Empty path={path} />);
       break;
   }
   return (
@@ -40,18 +40,18 @@ const Widget = ({ type, title = "Empty Window", path, ...props }) => {
             title={title}
             path={path}
             toolbarControls={([
-              <Button key={"cog"} className="mosaic-default-control" minimal icon='cog' />,
+              <Button key={"cog"} className="mosaic-default-control" minimal icon='cog' onClick={() => setIsDialogOpen(true)} />,
               <Button key={"cross"} className="mosaic-default-control" minimal icon='cross' onClick={() => mosaicActions.remove(path)} />,
             ])}>
             {ret}
             <Dialog
-              title={title}
+              title={"Configure Widget"}
               canEscapeKeyClose
               canOutsideClickClose
               onClose={() => setIsDialogOpen(false)}
               isOpen={isDialogOpen}
               usePortal>
-              <Settings />
+              <Settings path={path} onClose={() => setIsDialogOpen(false)} />
             </Dialog>
           </MosaicWindow>)
         }}

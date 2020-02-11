@@ -11,11 +11,11 @@ const Devices = () => {
   const tab = useContext(TabContext);
   const location = useLocation();
   const history = useHistory();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
     tab.setCurrentTabState({ title: 'Devices', path: location.pathname })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
       <Wrapper style={{ overflowY: "auto" }}>
