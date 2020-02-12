@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
 import { TabContext } from 'components/tabSystem';
 import Table from 'components/exp.table';
-import PlotLine from 'components/widgets/plot.line';
-import PlotBar from 'components/widgets/plot.bar';
+import Timeseries from 'components/widgets/timeseries';
+import BarChart from 'components/widgets/barChart';
 import { getRandomData } from 'components/helper'
 import moment from 'moment';
 import Wrapper from 'components/wrapper';
@@ -167,7 +167,7 @@ const Device = () => {
                   </div>
                 </div>
                 <div style={{ height: 127 }}>
-                  <PlotBar options={data.incoming.options} series={data.incoming.series} />
+                  <BarChart options={data.incoming.options} series={data.incoming.series} />
                 </div>
               </Card>
               <div className="flex" style={{ marginBottom: 16 }}>
@@ -175,7 +175,7 @@ const Device = () => {
                   <Card style={{ padding: 0 }}>
                     <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Temperature</H5>
                     <div style={{ height: 127 }}>
-                      <PlotLine options={data.mini.options} series={data.mini.series} />
+                      <Timeseries options={data.mini.options} series={data.mini.series} />
                     </div>
                   </Card>
                 </div>
@@ -183,7 +183,7 @@ const Device = () => {
                   <Card style={{ padding: 0 }}>
                     <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Humidity</H5>
                     <div style={{ height: 127 }}>
-                      <PlotLine options={data.mini.options} series={data.mini.series} />
+                      <Timeseries options={data.mini.options} series={data.mini.series} />
                     </div>
                   </Card>
                 </div>
@@ -191,7 +191,7 @@ const Device = () => {
                   <Card style={{ padding: 0 }}>
                     <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Voltage</H5>
                     <div style={{ height: 127 }}>
-                      <PlotLine options={data.mini.options} series={data.mini.series} />
+                      <Timeseries options={data.mini.options} series={data.mini.series} />
                     </div>
                   </Card>
                 </div>
@@ -199,7 +199,7 @@ const Device = () => {
                   <Card style={{ padding: 0 }}>
                     <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Current</H5>
                     <div style={{ height: 127 }}>
-                      <PlotLine options={data.mini.options} series={data.mini.series} />
+                      <Timeseries options={data.mini.options} series={data.mini.series} />
                     </div>
                   </Card>
                 </div>

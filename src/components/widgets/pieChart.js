@@ -1,12 +1,17 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-// [angle, radius]
+// 
+// Properties
+// - Name
+// - Field
+//   - Title
+//   - Color
 
-const Radial = ({ series, options }) => {
+const PieChart = ({ series, options }) => {
   return (
     <Chart type="pie" series={series} options={options} height={"100%"} width={"100%"} />
   );
 }
 
-export default Radial;
+export default PieChart;

@@ -23,8 +23,8 @@ const Settings = ({ onClose, ...props }) => {
     setSeries([...arr.filter((v) => v.unique !== unique)])
   }, [series])
   const cancle = useCallback(() => {
-
-  })
+    onClose();
+  }, [onClose])
   return (
     <>
       <div className={Classes.DIALOG_BODY}>
@@ -60,7 +60,8 @@ const Settings = ({ onClose, ...props }) => {
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-          <Button text="Close" minimal intent="danger" />
+          <Button text="Close" minimal intent="danger"
+            onClick={cancle} />
           <Button text="Save" intent="success" />
         </div>
       </div>

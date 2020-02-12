@@ -3,29 +3,30 @@ import {
   MosaicWindow,
   MosaicContext,
 } from 'react-mosaic-component';
-import PlotLine from './widgets/plot.line';
-import PlotBar from './widgets/plot.bar';
-import Radial from './widgets/radial';
 import { Button, Dialog } from '@blueprintjs/core';
+import Timeseries from './widgets/timeseries';
+import BarChart from './widgets/barChart';
+import PieChart from './widgets/pieChart';
+import Table from './widgets/table';
 import Empty from './widgets/empty';
 import Settings from './widgets/settings';
 import WidgetContext from './widgets/hocs';
-import Table from './widgets/table';
+import { GRAPH_TYPE } from './widgets/constants';
 
 const Widget = ({ type, title = "Empty Window", path, ...props }) => {
   let ret = null;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   switch (type) {
-    case 'plot.bar':
-      ret = (<PlotBar {...props} />);
+    case GRAPH_TYPE["Bar Chart"]:
+      ret = (<BarChart {...props} />);
       break;
-    case 'plot.line':
-      ret = (<PlotLine {...props} />);
+    case GRAPH_TYPE["Time Series Graph"]:
+      ret = (<Timeseries {...props} />);
       break;
-    case 'radial':
-      ret = (<Radial {...props} />);
+    case GRAPH_TYPE["Pie Chart"]:
+      ret = (<PieChart {...props} />);
       break;
-    case 'table':
+    case GRAPH_TYPE["Table"]:
       ret = (<Table {...props} />);
       break;
     default:

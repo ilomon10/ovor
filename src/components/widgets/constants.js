@@ -1,6 +1,9 @@
 export const GRAPH_TYPE = {
-  "Bar": 'plot.bar',
-  "Line": 'plot.line',
-  "Pie": 'radial',
+  "Bar Chart": 'plot.bar',
+  "Pie Chart": 'radial',
+  "Time Series Graph": 'plot.line',
+  "Histogram": 'histogram',
+  "Numeric": 'numeric',
   "Table": 'table',
+  "Geo": 'geo',
 }

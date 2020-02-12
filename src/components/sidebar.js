@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-import { Colors, Classes, Divider, Navbar, Button, Icon, H5 } from '@blueprintjs/core';
+import { Colors, Classes, Divider, Navbar, Button, Icon, H5, Menu, Popover } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const Comp = ({ className, items }) => {
@@ -15,7 +15,7 @@ const Comp = ({ className, items }) => {
           <Navbar.Group align="center" style={{ textAlign: "center", justifyContent: "center" }}>
             <FontAwesomeIcon style={{ marginRight: isToggled ? 8 : 0, color: Colors.GRAY1 }} icon={['ovor', 'logo']} size="2x" />
             {isToggled &&
-              <H5 style={{ margin: 0 }}>OVORD</H5>}
+              <H5 style={{ margin: 0 }}>OVOR</H5>}
           </Navbar.Group>
         </Navbar>
         <Button minimal fill alignText="left" text={isToggled ? 'Menu' : null}
@@ -34,10 +34,22 @@ const Comp = ({ className, items }) => {
       <div className="flex-shrink-0">
         <Divider vertical="true" />
         <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
-        <Button alignText="left" minimal fill icon="user" text={isToggled ? "Imanuel Pundoko" : null} />
+        <Popover
+          position="left-bottom"
+          targetProps={{
+            style: { display: 'block' }
+          }}
+          content={(
+            <Menu>
+              <Menu.Item disabled icon="cog" text="Preference" />
+              <Divider />
+              <Menu.Item icon="log-out" text="Logout" intent="danger" />
+            </Menu>)}>
+          <Button alignText="left" minimal fill icon="user" text={isToggled ? "Imanuel Pundoko" : null} />
+        </Popover>
         <Button alignText="left" minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
       </div>
-    </div>
+    </div >
   )
 }
 

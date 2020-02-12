@@ -1,6 +1,7 @@
-import { useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useLocation } from 'react-router-dom';
 import { TabContext } from "components/tabSystem";
+import { NonIdealState } from '@blueprintjs/core';
 
 const Settings = () => {
   const tab = useContext(TabContext);
@@ -12,7 +13,16 @@ const Settings = () => {
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  return ('Settings')
+  return (
+    <NonIdealState
+      icon="code-block"
+      title="Sorry guys"
+      description={(<>
+        <span>This page is under maintenance.</span>
+        <br />
+        <span>Please come back again soon.</span>
+      </>)} />
+  )
 }
 
 export default Settings;
