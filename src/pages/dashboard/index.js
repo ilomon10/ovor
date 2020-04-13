@@ -22,19 +22,6 @@ const bbb = {
   '1': {
     title: 'Line Chart',
     type: 'plot.line',
-    options: {
-      chart: {
-        id: 'Line Chart'
-      },
-      xaxis: {
-        type: 'datetime'
-      },
-      yaxis: {
-        labels: {
-          formatter: (v) => (v.toFixed(2))
-        }
-      },
-    },
     series: [{
       name: 'data 1',
       data: getRandomData(15, true)
@@ -45,19 +32,6 @@ const bbb = {
   }, '2': {
     title: 'Bar Chart',
     type: 'plot.bar',
-    options: {
-      chart: {
-        id: 'Bar Chart'
-      },
-      xaxis: {
-        type: 'datetime'
-      },
-      yaxis: {
-        labels: {
-          formatter: (v) => (v.toFixed(2))
-        }
-      }
-    },
     series: [{
       name: 'data 1',
       data: getRandomData(5, true)
@@ -72,9 +46,6 @@ const bbb = {
     title: 'Line 3 Chart',
     type: 'plot.line',
     options: {
-      chart: {
-        id: 'Line 3 Chart'
-      },
       yaxis: {
         labels: {
           formatter: (v) => (v.toFixed(2))
@@ -95,30 +66,24 @@ const bbb = {
     title: 'Radial',
     type: 'radial',
     options: {
-      chart: {
-        id: 'Radial'
-      },
       labels: ['a', 'b', 'c', 'd', 'e']
     },
     series: [1, 2, 3, 4, 5]
   }, '5': {
-    title: 'Gauge',
-    type: 'radial',
+    title: 'Numeric',
+    type: 'numeric',
     options: {
-      chart: {
-        id: 'Gauge'
-      },
-      labels: ['a', 'b', 'c', 'd', 'e']
+      labels: ['alfa', 'bravo', 'charlie', 'delta', 'echo foxtrot golf']
     },
-    series: [1, 2, 3, 4, 5]
+    series: [102, 10, 2, 24, 2300]
   }, '6': {
     title: 'Table',
     type: 'table',
     options: {
-      labels: ['a', 'b', 'c', 'd', 'e']
+      labels: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     },
     series: [
-      [1, 2, 3, 4, 5],
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       [6, 7, 8, 9, 10],
       [1, 2, 3, 4, 5],
       [6, 7, 8, 9, 10],
@@ -169,8 +134,9 @@ let windowCount = 7;
 const Dashboard = () => {
   const tab = useContext(TabContext);
   const location = useLocation();
+  const [watchMode, setWatchMode] = useState('Range');
   const [dashboardTitle, setDashboardTitle] = useState("New Dashboard");
-  const [timeRange, setTimeRange] = useState([new Date(), new Date()]);
+  const [timeRange, setTimeRange] = useState([moment().toDate(), moment().toDate()]);
   const [currentNode, setCurrentNode] = useState(cNodes);
   useEffect(() => {
     tab.setCurrentTabState({
@@ -222,18 +188,22 @@ const Dashboard = () => {
         </Navbar.Group>
         <Navbar.Group className="flex-shrink-0">
           <ControlGroup className="flex--i-center">
-            <HTMLSelect options={['Range', 'Realtime']} />
-            <DateInput style={{ textAlign: 'center' }}
-              formatDate={date => moment(date).format('DD-MMM YY\'')}
-              parseDate={str => moment(str)}
-              onChange={v => setTimeRange([v, timeRange[1]])}
-              value={timeRange[0]} inputProps={{ size: 6 }} />
-            <span className={Classes.INPUT}>to</span>
-            <DateInput
-              formatDate={date => moment(date).format('DD-MMM YY\'')}
-              parseDate={str => moment(str)}
-              onChange={v => setTimeRange([timeRange[0], v])}
-              value={timeRange[1]} inputProps={{ size: 6 }} />
+            {watchMode === 'Range' && <>
+              <DateInput style={{ textAlign: 'center' }}
+                maxDate={moment(timeRange[1]).toDate()}
+                formatDate={date => moment(date).format('DD-MMM YY\'')}
+                parseDate={str => moment(str, 'DD-MM YY\'')}
+                onChange={v => setTimeRange([v, timeRange[1]])}
+                value={timeRange[0]} inputProps={{ size: 6 }} />
+              <span className={Classes.INPUT}>to</span>
+              <DateInput
+                minDate={moment(timeRange[0]).toDate()}
+                formatDate={date => moment(date).format('DD-MMM YY\'')}
+                parseDate={str => moment(str, 'DD-MM YY\'')}
+                onChange={v => setTimeRange([timeRange[0], v])}
+                value={timeRange[1]} inputProps={{ size: 6 }} />
+            </>}
+            <HTMLSelect options={['Range', 'Realtime']} value={watchMode} onChange={e => setWatchMode(e.target.value)} />
           </ControlGroup>
           <Navbar.Divider />
           <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
@@ -244,7 +214,7 @@ const Dashboard = () => {
       <div className="flex-grow">
         <Mosaic
           renderTile={(id, path) => {
-            return (<Widget path={path} {...bbb[id]} />)
+            return (<Widget path={path} tileId={id} {...bbb[id]} />)
           }}
           zeroStateView={<MosaicZeroState createNode={createNode} />}
           onChange={currentNode => { setCurrentNode(currentNode) }}

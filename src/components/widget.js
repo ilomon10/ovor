@@ -4,30 +4,42 @@ import {
   MosaicContext,
 } from 'react-mosaic-component';
 import { Button, Dialog } from '@blueprintjs/core';
+import _merge from 'lodash.merge';
 import Timeseries from './widgets/timeseries';
 import BarChart from './widgets/barChart';
 import PieChart from './widgets/pieChart';
 import Table from './widgets/table';
 import Empty from './widgets/empty';
+import Numeric from './widgets/numeric';
 import Settings from './widgets/settings';
 import WidgetContext from './widgets/hocs';
 import { GRAPH_TYPE } from './widgets/constants';
 
-const Widget = ({ type, title = "Empty Window", path, ...props }) => {
+const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
   let ret = null;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const propsForChart = _merge({
+    options: {
+      chart: {
+        id: tileId
+      }
+    }
+  }, props);
   switch (type) {
+    case GRAPH_TYPE["Numeric"]:
+      ret = (<Numeric {...propsForChart} />);
+      break;
     case GRAPH_TYPE["Bar Chart"]:
-      ret = (<BarChart {...props} />);
+      ret = (<BarChart {...propsForChart} />);
       break;
     case GRAPH_TYPE["Time Series Graph"]:
-      ret = (<Timeseries {...props} />);
+      ret = (<Timeseries {...propsForChart} />);
       break;
     case GRAPH_TYPE["Pie Chart"]:
-      ret = (<PieChart {...props} />);
+      ret = (<PieChart {...propsForChart} />);
       break;
     case GRAPH_TYPE["Table"]:
-      ret = (<Table {...props} />);
+      ret = (<Table {...propsForChart} />);
       break;
     default:
       ret = (<Empty path={path} />);

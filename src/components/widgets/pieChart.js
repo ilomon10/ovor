@@ -1,14 +1,11 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
+import _marge from 'lodash.merge';
 
-// 
-// Properties
-// - Name
-// - Field
-//   - Title
-//   - Color
+const defaultOptions = {}
 
-const PieChart = ({ series, options }) => {
+const PieChart = ({ series, ...props }) => {
+  const options = _marge(defaultOptions, props.options);
   return (
     <Chart type="pie" series={series} options={options} height={"100%"} width={"100%"} />
   );
