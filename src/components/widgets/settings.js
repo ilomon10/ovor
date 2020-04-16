@@ -1,8 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Classes, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button } from '@blueprintjs/core';
 import { GRAPH_TYPE } from './constants';
+import DashboardContext from 'components/hocs/dashboard';
+import { MosaicContext } from 'react-mosaic-component';
+import WidgetContext from './hocs';
 
 const Schema = Yup.object().shape({
   widgetTitle: Yup.string()
@@ -28,14 +31,19 @@ const Schema = Yup.object().shape({
 })
 
 const Settings = ({ onClose }) => {
+  const dashboardCtx = useContext(DashboardContext);
+  const widgetCtx = useContext(WidgetContext);
+  const widget = dashboardCtx.getWidget(widgetCtx.tileId);
+  console.log(dashboardCtx);
+  console.log(widget);
   const cancle = useCallback(() => {
     onClose();
   }, [onClose])
   return (
     <Formik
       initialValues={{
-        'widgetTitle': '',
-        'widgetType': '',
+        'widgetTitle': widget.title,
+        'widgetType': widget.type,
         'widgetSeries': [
           { device: "", field: "" }
         ]
@@ -43,7 +51,6 @@ const Settings = ({ onClose }) => {
       validationSchema={Schema}
       onSubmit={(values) => console.log(values)}>
       {({ values, errors, handleChange, handleSubmit, isSubmitting, setFieldValue }) => {
-        console.log(errors);
         return (
           <form onSubmit={handleSubmit}>
             <div className={Classes.DIALOG_BODY}>

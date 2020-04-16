@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   MosaicWindow,
   MosaicContext,
@@ -14,8 +14,10 @@ import Numeric from './widgets/numeric';
 import Settings from './widgets/settings';
 import WidgetContext from './widgets/hocs';
 import { GRAPH_TYPE } from './widgets/constants';
+import DashboardContext from './hocs/dashboard';
 
 const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
+  const { removeWidget } = useContext(DashboardContext);
   let ret = null;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const propsForChart = _merge({
@@ -46,7 +48,7 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
       break;
   }
   return (
-    <WidgetContext.Provider value={{ setIsDialogOpen }}>
+    <WidgetContext.Provider value={{ setIsDialogOpen, tileId }}>
       <MosaicContext.Consumer>
         {({ mosaicActions }) => {
           return (<MosaicWindow
@@ -54,7 +56,11 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
             path={path}
             toolbarControls={([
               <Button key={"cog"} className="mosaic-default-control" minimal icon='cog' onClick={() => setIsDialogOpen(true)} />,
-              <Button key={"cross"} className="mosaic-default-control" minimal icon='cross' onClick={() => mosaicActions.remove(path)} />,
+              <Button key={"cross"} className="mosaic-default-control" minimal icon='cross' onClick={() => {
+                console.log(tileId);
+                removeWidget(tileId);
+                mosaicActions.remove(path);
+              }} />,
             ])}>
             {ret}
             <Dialog

@@ -1,19 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Colors, H1, Card, FormGroup, InputGroup, Button, Classes, Callout } from '@blueprintjs/core';
-import { Link, useHistory } from 'react-router-dom';
+import { Colors, H1, Card, FormGroup, InputGroup, Button, Classes } from '@blueprintjs/core';
+import { Link } from 'react-router-dom';
 import { Formik } from 'formik';
-import { FeathersContext } from 'components/feathers';
 import * as Yup from 'yup';
 
 const Schema = Yup.object().shape({
+  fullName: Yup.string().required('Fill with your name'),
   email: Yup.string().required('Fill with your email'),
-  password: Yup.string().required('Fill with your password')
+  password: Yup.string().required('Password is required'),
+  passwordConfirm: Yup.string().oneOf([Yup.ref('password'), null], 'Password must match').required('Fill with previous password')
 })
 
-const Login = () => {
-  const history = useHistory();
-  const feathers = useContext(FeathersContext);
+const Register = () => {
   const [isPasswordShow, setIsPasswordShow] = useState(false);
   const lockButton = (<Button minimal icon={isPasswordShow ? "eye-open" : "eye-off"} onClick={() => setIsPasswordShow(!isPasswordShow)} />)
   return (
@@ -26,29 +25,25 @@ const Login = () => {
         <Card style={{ marginBottom: 24 }}>
           <Formik
             initialValues={{
+              'fullName': '',
               'email': '',
-              'password': ''
+              'password': '',
+              'passwordConfirm': ''
             }}
             validationSchema={Schema}
-            onSubmit={async (v, { setSubmitting, setErrors }) => {
-              try {
-                await feathers.doAuthenticate({
-                  strategy: 'local',
-                  email: v.email,
-                  password: v.password
-                });
-                history.push('/');
-              } catch (e) {
-                setErrors({ submit: e.message });
-                setSubmitting(false);
-              }
-            }}>
+            onSubmit={(v) => console.log(v)}>
             {({ values, errors, handleChange, handleSubmit, isSubmitting }) => (
               <form onSubmit={handleSubmit}>
-                {errors.submit &&
-                  <Callout intent="danger" style={{ marginBottom: 15 }}>
-                    {errors.submit}
-                  </Callout>}
+                <FormGroup
+                  label="Full Name"
+                  labelFor="f-fullName"
+                  intent={errors.email ? "danger" : "none"}
+                  helperText={errors['fullName']}>
+                  <InputGroup name="fullName" id="f-fullName" type="text"
+                    value={values['fullName']}
+                    intent={errors["fullName"] ? "danger" : "none"}
+                    onChange={handleChange} />
+                </FormGroup>
                 <FormGroup
                   label="Email"
                   labelFor="f-email"
@@ -69,16 +64,26 @@ const Login = () => {
                     intent={errors.password ? "danger" : "none"}
                     onChange={handleChange} />
                 </FormGroup>
-                <Button type="submit" text="Masuk" intent="primary"
+                <FormGroup
+                  label="Confirm Password"
+                  labelFor="f-passwordConfirm"
+                  intent={errors.passwordConfirm ? "danger" : "none"}
+                  helperText={errors.passwordConfirm}>
+                  <InputGroup name="passwordConfirm" id="f-passwordConfirm" type={isPasswordShow ? "text" : "password"}
+                    value={values['passwordConfirm']}
+                    intent={errors['passwordConfirm'] ? "danger" : "none"}
+                    onChange={handleChange} />
+                </FormGroup>
+                <Button type="submit" text="Register" intent="primary"
                   loading={isSubmitting} fill
                   disabled={Object.entries(errors).length > 0} />
               </form>)}
           </Formik>
         </Card>
         <Card style={{ backgroundColor: 'transparent', textAlign: 'center', marginBottom: 32 }}>
-          <span>Memulai akun baru? </span>
-          <Link to="/register">
-            Di sini.
+          <span>Sudah punya akun? </span>
+          <Link to="/login">
+            Masuk.
           </Link>
         </Card>
         <div style={{ textAlign: 'center' }}>
@@ -89,4 +94,4 @@ const Login = () => {
   )
 }
 
-export default Login;
+export default Register;

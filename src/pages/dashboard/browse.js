@@ -7,33 +7,37 @@ import AspectRatio from "components/aspectratio";
 import Wrapper from "components/wrapper";
 import { TabContext } from "components/tabSystem";
 import Container from "components/container";
+import { FeathersContext } from 'components/feathers';
 import AddNewDashboard from "./addNewDashboard";
 
 const Dashboards = () => {
   const tab = useContext(TabContext);
+  const feathers = useContext(FeathersContext);
   const location = useLocation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const list = [{
-    name: "Lampu Rumah",
-    update_at: moment().format(),
-    thumbnail: 'moment().format()'
-  }, {
-    name: "Lampu Rumah",
-    update_at: moment().format(),
-    thumbnail: 'moment().format()'
-  }, {
-    name: "Lampu Rumah",
-    update_at: moment().format(),
-    thumbnail: 'moment().format()'
-  }, {
-    name: "Lampu Rumah",
-    update_at: moment().format(),
-    thumbnail: 'moment().format()'
-  }];
+  const [list, setList] = useState([]);
+  useEffect(() => {
+    const onDashboardCreated = (e) => {
+      setList([{
+        _id: e._id,
+        title: e.title,
+        updatedAt: e.updatedAt,
+      }, ...list]);
+    }
+    feathers.dashboards().on('created', onDashboardCreated)
+    return () => {
+      feathers.dashboards().removeListener('created', onDashboardCreated);
+    }
+  }, [list, feathers])
   useEffect(() => {
     tab.setCurrentTabState({
       title: 'Dashboards',
       path: location.pathname
+    });
+    feathers.dashboards().find({
+      query: { $select: ['title', 'updatedAt'] }
+    }).then((e) => {
+      setList([...e.data])
     })
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
@@ -49,8 +53,8 @@ const Dashboards = () => {
                 </div>
               </Card>
             </div>
-            {list.map((v, i) => (
-              <div key={i}
+            {list.map((v) => (
+              <div key={v._id}
                 style={{ width: `${100 / 3}%`, padding: "0 8px", marginBottom: 16 }}>
                 <Card style={{ padding: 0 }}>
                   <AspectRatio ratio="16:9">
@@ -58,9 +62,9 @@ const Dashboards = () => {
                   </AspectRatio>
                   <div style={{ padding: "8px 15px" }}>
                     <h5 className={Classes.HEADING}>
-                      <Link to={`/dashboards/${i}`}>{v.name}</Link>
+                      <Link to={`/dashboards/${v._id}`}>{v.title}</Link>
                     </h5>
-                    <div>{moment(v.update_at).format('LLLL')}</div>
+                    <div>{moment(v.updatedAt).format('LLLL')}</div>
                   </div>
                 </Card>
               </div>

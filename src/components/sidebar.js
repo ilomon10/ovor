@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
 import { Colors, Classes, Divider, Navbar, Button, Icon, H5, Menu, Popover } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FeathersContext } from './feathers';
 
 const Comp = ({ className, items }) => {
+  const feathers = useContext(FeathersContext);
   const navList = items.filter((v) => !v.hide) || [];
   const [isToggled, setIsToggled] = useState(false);
+  const [email, setEmail] = useState(null);
+  useEffect(() => {
+    async function getUserData() {
+      const { user } = await feathers.doGet('authentication');
+      setEmail(user.email);
+    }
+    getUserData();
+  }, [feathers])
   return (
     <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ maxWidth: isToggled ? 240 : "auto" }}>
       <div className="flex-grow">
@@ -45,7 +55,7 @@ const Comp = ({ className, items }) => {
               <Divider />
               <Menu.Item icon="log-out" text="Logout" intent="danger" />
             </Menu>)}>
-          <Button alignText="left" minimal fill icon="user" text={isToggled ? "Imanuel Pundoko" : null} />
+          <Button alignText="left" minimal fill icon="user" text={isToggled ? email : null} />
         </Popover>
         <Button alignText="left" minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
       </div>
