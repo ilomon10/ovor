@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
 import { TabContext } from 'components/tabSystem';
 import Table from 'components/exp.table';
@@ -9,8 +9,9 @@ import { getRandomData } from 'components/helper'
 import moment from 'moment';
 import Wrapper from 'components/wrapper';
 import Container from 'components/container';
+import { FeathersContext } from 'components/feathers';
 
-const data = {
+const dummy = {
   incoming: {
     options: {
       legend: {
@@ -89,37 +90,68 @@ const data = {
       name: "data",
       data: getRandomData(10, true)
     }]
-  },
-  table: {
-    options: {
-      labels: ["Time", "Temperature", "Humidity", "Voltage", "Current"]
-    },
-    series: getRandomData(25, true).map((v) => ([moment(v[0]).format('DD MMMM YYYY, h:mm:ss a'), (v[1] * 40).toFixed(2), (v[1] * 70).toFixed(2), (v[1] * 24).toFixed(2), (v[1] * 1).toFixed(2)]))
   }
 }
 
 const Device = () => {
   const tab = useContext(TabContext);
+  const feathers = useContext(FeathersContext);
   const location = useLocation();
-  const [deviceTitle, setsDeviceTitle] = useState('New Device')
+  const params = useParams();
+  const [device, setDevice] = useState({
+    _id: '',
+    name: '',
+    fields: []
+  });
+  const [data, setData] = useState([]);
+  const transformData = (d) =>
+    [moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...d.data];
   const eventIdRef = useRef();
   const [contentHeight, setContentHeight] = useState(278);
   useEffect(() => {
+    const onDataCreated = (e) => {
+      console.log(e);
+      setData([
+        ...data,
+        transformData(e)
+      ])
+    }
+    feathers.dataLake().on('created', onDataCreated);
+    return () => {
+      feathers.dataLake().removeListener('created', onDataCreated);
+    }
+  }, [data]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    feathers.devices().get(params.id)
+      .then((e) => {
+        console.log(e._id);
+        setDevice({ ...e });
+      }).catch((e) => {
+        console.log(e);
+      })
+    feathers.dataLake().find({
+      query: {
+        deviceId: params.id,
+        $select: ['data', 'createdAt']
+      }
+    }).then(e => {
+      setData([...e.data.map(transformData)]);
+    }).catch(e => {
+      console.log(e);
+    });
+  }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
     tab.setCurrentTabState({
-      title: deviceTitle,
+      title: device.name,
       path: location.pathname
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-  const copyToClipboard = useCallback(
-    (e) => {
-      let eventIdRefCurrent = eventIdRef.current;
-      eventIdRefCurrent.select();
-      document.execCommand('copy');
-      e.target.focus();
-    },
-    [eventIdRef],
-  )
+  }, [device.name]); // eslint-disable-line react-hooks/exhaustive-deps
+  const copyToClipboard = useCallback((e) => {
+    let eventIdRefCurrent = eventIdRef.current;
+    eventIdRefCurrent.select();
+    document.execCommand('copy');
+    e.target.focus();
+  }, [eventIdRef]);
   return (
     <div className="flex flex--col" style={{ height: "100%" }}>
       <Navbar className="flex-shrink-0">
@@ -127,10 +159,10 @@ const Device = () => {
           <Navbar.Group>
             <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
               <Icon className='flex-shrink-0' icon="stacked-chart" style={{ verticalAlign: 'middle', marginRight: 8 }} />
-              <EditableText selectAllOnFocus value={deviceTitle} onChange={v => setsDeviceTitle(v)} />
+              <EditableText selectAllOnFocus value={device.name} onChange={v => setDevice({ ...device, name: v })} />
             </h4>
           </Navbar.Group>
-          <Navbar.Group align="right" style={{ textAlign: "right" }}>
+          <Navbar.Group align="right">
             <div style={{ marginLeft: 16 }}>
               <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>IP ADDRESS</div>
               <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>192.168.43.{Math.floor(Math.random() * 255)}</div>
@@ -141,11 +173,10 @@ const Device = () => {
             </div>
             <div style={{ marginLeft: 16 }}>
               <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
-              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>{Math.floor(Math.random() * 99999)}</div>
             </div>
-            <div style={{ marginLeft: 16 }}>
+            <div style={{ marginLeft: 8 }}>
               <ControlGroup>
-                <InputGroup readOnly defaultValue={`device-023`} inputRef={eventIdRef} size={10} />   
+                <InputGroup size="24" readOnly defaultValue={device._id} inputRef={eventIdRef} />
                 <Button icon="clipboard" onClick={copyToClipboard} />
               </ControlGroup>
             </div>
@@ -167,42 +198,23 @@ const Device = () => {
                   </div>
                 </div>
                 <div style={{ height: 127 }}>
-                  <BarChart options={data.incoming.options} series={data.incoming.series} />
+                  <BarChart options={dummy.incoming.options} series={dummy.incoming.series} />
                 </div>
               </Card>
-              <div className="flex" style={{ marginBottom: 16 }}>
-                <div style={{ width: `${100 / 4}%`, paddingRight: 12 }}>
-                  <Card style={{ padding: 0 }}>
-                    <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Temperature</H5>
-                    <div style={{ height: 127 }}>
-                      <Timeseries options={data.mini.options} series={data.mini.series} />
-                    </div>
-                  </Card>
-                </div>
-                <div style={{ width: `${100 / 4}%`, paddingRight: 12 }}>
-                  <Card style={{ padding: 0 }}>
-                    <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Humidity</H5>
-                    <div style={{ height: 127 }}>
-                      <Timeseries options={data.mini.options} series={data.mini.series} />
-                    </div>
-                  </Card>
-                </div>
-                <div style={{ width: `${100 / 4}%`, paddingRight: 12 }}>
-                  <Card style={{ padding: 0 }}>
-                    <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Voltage</H5>
-                    <div style={{ height: 127 }}>
-                      <Timeseries options={data.mini.options} series={data.mini.series} />
-                    </div>
-                  </Card>
-                </div>
-                <div style={{ width: `${100 / 4}%` }}>
-                  <Card style={{ padding: 0 }}>
-                    <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>Current</H5>
-                    <div style={{ height: 127 }}>
-                      <Timeseries options={data.mini.options} series={data.mini.series} />
-                    </div>
-                  </Card>
-                </div>
+              <div className="flex" style={{ marginBottom: 16, marginLeft: -6, marginRight: -6 }}>
+                {device.fields.map((v, i) => (
+                  <div key={v._id} style={{ width: `${100 / device.fields.length}%`, paddingRight: 6, paddingLeft: 6 }}>
+                    <Card style={{ padding: 0 }}>
+                      <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name}</H5>
+                      <div style={{ height: 127 }}>
+                        <Timeseries options={dummy.mini.options} series={[{
+                          name: v.name,
+                          data: [...data.map(v => [v[0], v[i + 1]])]
+                        }]} />
+                      </div>
+                    </Card>
+                  </div>
+                ))}
               </div>
               <Card className="flex flex--col" style={{ height: contentHeight - 36 }}>
                 <div className="flex-shrink-0 flex">
@@ -212,12 +224,12 @@ const Device = () => {
                     <HTMLSelect options={["day", "3 day", "week", "month"]} />
                   </div>
                 </div>
-                <div className="flex-grow" style={{position: "relative"}}>
+                <div className="flex-grow" style={{ position: "relative" }}>
                   <Wrapper>
                     <div style={{ overflowY: 'auto', height: '100%' }}>
-                      <Table
-                        interactive
-                        options={data.table.options} series={data.table.series} />
+                      <Table interactive
+                        options={{ labels: ['timestamp', ...device.fields.map((e) => e.name)] }}
+                        series={data.slice().reverse()} />
                     </div>
                   </Wrapper>
                 </div>

@@ -1,71 +1,126 @@
-import React, { useState, useCallback } from 'react';
-import { Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect, Button } from '@blueprintjs/core';
-import { generateUniqueId } from 'components/helper';
+import React, { useState, useCallback, useContext } from 'react';
+import { Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect, Button, Callout } from '@blueprintjs/core';
+import { Formik, FieldArray } from 'formik';
+import * as Yup from 'yup';
+import { FeathersContext } from 'components/feathers';
+
+const Schema = Yup.object().shape({
+  deviceName: Yup.string()
+    .min(3, "Too Short!")
+    .max(36, "Too Long!")
+    .required('Fill this field'),
+  deviceFields: Yup.array()
+    .min(3, "Min have 2 field")
+    .test('test', 'Please leave no one empty (except last one)', function (value) {
+      const scheme = Yup.object().shape({
+        name: Yup.string().required('Req'),
+        type: Yup.string().required('Req'),
+      })
+      for (let i = 0; i < value.length - 1; i++) {
+        if (!scheme.isValidSync(value[i])) {
+          return false;
+        }
+      }
+      return true
+    })
+})
 
 const AddDevice = ({ onClose }) => {
   const fieldType = [
-    { label: 'Text', value: 1 },
-    { label: 'Date Time', value: 2 },
-    { label: 'Number', value: 3 },
-  ]
-  const [fields, setFields] = useState([
-    { unique: generateUniqueId(), name: '', type: 1 }
-  ]);
+    { label: 'Text', value: 'string' },
+    { label: 'Date Time', value: 'date' },
+    { label: 'Number', value: 'number' },
+    { label: 'Boolean', value: 'boolean' },
+  ];
+  const feathers = useContext(FeathersContext);
   const [sending, setSending] = useState(false);
-  const onChange = useCallback((which, id, e) => {
-    let arr = [...fields];
-    arr[id] = {
-      ...arr[id],
-      [which]: e.target.value
-    }
-    if (arr[fields.length - 1].name) {
-      arr.push({ unique: generateUniqueId(), name: '', type: 1 });
-    }
-    setFields([...arr])
-  }, [fields]);
-  const removeField = useCallback((unique) => {
-    let arr = [...fields];
-    setFields([...arr.filter((v) => v.unique !== unique)])
-  }, [fields])
-  const createDevice = useCallback(() => {
-    setSending(true);
-    // onClose();
-    console.log(fields);
-  }, [fields]);
   const cancle = useCallback(() => {
     onClose();
     setSending(false);
-  }, [onClose])
+  }, [onClose]);
   return (
     <>
-      <div className={Classes.DIALOG_BODY}>
-        <FormGroup
-          label="Device Name"
-          labelFor="device-name">
-          <InputGroup id="device-name" name="device-name" type="text" />
-        </FormGroup>
-        <FormGroup
-          label="Fields"
-          labelInfo={`(${fields.length-1})`}>
-          {fields.map((v, i) => (
-            <div key={v.unique} className="flex" style={{ marginBottom: i !== fields.length - 1 ? 12 : 0 }}>
-              <ControlGroup fill className="flex-grow">
-                <InputGroup type="text" onChange={onChange.bind(this, 'name', i)} value={v.name} placeholder={i === fields.length - 1 ? "Enter a new field name" : null} />
-                <HTMLSelect onChange={onChange.bind(this, 'type', i)} value={v.type} options={fieldType} />
-              </ControlGroup>
-              <Button minimal icon="trash" intent={i === fields.length - 1 ? null : "danger"}
-                onClick={removeField.bind(this, v.unique)}
-                disabled={i === fields.length - 1} />
+      <Formik
+        initialValues={{
+          'deviceName': '',
+          'deviceFields': [
+            { name: '', type: 'string' }
+          ]
+        }}
+        validationSchema={Schema}
+        onSubmit={async (v, { setSubmitting, setErrors }) => {
+          console.log('submit');
+          const fields = [...v['deviceFields']];
+          fields.pop();
+          try {
+            await feathers.devices().create({
+              name: v['deviceName'],
+              fields
+            })
+            onClose();
+          } catch (e) {
+            console.log(e);
+            setErrors({ submit: e.message });
+            setSubmitting(false);
+          }
+        }}>
+        {({ values, errors, handleChange, handleSubmit, setFieldValue }) => (<form onSubmit={handleSubmit}>
+          {errors.submit &&
+            <Callout intent="danger" style={{ marginBottom: 15 }}>
+              {errors.submit}
+            </Callout>}
+          <div className={Classes.DIALOG_BODY}>
+            <FormGroup
+              label="Device Name"
+              labelFor="deviceName"
+              intent={errors['deviceName'] ? 'danger' : 'none'}
+              helperText={errors['deviceName']}>
+              <InputGroup id="deviceName" name="deviceName" type="text"
+                intent={errors['deviceName'] ? 'danger' : 'none'}
+                value={values['deviceName']}
+                onChange={handleChange} />
+            </FormGroup>
+            <FormGroup
+              label="Fields"
+              labelInfo={`(${values['deviceFields'].length - 1})`}
+              intent={errors['deviceFields'] ? 'danger' : 'none'}
+              helperText={errors['deviceFields']}>
+              <FieldArray
+                name={'deviceFields'}
+                render={arr => values['deviceFields'].map((v, i) => (
+                  <div key={i} className="flex" style={{ marginBottom: i !== values['deviceFields'].length - 1 ? 12 : 0 }}>
+                    <ControlGroup fill className="flex-grow">
+                      <InputGroup
+                        name={`deviceFields[${i}].name`}
+                        type="text" value={v.name}
+                        onChange={e => {
+                          setFieldValue(`deviceFields[${i}].name`, '');
+                          handleChange(e);
+                          if (i === values['deviceFields'].length - 1) arr.push({ name: '', type: 'string' })
+                        }}
+                        placeholder={i === values['deviceFields'].length - 1 ? "Enter a new field name" : null} />
+                      <HTMLSelect
+                        name={`deviceFields[${i}].type`}
+                        onChange={handleChange} value={v.type} options={fieldType} />
+                    </ControlGroup>
+                    <Button minimal icon="trash" intent={i === values['deviceFields'].length - 1 ? null : "danger"}
+                      onClick={() => arr.remove(i)}
+                      disabled={i === values['deviceFields'].length - 1} />
+                  </div>
+                ))} />
+            </FormGroup>
+          </div>
+          <div className={Classes.DIALOG_FOOTER}>
+            <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+              <Button text="Close" onClick={cancle} minimal intent="danger" />
+              <Button text="Create" intent="primary"
+                loading={sending}
+                disabled={Object.entries(errors).length > 0}
+                type="submit" />
             </div>
-          ))}
-        </FormGroup>
-      </div>
-      <div className={Classes.DIALOG_FOOTER}>
-        <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-          <Button text="Close" onClick={cancle} minimal intent="danger" />
-          <Button text="Create" onClick={createDevice} loading={sending} intent="primary" />
-        </div>
-      </div>
+          </div>
+        </form>)}
+      </Formik>
     </>
   )
 }

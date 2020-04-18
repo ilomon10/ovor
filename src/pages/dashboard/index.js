@@ -52,7 +52,7 @@ const Dashboard = () => {
   const updateCurrentNodeToDB = useCallback((currentNode) => {
     feathers.dashboards().patch(params.id, { nodes: currentNode });
     setCurrentNode(currentNode);
-  }, [feathers]);
+  }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);
     updateCurrentNodeToDB(createBalancedTreeFromLeaves(leaves));
@@ -101,10 +101,10 @@ const Dashboard = () => {
   const removeWidget = useCallback(async (id) => {
     let { widgets } = await feathers.dashboards().patch(params.id, { $pull: { widgets: { _id: id } } }, { safe: true });
     setWidgets([...widgets]);
-  }, [feathers, widgets, params.id]);
+  }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const getWidget = useCallback((id) => {
     return widgets.find(v => v._id === id);
-  })
+  }, [widgets]);
   return (
     <DashboardContext.Provider value={{ removeWidget, getWidget }}>
       <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>

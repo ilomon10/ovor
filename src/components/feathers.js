@@ -31,6 +31,7 @@ class Feathers {
 
   dashboards = () => this.client.service('dashboards');
   devices = () => this.client.service('devices');
+  dataLake = () => this.client.service('data-lake');
 
 }
 

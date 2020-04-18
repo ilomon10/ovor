@@ -6,16 +6,41 @@ import AspectRatio from 'components/aspectratio';
 import Container from 'components/container';
 import Wrapper from 'components/wrapper';
 import AddNewDevice from './addNewDevice';
+import { FeathersContext } from 'components/feathers';
 
 const Devices = () => {
   const tab = useContext(TabContext);
+  const feathers = useContext(FeathersContext);
   const location = useLocation();
   const history = useHistory();
+  const [list, setList] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
+    const onDeviceCreated = (e) => {
+      setList([
+        { _id: e._id, name: e.name },
+        ...list
+      ])
+    }
+    feathers.devices().on('created', onDeviceCreated);
+    return () => {
+      feathers.devices().removeListener('created', onDeviceCreated);
+    }
+  }, [list, feathers]);
+  useEffect(() => {
     tab.setCurrentTabState({ title: 'Devices', path: location.pathname })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    feathers.devices().find({
+      query: {
+        $sort: { createdAt: -1 },
+        $select: ['name']
+      }
+    }).then((e) => {
+      console.log(e);
+      setList(e.data);
+    }).catch(e => {
+      console.log(e);
+    })
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
       <Wrapper style={{ overflowY: "auto" }}>
@@ -32,10 +57,10 @@ const Devices = () => {
                 </AspectRatio>
               </Card>
             </div>
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v, i) =>
-              (<div key={i}
+            {list.map((v) =>
+              (<div key={v._id}
                 style={{ width: `${100 / 4}%`, padding: "0 8px", marginBottom: 16 }}>
-                <Card interactive onClick={() => history.push(`/devices/${i}`)}>
+                <Card interactive onClick={() => history.push(`/devices/${v._id}`)}>
                   <AspectRatio ratio="4:3">
                     <div className="flex flex--col" style={{ height: "100%" }}>
                       <div className="flex-shrink-0 flex">
@@ -46,13 +71,13 @@ const Devices = () => {
                           </Tooltip>
                         </div>
                         <div className="flex-shrink-0">
-                          <Tooltip content={<div className={Classes.TEXT_SMALL}>Event Name</div>} position={Position.LEFT}>
-                            <Tag minimal className={Classes.MONOSPACE_TEXT}>device-{v}</Tag>
+                          <Tooltip content={<div className={Classes.TEXT_SMALL}>{v._id}</div>} position={Position.BOTTOM_RIGHT}>
+                            <Tag minimal className={Classes.MONOSPACE_TEXT}>{v._id.slice(0, 3)}..{v._id.slice(v._id.length - 3, v._id.length)}</Tag>
                           </Tooltip>
                         </div>
                       </div>
                       <div className={`flex-grow flex flex--col flex--j-center`} style={{ textAlign: "center" }}>
-                        <h4 className={Classes.HEADING}>Device {v}</h4>
+                        <h4 className={Classes.HEADING}>{v.name}</h4>
                         <p className={`${Classes.TEXT_SMALL}`}>
                           <Icon iconSize={11} icon="map-marker" /><span> Indonesia</span>
                         </p>

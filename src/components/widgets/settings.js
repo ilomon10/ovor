@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import { Classes, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button } from '@blueprintjs/core';
 import { GRAPH_TYPE } from './constants';
 import DashboardContext from 'components/hocs/dashboard';
-import { MosaicContext } from 'react-mosaic-component';
 import WidgetContext from './hocs';
 
 const Schema = Yup.object().shape({
