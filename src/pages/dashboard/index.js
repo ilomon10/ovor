@@ -60,7 +60,7 @@ const Dashboard = () => {
   const createNode = useCallback(async () => {
     const _id = BSON.generate();
     const dashboard = await feathers.dashboards().patch(params.id, {
-      $push: { widgets: { _id, title: 'New Widget', type: null } }
+      $push: { widgets: { _id, title: 'New Widget', type: 'empty' } }
     });
     console.log(_id);
     setWidgets([...dashboard.widgets]);
@@ -105,8 +105,11 @@ const Dashboard = () => {
   const getWidget = useCallback((id) => {
     return widgets.find(v => v._id === id);
   }, [widgets]);
+  const getDashboardId = useCallback(() => {
+    return params.id;
+  }, [params.id]);
   return (
-    <DashboardContext.Provider value={{ removeWidget, getWidget }}>
+    <DashboardContext.Provider value={{ removeWidget, getWidget, getId: getDashboardId }}>
       <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
         <Navbar className="flex flex-shrink-0">
           <Navbar.Group className="flex-grow" style={{ width: 0 }}>

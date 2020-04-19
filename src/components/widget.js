@@ -48,7 +48,14 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
       break;
   }
   return (
-    <WidgetContext.Provider value={{ setIsDialogOpen, tileId }}>
+    <WidgetContext.Provider value={{
+      setIsDialogOpen,
+      id: tileId,
+      title,
+      type,
+      series: props.series,
+      options: props.options
+    }}>
       <MosaicContext.Consumer>
         {({ mosaicActions }) => {
           return (<MosaicWindow

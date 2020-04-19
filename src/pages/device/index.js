@@ -110,11 +110,7 @@ const Device = () => {
   const [contentHeight, setContentHeight] = useState(278);
   useEffect(() => {
     const onDataCreated = (e) => {
-      console.log(e);
-      setData([
-        ...data,
-        transformData(e)
-      ])
+      setData([...data, transformData(e)])
     }
     feathers.dataLake().on('created', onDataCreated);
     return () => {
@@ -124,7 +120,6 @@ const Device = () => {
   useEffect(() => {
     feathers.devices().get(params.id)
       .then((e) => {
-        console.log(e._id);
         setDevice({ ...e });
       }).catch((e) => {
         console.log(e);

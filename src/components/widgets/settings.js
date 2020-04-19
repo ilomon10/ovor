@@ -1,9 +1,10 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import { Classes, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button } from '@blueprintjs/core';
 import { GRAPH_TYPE } from './constants';
 import DashboardContext from 'components/hocs/dashboard';
+import { FeathersContext } from 'components/feathers';
 import WidgetContext from './hocs';
 
 const Schema = Yup.object().shape({
@@ -12,7 +13,7 @@ const Schema = Yup.object().shape({
     .max(36, "Too Long!")
     .required('Fill this field'),
   widgetType: Yup.string()
-    .required('Choose widget type'),
+    .notOneOf(['empty'], 'Cant be empty'),
   widgetSeries: Yup.array()
     .min(2, "Min have 1 series")
     .test('test', 'Please leave no one empty (except last one)', function (value) {
@@ -30,26 +31,48 @@ const Schema = Yup.object().shape({
 })
 
 const Settings = ({ onClose }) => {
-  const dashboardCtx = useContext(DashboardContext);
-  const widgetCtx = useContext(WidgetContext);
-  const widget = dashboardCtx.getWidget(widgetCtx.tileId);
-  console.log(dashboardCtx);
-  console.log(widget);
+  const dashboard = useContext(DashboardContext);
+  const feathers = useContext(FeathersContext);
+  const widget = useContext(WidgetContext);
+  const [devices, setDevices] = useState([]);
+  useEffect(() => {
+    feathers.devices().find({
+      query: { $select: ['name', 'fields'] }
+    }).then(e => {
+      setDevices([...e.data]);
+    })
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const cancle = useCallback(() => {
     onClose();
-  }, [onClose])
+  }, [onClose]);
   return (
     <Formik
       initialValues={{
         'widgetTitle': widget.title,
         'widgetType': widget.type,
         'widgetSeries': [
+          ...widget.series,
           { device: "", field: "" }
         ]
       }}
       validationSchema={Schema}
-      onSubmit={(values) => console.log(values)}>
-      {({ values, errors, handleChange, handleSubmit, isSubmitting, setFieldValue }) => {
+      onSubmit={async (values, { setSubmitting, setErrors }) => {
+        console.log(values);
+        let series = values['widgetSeries'].slice(0, values['widgetSeries'].length - 1);
+        try {
+          await feathers.dashboards().patch(dashboard.getId(), {
+            $set: {
+              "widgets.$.series": [...series],
+              "widgets.$.title": values['widgetTitle'],
+              "widgets.$.type": values['widgetType']
+            }
+          }, { query: { "widgets._id": widget.id } });
+          setSubmitting(false);
+        } catch (e) {
+          setErrors({ submit: e.message })
+        }
+      }}>
+      {({ values, errors, handleChange, handleSubmit, handleBlur, isSubmitting, setFieldValue, touched }) => {
         return (
           <form onSubmit={handleSubmit}>
             <div className={Classes.DIALOG_BODY}>
@@ -60,7 +83,8 @@ const Settings = ({ onClose }) => {
                 helperText={errors.widgetTitle}>
                 <InputGroup type="text" name="widgetTitle" value={values["widgetTitle"]}
                   intent={errors.widgetTitle ? "danger" : "none"}
-                  onChange={handleChange} />
+                  onChange={handleChange}
+                  onBlur={handleBlur} />
               </FormGroup>
               <FormGroup
                 label="Type"
@@ -69,9 +93,12 @@ const Settings = ({ onClose }) => {
                 <HTMLSelect fill name="widgetType"
                   value={values.widgetType}
                   intent={errors.widgetType ? "danger" : "none"}
-                  options={Object.keys(GRAPH_TYPE)
-                    .map((v) => ({ label: v, value: GRAPH_TYPE[v] }))}
-                  onChange={handleChange} />
+                  options={[{ label: "Choose widget type", value: "empty", disabled: true }, ...Object.keys(GRAPH_TYPE)
+                    .map((v) => ({ label: v, value: GRAPH_TYPE[v] }))]}
+                  onChange={e => {
+                    handleChange(e);
+                    handleBlur(e);
+                  }} />
               </FormGroup>
               <FieldArray
                 name="widgetSeries"
@@ -87,19 +114,30 @@ const Settings = ({ onClose }) => {
                           <ControlGroup fill className="flex-grow">
                             <HTMLSelect
                               name={`widgetSeries[${i}].device`}
-                              options={[{ label: "Choose device", value: "", disabled: true }, "Sensor Debu", "Sensor Temperature"]}
+                              options={[{ label: "Choose device", value: "", disabled: true }, ...devices.map((device) => ({ label: device.name, value: device._id }))]}
                               value={v.device}
                               onChange={e => {
                                 setFieldValue(`widgetSeries[${i}].field`, '');
                                 handleChange(e);
+                                handleBlur(e);
                                 if (i === values.widgetSeries.length - 1) arr.push({ device: '', field: '' });
                               }} />
                             <HTMLSelect
                               name={`widgetSeries[${i}].field`}
-                              options={[{ label: "Choose field", value: "", disabled: true }, "O2"]}
+                              options={[
+                                { label: "Choose field", value: "", disabled: true },
+                                ...(() => {
+                                  const deviceSelected = devices.find(device => device._id === values['widgetSeries'][i].device);
+                                  if (typeof deviceSelected === 'undefined') return [];
+                                  const fields = deviceSelected.fields;
+                                  return [...fields.map(field => ({ label: field.name, value: field._id }))];
+                                })()]}
                               value={v.field}
                               disabled={v.device === ''}
-                              onChange={handleChange} />
+                              onChange={e => {
+                                handleChange(e);
+                                handleBlur(e);
+                              }} />
                           </ControlGroup>
                           <Button minimal icon="trash" intent={i === values.widgetSeries.length - 1 ? null : 'danger'}
                             onClick={() => arr.remove(i)}
@@ -116,7 +154,7 @@ const Settings = ({ onClose }) => {
                   onClick={cancle} />
                 <Button text="Save" intent="success"
                   loading={isSubmitting}
-                  disabled={Object.entries(errors).length > 0}
+                  disabled={Object.entries(errors).length > 0 || Object.entries(touched).length === 0}
                   type="submit" />
               </div>
             </div>
