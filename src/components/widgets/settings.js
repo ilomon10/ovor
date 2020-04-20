@@ -49,7 +49,7 @@ const Settings = ({ onClose }) => {
     <Formik
       initialValues={{
         'widgetTitle': widget.title,
-        'widgetType': widget.type,
+        'widgetType': widget.type || 'empty',
         'widgetSeries': [
           ...widget.series,
           { device: "", field: "" }
@@ -57,7 +57,6 @@ const Settings = ({ onClose }) => {
       }}
       validationSchema={Schema}
       onSubmit={async (values, { setSubmitting, setErrors }) => {
-        console.log(values);
         let series = values['widgetSeries'].slice(0, values['widgetSeries'].length - 1);
         try {
           await feathers.dashboards().patch(dashboard.getId(), {
@@ -67,9 +66,10 @@ const Settings = ({ onClose }) => {
               "widgets.$.type": values['widgetType']
             }
           }, { query: { "widgets._id": widget.id } });
-          setSubmitting(false);
+          onClose();
         } catch (e) {
-          setErrors({ submit: e.message })
+          setErrors({ submit: e.message });
+          setSubmitting(false);
         }
       }}>
       {({ values, errors, handleChange, handleSubmit, handleBlur, isSubmitting, setFieldValue, touched }) => {
@@ -83,8 +83,10 @@ const Settings = ({ onClose }) => {
                 helperText={errors.widgetTitle}>
                 <InputGroup type="text" name="widgetTitle" value={values["widgetTitle"]}
                   intent={errors.widgetTitle ? "danger" : "none"}
-                  onChange={handleChange}
-                  onBlur={handleBlur} />
+                  onChange={e => {
+                    handleChange(e);
+                    handleBlur(e);
+                  }} />
               </FormGroup>
               <FormGroup
                 label="Type"
@@ -116,10 +118,10 @@ const Settings = ({ onClose }) => {
                               name={`widgetSeries[${i}].device`}
                               options={[{ label: "Choose device", value: "", disabled: true }, ...devices.map((device) => ({ label: device.name, value: device._id }))]}
                               value={v.device}
+                              onBlur={handleBlur}
                               onChange={e => {
                                 setFieldValue(`widgetSeries[${i}].field`, '');
                                 handleChange(e);
-                                handleBlur(e);
                                 if (i === values.widgetSeries.length - 1) arr.push({ device: '', field: '' });
                               }} />
                             <HTMLSelect
@@ -134,10 +136,8 @@ const Settings = ({ onClose }) => {
                                 })()]}
                               value={v.field}
                               disabled={v.device === ''}
-                              onChange={e => {
-                                handleChange(e);
-                                handleBlur(e);
-                              }} />
+                              onBlur={handleBlur}
+                              onChange={handleChange} />
                           </ControlGroup>
                           <Button minimal icon="trash" intent={i === values.widgetSeries.length - 1 ? null : 'danger'}
                             onClick={() => arr.remove(i)}

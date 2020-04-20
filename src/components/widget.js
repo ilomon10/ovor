@@ -62,11 +62,11 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
             title={title}
             path={path}
             toolbarControls={([
-              <Button key={"cog"} className="mosaic-default-control" minimal icon='cog' onClick={() => setIsDialogOpen(true)} />,
+              <Button key={"cog"} className="mosaic-default-control"
+                minimal icon='cog'
+                onClick={() => setIsDialogOpen(true)} />,
               <Button key={"cross"} className="mosaic-default-control" minimal icon='cross' onClick={() => {
-                console.log(tileId);
-                removeWidget(tileId);
-                mosaicActions.remove(path);
+                removeWidget(mosaicActions.remove.bind(this, path), tileId);
               }} />,
             ])}>
             {ret}

@@ -7,7 +7,7 @@ import { FeathersContext } from 'components/feathers';
 const Schema = Yup.object().shape({
   deviceName: Yup.string()
     .min(3, "Too Short!")
-    .max(36, "Too Long!")
+    .max(24, "Too Long!")
     .required('Fill this field'),
   deviceFields: Yup.array()
     .min(3, "Min have 2 field")

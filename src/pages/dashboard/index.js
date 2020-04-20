@@ -33,13 +33,20 @@ const Dashboard = () => {
   const [currentNode, setCurrentNode] = useState(null);
   useEffect(() => {
     feathers.dashboards().get(params.id).then(e => {
-      console.log(e);
       setDashboardTitle(e.title);
       setWidgets([...e.widgets]);
       if (e.nodes) setCurrentNode(e.nodes);
     }).catch(e => {
       console.log(e);
     })
+    const onDashboardPatched = (e) => {
+      setWidgets([...e.widgets]);
+      setCurrentNode(e.nodes);
+    }
+    feathers.dashboards().on('patched', onDashboardPatched);
+    return () => {
+      feathers.dashboards().removeListener('patched', onDashboardPatched);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (dashboardTitle !== '') {
@@ -51,7 +58,6 @@ const Dashboard = () => {
   }, [dashboardTitle]); // eslint-disable-line react-hooks/exhaustive-deps
   const updateCurrentNodeToDB = useCallback((currentNode) => {
     feathers.dashboards().patch(params.id, { nodes: currentNode });
-    setCurrentNode(currentNode);
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);
@@ -59,11 +65,9 @@ const Dashboard = () => {
   }
   const createNode = useCallback(async () => {
     const _id = BSON.generate();
-    const dashboard = await feathers.dashboards().patch(params.id, {
+    await feathers.dashboards().patch(params.id, {
       $push: { widgets: { _id, title: 'New Widget', type: 'empty' } }
     });
-    console.log(_id);
-    setWidgets([...dashboard.widgets]);
     return _id.toString();
   }, [feathers, params.id]);
   const addNewWindow = useCallback(async () => {
@@ -94,13 +98,12 @@ const Dashboard = () => {
         }
       ]);
     } else curNode = await createNode();
-    console.log('add', curNode);
     updateCurrentNodeToDB(curNode);
   }, [createNode, currentNode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const removeWidget = useCallback(async (id) => {
-    let { widgets } = await feathers.dashboards().patch(params.id, { $pull: { widgets: { _id: id } } }, { safe: true });
-    setWidgets([...widgets]);
+  const removeWidget = useCallback(async (removeNodeFirst, id) => {
+    removeNodeFirst();
+    await feathers.dashboards().patch(params.id, { $pull: { widgets: { _id: id } } }, { safe: true });
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const getWidget = useCallback((id) => {
     return widgets.find(v => v._id === id);
@@ -159,7 +162,6 @@ const Dashboard = () => {
             }}
             zeroStateView={<MosaicZeroState createNode={createNode} />}
             onChange={currentNode => {
-              console.log('change', currentNode);
               updateCurrentNodeToDB(currentNode);
             }}
             value={currentNode} />

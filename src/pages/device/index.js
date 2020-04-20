@@ -3,9 +3,9 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
 import { TabContext } from 'components/tabSystem';
 import Table from 'components/exp.table';
-import Timeseries from 'components/widgets/timeseries';
+import BaseTimeseries from 'components/widgets/baseTimeseries';
 import BarChart from 'components/widgets/barChart';
-import { getRandomData } from 'components/helper'
+import { getRandomData } from 'components/helper';
 import moment from 'moment';
 import Wrapper from 'components/wrapper';
 import Container from 'components/container';
@@ -85,11 +85,7 @@ const dummy = {
       yaxis: {
         show: false
       }
-    },
-    series: [{
-      name: "data",
-      data: getRandomData(10, true)
-    }]
+    }
   }
 }
 
@@ -104,37 +100,30 @@ const Device = () => {
     fields: []
   });
   const [data, setData] = useState([]);
-  const transformData = (d) =>
+  const transformData = (d) => 
     [moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...d.data];
   const eventIdRef = useRef();
   const [contentHeight, setContentHeight] = useState(278);
-  useEffect(() => {
-    const onDataCreated = (e) => {
-      setData([...data, transformData(e)])
-    }
-    feathers.dataLake().on('created', onDataCreated);
-    return () => {
-      feathers.dataLake().removeListener('created', onDataCreated);
-    }
-  }, [data]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Component Did Mount
   useEffect(() => {
     feathers.devices().get(params.id)
       .then((e) => {
         setDevice({ ...e });
-      }).catch((e) => {
-        console.log(e);
       })
+      .catch((e) => console.log(e));
     feathers.dataLake().find({
-      query: {
-        deviceId: params.id,
-        $select: ['data', 'createdAt']
-      }
-    }).then(e => {
-      setData([...e.data.map(transformData)]);
-    }).catch(e => {
-      console.log(e);
-    });
-  }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
+      query: { deviceId: params.id, $select: ['data', 'createdAt'] }
+    })
+      .then(e => { setData([...e.data.map(transformData)]); })
+      .catch(e => console.log(e));
+
+    const onDataCreated = (e) => { setData(d => [...d, transformData(e)]) }
+    feathers.dataLake().on('created', onDataCreated);
+    return () => {
+      feathers.dataLake().removeListener('created', onDataCreated);
+    }
+  }, [params.id]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     tab.setCurrentTabState({
       title: device.name,
@@ -152,19 +141,25 @@ const Device = () => {
       <Navbar className="flex-shrink-0">
         <div style={{ maxWidth: 1024, margin: '0 auto', height: '100%' }}>
           <Navbar.Group>
-            <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
-              <Icon className='flex-shrink-0' icon="stacked-chart" style={{ verticalAlign: 'middle', marginRight: 8 }} />
-              <EditableText selectAllOnFocus value={device.name} onChange={v => setDevice({ ...device, name: v })} />
+            <h4 className={`${Classes.HEADING} flex flex--i-center`}
+              style={{ margin: 0 }}>
+              <Icon className='flex-shrink-0'
+                icon="stacked-chart"
+                style={{ verticalAlign: 'middle', marginRight: 8 }} />
+              <EditableText selectAllOnFocus value={device.name}
+                onChange={v => setDevice({ ...device, name: v })} />
             </h4>
           </Navbar.Group>
           <Navbar.Group align="right">
             <div style={{ marginLeft: 16 }}>
               <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>IP ADDRESS</div>
-              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>192.168.43.{Math.floor(Math.random() * 255)}</div>
+              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                style={{ margin: 0 }}>192.168.43.{Math.floor(Math.random() * 255)}</div>
             </div>
             <div style={{ marginLeft: 16 }}>
               <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>IMEI</div>
-              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`} style={{ margin: 0 }}>{Math.floor(Math.random() * 99999999999)}</div>
+              <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                style={{ margin: 0 }}>{Math.floor(Math.random() * 99999999999)}</div>
             </div>
             <div style={{ marginLeft: 16 }}>
               <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
@@ -180,7 +175,7 @@ const Device = () => {
       </Navbar>
       <div className="flex-grow" style={{ backgroundColor: Colors.LIGHT_GRAY5, position: 'relative' }}>
         <ResizeSensor onResize={(entries) => {
-          entries.map(e => setContentHeight(e.contentRect.height))
+          entries.forEach(e => setContentHeight(e.contentRect.height));
         }}>
           <Wrapper style={{ overflowY: 'auto' }}>
             <Container style={{ paddingTop: 12, paddingBottom: 24 }}>
@@ -202,7 +197,7 @@ const Device = () => {
                     <Card style={{ padding: 0 }}>
                       <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name}</H5>
                       <div style={{ height: 127 }}>
-                        <Timeseries options={dummy.mini.options} series={[{
+                        <BaseTimeseries options={dummy.mini.options} series={[{
                           name: v.name,
                           data: [...data.map(v => [v[0], v[i + 1]])]
                         }]} />
