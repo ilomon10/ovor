@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import {
   Corner,
   Mosaic,
@@ -12,7 +12,7 @@ import {
   getOtherDirection,
   updateTree
 } from 'react-mosaic-component';
-import { Navbar, Classes, Icon, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
+import { Navbar, Classes, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { dropRight } from 'components/helper';
 import Widget from 'components/widget';
@@ -23,6 +23,7 @@ import DashboardContext from 'components/hocs/dashboard';
 const Dashboard = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
+  const history = useHistory();
   const [watchMode, setWatchMode] = useState('Live');
   const [dashboardTitle, setDashboardTitle] = useState("");
   const [widgets, setWidgets] = useState([]);
@@ -106,9 +107,10 @@ const Dashboard = () => {
       <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
         <Navbar className="flex flex-shrink-0">
           <Navbar.Group className="flex-grow" style={{ width: 0 }}>
+            <Button icon="chevron-left" onClick={() => history.goBack()} />
+            <Navbar.Divider />
             <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
               <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
-                <Icon className='flex-shrink-0' icon="full-stacked-chart" style={{ verticalAlign: 'middle', marginRight: 8 }} />
                 <EditableText selectAllOnFocus value={dashboardTitle} onChange={v => setDashboardTitle(v)} />
               </h4>
             </Navbar.Heading>

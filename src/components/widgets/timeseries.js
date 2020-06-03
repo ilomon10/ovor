@@ -7,7 +7,6 @@ import BaseTimeseries from './baseTimeseries';
 const Timeseries = ({ ...props }) => {
   const feathers = useContext(FeathersContext);
   const [series, setSeries] = useState([]);
-  const [devices, setDevices] = useState([]);
 
   // Component Did Mount
   useEffect(() => {
@@ -19,7 +18,6 @@ const Timeseries = ({ ...props }) => {
           $select: ['fields', 'name']
         }
       })).data;
-      setDevices(devices);
       let query = {
         $limit: 100,
         deviceId: { $in: deviceIds },
@@ -66,7 +64,7 @@ const Timeseries = ({ ...props }) => {
     return () => { // Cleanup
       feathers.dataLake().removeListener('created', onDataCreated);
     }
-  }, [devices, series]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [series]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BaseTimeseries type="line" height="100%" width="100%"
