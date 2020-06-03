@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
+import moment from 'moment';
 import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
 import BaseTable from './baseTable';
 
 const Table = ({ series, ...props }) => {
   const feathers = useContext(FeathersContext);
-  const [labels, setLabels] = useState(['timestamp']);
+  const [labels, setLabels] = useState([]);
   const [data, setData] = useState([]);
 
   // Component Did Mount
@@ -22,7 +23,7 @@ const Table = ({ series, ...props }) => {
         }
       });
       devices = devices.data;
-      Labels = [...labels, ...series.map(s => {
+      Labels = ['timestamp', ...series.map(s => {
         const device = devices.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
         return {
@@ -34,16 +35,26 @@ const Table = ({ series, ...props }) => {
       })];
       setLabels([...Labels])
 
-      dataLake = await feathers.dataLake().find({
-        query: {
-          $limit: 100,
-          deviceId: { $in: deviceIds },
-          $select: ['data', 'deviceId', 'createdAt']
+      let query = {
+        $limit: 100,
+        deviceId: { $in: deviceIds },
+        $select: ['data', 'deviceId', 'createdAt']
+      };
+
+      if (props.timeRange) {
+        query = {
+          ...query,
+          createdAt: {
+            $gte: moment(props.timeRange[0]).toISOString(),
+            $lte: moment(props.timeRange[1]).toISOString()
+          },
         }
-      });
+      }
+
+      dataLake = await feathers.dataLake().find({ query });
       dataLake = dataLake.data;
-      setData(d => [
-        ...d, ...dataLake.map(dl => {
+      setData(() => [
+        ...dataLake.map(dl => {
           return Labels.map((v, i) => {
             if (i === 0) return dl.createdAt;
             if (v.deviceId !== dl.deviceId) return "";
@@ -53,7 +64,7 @@ const Table = ({ series, ...props }) => {
       ])
     }
     fetch();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const onDataCreated = (e) => {

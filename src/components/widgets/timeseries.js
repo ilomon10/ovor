@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react';
+import moment from 'moment';
 import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
 import BaseTimeseries from './baseTimeseries';
@@ -19,13 +20,21 @@ const Timeseries = ({ ...props }) => {
         }
       })).data;
       setDevices(devices);
-      let dataLake = (await feathers.dataLake().find({
-        query: {
-          $limit: 100,
-          deviceId: { $in: deviceIds },
-          $select: ['data', 'deviceId', 'createdAt']
+      let query = {
+        $limit: 100,
+        deviceId: { $in: deviceIds },
+        $select: ['data', 'deviceId', 'createdAt']
+      }
+      if (props.timeRange) {
+        query = {
+          ...query,
+          createdAt: {
+            $gte: moment(props.timeRange[0]).toISOString(),
+            $lte: moment(props.timeRange[1]).toISOString()
+          },
         }
-      })).data;
+      }
+      let dataLake = (await feathers.dataLake().find({ query })).data;
       let Series = props.series.map(s => {
         const device = devices.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
@@ -41,7 +50,7 @@ const Timeseries = ({ ...props }) => {
       setSeries([...Series]);
     }
     fetch();
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const onDataCreated = (e) => {

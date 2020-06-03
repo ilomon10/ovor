@@ -23,10 +23,10 @@ import DashboardContext from 'components/hocs/dashboard';
 const Dashboard = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
-  const [watchMode, setWatchMode] = useState('Range');
+  const [watchMode, setWatchMode] = useState('Live');
   const [dashboardTitle, setDashboardTitle] = useState("");
   const [widgets, setWidgets] = useState([]);
-  const [timeRange, setTimeRange] = useState([moment().toDate(), moment().toDate()]);
+  const [timeRange, setTimeRange] = useState([moment().startOf('day').toDate(), moment().endOf('day').toDate()]);
   const [currentNode, setCurrentNode] = useState(null);
   useEffect(() => {
     feathers.dashboards().get(params.id).then(e => {
@@ -120,17 +120,17 @@ const Dashboard = () => {
                   maxDate={moment(timeRange[1]).toDate()}
                   formatDate={date => moment(date).format('DD-MMM \'YY')}
                   parseDate={str => moment(str, 'DD-MM \'YY')}
-                  onChange={v => setTimeRange([v, timeRange[1]])}
+                  onChange={v => setTimeRange([moment(v).startOf('day').toDate(), timeRange[1]])}
                   value={timeRange[0]} inputProps={{ size: 6 }} />
                 <span className={Classes.INPUT}>to</span>
                 <DateInput
                   minDate={moment(timeRange[0]).toDate()}
                   formatDate={date => moment(date).format('DD-MMM \'YY')}
                   parseDate={str => moment(str, 'DD-MM \'YY')}
-                  onChange={v => setTimeRange([timeRange[0], v])}
+                  onChange={v => setTimeRange([timeRange[0], moment(v).endOf('day').toDate()])}
                   value={timeRange[1]} inputProps={{ size: 6 }} />
               </>}
-              <HTMLSelect options={['Range', 'Realtime']} value={watchMode} onChange={e => setWatchMode(e.target.value)} />
+              <HTMLSelect options={['Range', 'Live']} value={watchMode} onChange={e => setWatchMode(e.target.value)} />
             </ControlGroup>
             <Navbar.Divider />
             <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
@@ -148,7 +148,8 @@ const Dashboard = () => {
                 title={widget.title}
                 type={widget.type}
                 series={widget.series}
-                options={widget.options}/>)
+                options={widget.options}
+                timeRange={watchMode === 'Live' ? null : timeRange} />)
             }}
             zeroStateView={<MosaicZeroState createNode={createNode} />}
             onChange={currentNode => {
