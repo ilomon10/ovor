@@ -71,7 +71,7 @@ const Login = () => {
                 </FormGroup>
                 <Button type="submit" text="Masuk" intent="primary"
                   loading={isSubmitting} fill
-                  disabled={Object.entries(errors).length > 0} />
+                  disabled={Object.entries(errors).length > 0 && !errors.submit} />
               </form>)}
           </Formik>
         </Card>

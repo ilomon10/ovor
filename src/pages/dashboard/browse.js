@@ -61,7 +61,7 @@ const Dashboards = () => {
                     <img style={{ height: '100%', width: '100%', display: 'block', backgroundColor: Colors.LIGHT_GRAY3 }} alt="boo" />
                   </AspectRatio>
                   <div style={{ padding: "8px 15px" }}>
-                    <h5 className={Classes.HEADING}>
+                    <h5 className={`${Classes.HEADING} ${Classes.TEXT_OVERFLOW_ELLIPSIS}`}>
                       <Link to={`/dashboards/${v._id}`}>{v.title}</Link>
                     </h5>
                     <div>{moment(v.updatedAt).format('LLLL')}</div>
