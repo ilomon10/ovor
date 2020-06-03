@@ -1,19 +1,15 @@
 import moment from "moment";
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
 import { Card, Classes, Colors, Dialog, Icon } from '@blueprintjs/core';
 import { Link } from "react-router-dom";
 import AspectRatio from "components/aspectratio";
 import Wrapper from "components/wrapper";
-import { TabContext } from "components/tabSystem";
 import Container from "components/container";
 import { FeathersContext } from 'components/feathers';
 import AddNewDashboard from "./addNewDashboard";
 
 const Dashboards = () => {
-  const tab = useContext(TabContext);
   const feathers = useContext(FeathersContext);
-  const location = useLocation();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [list, setList] = useState([]);
   useEffect(() => {
@@ -30,10 +26,6 @@ const Dashboards = () => {
     }
   }, [list, feathers])
   useEffect(() => {
-    tab.setCurrentTabState({
-      title: 'Dashboards',
-      path: location.pathname
-    });
     feathers.dashboards().find({
       query: { $select: ['title', 'updatedAt'] }
     }).then((e) => {

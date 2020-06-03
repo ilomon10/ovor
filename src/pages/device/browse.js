@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Colors, Card, Switch, Icon, Classes, Tooltip, Position, Tag, Dialog } from '@blueprintjs/core';
-import { TabContext } from "components/tabSystem";
 import AspectRatio from 'components/aspectratio';
 import Container from 'components/container';
 import Wrapper from 'components/wrapper';
@@ -9,9 +8,7 @@ import AddNewDevice from './addNewDevice';
 import { FeathersContext } from 'components/feathers';
 
 const Devices = () => {
-  const tab = useContext(TabContext);
   const feathers = useContext(FeathersContext);
-  const location = useLocation();
   const history = useHistory();
   const [list, setList] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -28,14 +25,12 @@ const Devices = () => {
     }
   }, [list, feathers]);
   useEffect(() => {
-    tab.setCurrentTabState({ title: 'Devices', path: location.pathname })
     feathers.devices().find({
       query: {
         $sort: { createdAt: -1 },
         $select: ['name']
       }
     }).then((e) => {
-      console.log(e);
       setList(e.data);
     }).catch(e => {
       console.log(e);

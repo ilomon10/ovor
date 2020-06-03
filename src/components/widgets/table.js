@@ -36,6 +36,7 @@ const Table = ({ series, ...props }) => {
 
       dataLake = await feathers.dataLake().find({
         query: {
+          $limit: 100,
           deviceId: { $in: deviceIds },
           $select: ['data', 'deviceId', 'createdAt']
         }

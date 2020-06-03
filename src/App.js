@@ -6,8 +6,6 @@ import {
 import styled from 'styled-components';
 
 import Sidebar from 'components/sidebar';
-import Topbar from 'components/topbar';
-import TabSystem from 'components/tabSystem';
 import Dashboards from 'pages/dashboard/browse';
 import Dashboard from 'pages/dashboard/';
 import Devices from 'pages/device/browse';
@@ -55,10 +53,8 @@ const App = () => {
   }]
   return (
     <Container className="flex">
-      <TabSystem>
         <Sidebar className="flex-shrink-0" items={navigation} />
         <div className="flex-grow flex flex--col" style={{ position: 'relative' }}>
-          <Topbar className="flex-shrink-0" />
           <div className="flex-grow">
             <Switch>
               {navigation.map((v) => (
@@ -67,7 +63,6 @@ const App = () => {
             </Switch>
           </div>
         </div>
-      </TabSystem>
     </Container>
   );
 }

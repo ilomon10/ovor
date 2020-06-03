@@ -1,18 +1,7 @@
-import React, { useEffect, useContext } from 'react';
-import { useLocation } from 'react-router-dom';
-import { TabContext } from "components/tabSystem";
+import React from 'react';
 import { NonIdealState } from '@blueprintjs/core';
 
 const Settings = () => {
-  const tab = useContext(TabContext);
-  const location = useLocation();
-  useEffect(() => {
-    tab.setCurrentTabState({
-      title: 'Settings',
-      path: location.pathname
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
   return (
     <NonIdealState
       icon="code-block"

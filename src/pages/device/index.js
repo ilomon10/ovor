@@ -1,7 +1,6 @@
 import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
-import { TabContext } from 'components/tabSystem';
 import Table from 'components/exp.table';
 import BaseTimeseries from 'components/widgets/baseTimeseries';
 import BarChart from 'components/widgets/barChart';
@@ -90,9 +89,7 @@ const dummy = {
 }
 
 const Device = () => {
-  const tab = useContext(TabContext);
   const feathers = useContext(FeathersContext);
-  const location = useLocation();
   const params = useParams();
   const [device, setDevice] = useState({
     _id: '',
@@ -124,12 +121,6 @@ const Device = () => {
       feathers.dataLake().removeListener('created', onDataCreated);
     }
   }, [params.id]) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    tab.setCurrentTabState({
-      title: device.name,
-      path: location.pathname
-    })
-  }, [device.name]); // eslint-disable-line react-hooks/exhaustive-deps
   const copyToClipboard = useCallback((e) => {
     let eventIdRefCurrent = eventIdRef.current;
     eventIdRefCurrent.select();

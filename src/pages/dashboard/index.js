@@ -1,6 +1,6 @@
 import moment from 'moment';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Corner,
   Mosaic,
@@ -15,16 +15,13 @@ import {
 import { Navbar, Classes, Icon, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import { dropRight } from 'components/helper';
-import { TabContext } from "components/tabSystem";
 import Widget from 'components/widget';
 import { FeathersContext } from 'components/feathers';
 import BSON from 'bson-objectid';
 import DashboardContext from 'components/hocs/dashboard';
 
 const Dashboard = () => {
-  const tab = useContext(TabContext);
   const feathers = useContext(FeathersContext);
-  const location = useLocation();
   const params = useParams();
   const [watchMode, setWatchMode] = useState('Range');
   const [dashboardTitle, setDashboardTitle] = useState("");
@@ -34,6 +31,7 @@ const Dashboard = () => {
   useEffect(() => {
     feathers.dashboards().get(params.id).then(e => {
       setDashboardTitle(e.title);
+      console.log(e.widgets);
       setWidgets([...e.widgets]);
       if (e.nodes) setCurrentNode(e.nodes);
     }).catch(e => {
@@ -47,15 +45,7 @@ const Dashboard = () => {
     return () => {
       feathers.dashboards().removeListener('patched', onDashboardPatched);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (dashboardTitle !== '') {
-      tab.setCurrentTabState({
-        title: dashboardTitle,
-        path: location.pathname
-      })
-    }
-  }, [dashboardTitle]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const updateCurrentNodeToDB = useCallback((currentNode) => {
     feathers.dashboards().patch(params.id, { nodes: currentNode });
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -158,7 +148,7 @@ const Dashboard = () => {
                 title={widget.title}
                 type={widget.type}
                 series={widget.series}
-                options={widget.options} />)
+                options={widget.options}/>)
             }}
             zeroStateView={<MosaicZeroState createNode={createNode} />}
             onChange={currentNode => {
