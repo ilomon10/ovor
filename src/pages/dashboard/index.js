@@ -107,7 +107,7 @@ const Dashboard = () => {
       <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
         <Navbar className="flex flex-shrink-0">
           <Navbar.Group className="flex-grow" style={{ width: 0 }}>
-            <Button icon="chevron-left" onClick={() => history.goBack()} />
+            <Button icon="chevron-left" onClick={() => { history.goBack() }} />
             <Navbar.Divider />
             <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
               <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>

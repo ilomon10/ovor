@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import { Colors, Classes, Navbar, Icon, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
+import { useParams, useHistory } from 'react-router-dom';
+import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
 import Table from 'components/exp.table';
 import BaseTimeseries from 'components/widgets/baseTimeseries';
-import BarChart from 'components/widgets/barChart';
+import BaseBarChart from 'components/widgets/baseBarChart';
 import { getRandomData } from 'components/helper';
 import moment from 'moment';
 import Wrapper from 'components/wrapper';
@@ -91,6 +91,7 @@ const dummy = {
 const Device = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
+  const history = useHistory();
   const [device, setDevice] = useState({
     _id: '',
     name: '',
@@ -132,11 +133,10 @@ const Device = () => {
       <Navbar className="flex-shrink-0">
         <div style={{ maxWidth: 1024, margin: '0 auto', height: '100%' }}>
           <Navbar.Group>
+            <Button icon="chevron-left" onClick={() => { history.goBack() }} />
+            <Navbar.Divider />
             <h4 className={`${Classes.HEADING} flex flex--i-center`}
               style={{ margin: 0 }}>
-              <Icon className='flex-shrink-0'
-                icon="stacked-chart"
-                style={{ verticalAlign: 'middle', marginRight: 8 }} />
               <EditableText selectAllOnFocus value={device.name}
                 onChange={v => setDevice({ ...device, name: v })} />
             </h4>
@@ -179,7 +179,7 @@ const Device = () => {
                   </div>
                 </div>
                 <div style={{ height: 127 }}>
-                  <BarChart options={dummy.incoming.options} series={dummy.incoming.series} />
+                  <BaseBarChart options={dummy.incoming.options} series={dummy.incoming.series} />
                 </div>
               </Card>
               <div className="flex" style={{ marginBottom: 16, marginLeft: -6, marginRight: -6 }}>

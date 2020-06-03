@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 
-import { Colors, Classes, Divider, Navbar, Button, Icon, H5, Menu, Popover } from '@blueprintjs/core';
+import { Colors, Classes, Divider, Navbar, Button, AnchorButton, Icon, H5, Menu, Popover, Tooltip } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FeathersContext } from './feathers';
+import Notification from '../pages/notification';
 
 const Comp = ({ className, items }) => {
   const feathers = useContext(FeathersContext);
@@ -21,7 +22,7 @@ const Comp = ({ className, items }) => {
   return (
     <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ maxWidth: isToggled ? 240 : "auto" }}>
       <div className="flex-grow">
-        <Navbar>
+        <Navbar style={{ boxShadow: '0 0 0 rgba(16, 22, 26, 0), 0 1px 1px rgba(16, 22, 26, 0.2)' }}>
           <Navbar.Group align="center" style={{ textAlign: "center", justifyContent: "center" }}>
             <FontAwesomeIcon style={{ marginRight: isToggled ? 8 : 0, color: Colors.GRAY1 }} icon={['ovor', 'logo']} size="2x" />
             {isToggled &&
@@ -43,7 +44,24 @@ const Comp = ({ className, items }) => {
       </div>
       <div className="flex-shrink-0">
         <Divider vertical="true" />
-        <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
+        <Popover
+          position="left"
+          targetProps={{
+            style: { display: 'block' }
+          }}
+          content={(
+            <Notification />
+          )}>
+          <Tooltip isOpen
+            intent={'warning'}
+            content={`${2} New Message`}
+            position="left"
+            targetProps={{
+              style: { display: 'block' }
+            }}>
+            <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
+          </Tooltip>
+        </Popover>
         <Popover
           position="left-bottom"
           targetProps={{
@@ -57,7 +75,9 @@ const Comp = ({ className, items }) => {
             </Menu>)}>
           <Button alignText="left" minimal fill icon="user" text={isToggled ? email : null} />
         </Popover>
-        <Button alignText="left" minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
+        <AnchorButton href="https://github.com/ilomon10/ovor-issue_tracker/issues"
+          target="_blank"
+          alignText="left" minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
       </div>
     </div >
   )
