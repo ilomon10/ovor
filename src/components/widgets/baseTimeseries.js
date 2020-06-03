@@ -10,13 +10,14 @@ const defaultOptions = {
   },
   yaxis: {
     labels: {
-      formatter: (v) => (v.toFixed(2))
+      formatter: (v) => (typeof v === 'number' ? v.toFixed(2) : 0)
     }
   },
 }
 
 const BaseTimeseries = ({ series, ...props }) => {
   const options = _merge(defaultOptions, props.options);
+  console.log(typeof options.chart.id, series);
   return (
     <Chart options={options} series={series} type="line" height="100%" width="100%" />
   );
