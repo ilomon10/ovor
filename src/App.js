@@ -1,7 +1,8 @@
 import React from 'react';
 import {
   Switch,
-  Route
+  Route,
+  Redirect
 } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -53,16 +54,19 @@ const App = () => {
   }]
   return (
     <Container className="flex">
-        <Sidebar className="flex-shrink-0" items={navigation} />
-        <div className="flex-grow flex flex--col" style={{ position: 'relative' }}>
-          <div className="flex-grow">
-            <Switch>
-              {navigation.map((v) => (
-                <Route key={v.path} path={v.path} name={v.title} component={v.component} exact={v.exact} />
-              ))}
-            </Switch>
-          </div>
+      <Sidebar className="flex-shrink-0" items={navigation} />
+      <div className="flex-grow flex flex--col" style={{ position: 'relative' }}>
+        <div className="flex-grow">
+          <Switch>
+            <Route exact path="/">
+              <Redirect to="dashboards" />
+            </Route>
+            {navigation.map((v) => (
+              <Route key={v.path} path={v.path} name={v.title} component={v.component} exact={v.exact} />
+            ))}
+          </Switch>
         </div>
+      </div>
     </Container>
   );
 }

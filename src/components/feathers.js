@@ -22,6 +22,9 @@ class Feathers {
   doAuthenticate(authentication, params) {
     return this.client.authenticate(authentication, params);
   }
+  doLogout() {
+    return this.client.logout();
+  }
   doReAuthenticate(force) {
     return this.client.reAuthenticate(force);
   }

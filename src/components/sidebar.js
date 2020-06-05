@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 
 import { Colors, Classes, Divider, Navbar, Button, AnchorButton, Icon, H5, Menu, Popover, Tooltip } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,6 +9,7 @@ import Notification from '../pages/notification';
 
 const Comp = ({ className, items }) => {
   const feathers = useContext(FeathersContext);
+  const history = useHistory();
   const navList = items.filter((v) => !v.hide) || [];
   const [isToggled, setIsToggled] = useState(false);
   const [email, setEmail] = useState(null);
@@ -69,7 +70,11 @@ const Comp = ({ className, items }) => {
             <Menu>
               <Menu.Item disabled icon="cog" text="Preference" />
               <Divider />
-              <Menu.Item icon="log-out" text="Logout" intent="danger" />
+              <Menu.Item icon="log-out" text="Logout" onClick={() => {
+                feathers.doLogout().then(() => {
+                  history.go('/login');
+                });
+              }} intent="danger" />
             </Menu>)}>
           <Tooltip
             disabled={isToggled}
