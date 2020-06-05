@@ -29,26 +29,28 @@ const Comp = ({ className, items }) => {
               <H5 style={{ margin: 0 }}>OVOR</H5>}
           </Navbar.Group>
         </Navbar>
-        <Button minimal fill alignText="left" text={isToggled ? 'Menu' : null}
-          icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
         {navList.map((v) => (
-          <NavLink className={`${Classes.BUTTON} ${Classes.FILL} ${Classes.MINIMAL} ${Classes.ALIGN_LEFT}`}
+          <Tooltip
             key={v.path}
-            activeClassName={Classes.ACTIVE}
-            role="button" to={v.path}>
-            <Icon icon={v.icon} />
-            {isToggled &&
-              <span className={Classes.BUTTON_TEXT}>{v.title}</span>}
-          </NavLink>
+            disabled={isToggled}
+            content={v.title}
+            position="left"
+            targetTagName="div">
+            <NavLink className={`${Classes.BUTTON} ${Classes.FILL} ${Classes.MINIMAL} ${Classes.ALIGN_LEFT}`}
+              activeClassName={Classes.ACTIVE}
+              role="button" to={v.path}>
+              <Icon icon={v.icon} />
+              {isToggled &&
+                <span className={Classes.BUTTON_TEXT}>{v.title}</span>}
+            </NavLink>
+          </Tooltip>
         ))}
       </div>
       <div className="flex-shrink-0">
         <Divider vertical="true" />
         <Popover
           position="left"
-          targetProps={{
-            style: { display: 'block' }
-          }}
+          targetTagName="div"
           content={(
             <Notification />
           )}>
@@ -56,28 +58,39 @@ const Comp = ({ className, items }) => {
             intent={'warning'}
             content={`${2} New Message`}
             position="left"
-            targetProps={{
-              style: { display: 'block' }
-            }}>
+            targetTagName="div">
             <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
           </Tooltip>
         </Popover>
         <Popover
           position="left-bottom"
-          targetProps={{
-            style: { display: 'block' }
-          }}
+          targetTagName="div"
           content={(
             <Menu>
               <Menu.Item disabled icon="cog" text="Preference" />
               <Divider />
               <Menu.Item icon="log-out" text="Logout" intent="danger" />
             </Menu>)}>
-          <Button alignText="left" minimal fill icon="user" text={isToggled ? email : null} />
+          <Tooltip
+            disabled={isToggled}
+            content={email}
+            position="left"
+            targetTagName="div">
+            <Button alignText="left" minimal fill icon="user" text={isToggled ? email : null} />
+          </Tooltip>
         </Popover>
-        <AnchorButton href="https://github.com/ilomon10/ovor-issue_tracker/issues"
-          target="_blank"
-          alignText="left" minimal fill icon="info-sign" text={isToggled ? "Send Question" : null} />
+        <Tooltip
+          disabled={isToggled}
+          content={"Feedback"}
+          position="left"
+          targetTagName="div">
+          <AnchorButton href="https://github.com/ilomon10/ovor-issue_tracker/issues"
+            target="_blank"
+            alignText="left" minimal fill icon="lifesaver" text={isToggled ? "Feedback" : null} />
+        </Tooltip>
+        <Divider />
+        <Button minimal fill alignText="left"
+          icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
       </div>
     </div >
   )
@@ -86,6 +99,29 @@ const Comp = ({ className, items }) => {
 const Sidebar = styled(Comp)`
   border-right: 1px solid ${Colors.GRAY5};
   padding-bottom: 15px;
+  
+  & .${Classes.BUTTON} {
+    > :last-child {
+      margin-right: 0;
+    }
+    > * {
+      margin-right: 14px;
+    }
+    
+    .${Classes.BUTTON_TEXT} {
+      color: ${Colors.GRAY1};
+      font-weight: bold;  
+    }
+    &.${Classes.ACTIVE} {
+      background-color: transparent;
+      :hover {
+        background-color: rgba(167, 182, 194, 0.3);
+      }
+      .${Classes.BUTTON_TEXT}, .${Classes.ICON} {
+        color: ${Colors.INDIGO3};
+      }
+    }
+  }
   &&& .${Classes.BUTTON} {
     padding: 12px 24px;
   }

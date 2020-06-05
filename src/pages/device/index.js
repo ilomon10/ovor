@@ -98,7 +98,7 @@ const Device = () => {
     fields: []
   });
   const [data, setData] = useState([]);
-  const transformData = (d) => 
+  const transformData = (d) =>
     [moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...d.data];
   const eventIdRef = useRef();
   const [contentHeight, setContentHeight] = useState(278);
@@ -111,7 +111,11 @@ const Device = () => {
       })
       .catch((e) => console.log(e));
     feathers.dataLake().find({
-      query: { deviceId: params.id, $select: ['data', 'createdAt'] }
+      query: {
+        $limit: 100,
+        deviceId: params.id, 
+        $select: ['data', 'createdAt']
+      }
     })
       .then(e => { setData([...e.data.map(transformData)]); })
       .catch(e => console.log(e));

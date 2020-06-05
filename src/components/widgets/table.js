@@ -67,6 +67,7 @@ const Table = ({ series, ...props }) => {
   }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (props.timeRange) return;
     const onDataCreated = (e) => {
       setData(d => [
         ...d, labels.map((v, i) => {
@@ -80,7 +81,7 @@ const Table = ({ series, ...props }) => {
     return () => { // Cleanup
       feathers.dataLake().removeListener('created', onDataCreated);
     }
-  }, [labels]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [labels, props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BaseTable series={data} options={{

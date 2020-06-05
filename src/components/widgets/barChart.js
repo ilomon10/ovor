@@ -54,6 +54,7 @@ const BarChart = ({ ...props }) => {
   }, [props.timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    if (props.timeRange) return;
     const onDataCreated = (e) => {
       setSeries(d => [
         ...series.map(s => {
@@ -67,7 +68,7 @@ const BarChart = ({ ...props }) => {
     return () => { // Cleanup
       feathers.dataLake().removeListener('created', onDataCreated);
     }
-  }, [series]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [series, props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BaseBarChart type='bar' height="100%" width="100%"
