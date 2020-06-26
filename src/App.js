@@ -1,17 +1,18 @@
 import React from 'react';
 import {
   Switch,
-  Route,
-  Redirect
+  Route
 } from 'react-router-dom';
 import styled from 'styled-components';
 
 import Sidebar from 'components/sidebar';
+import Overview from 'pages/overview';
 import Dashboards from 'pages/dashboard/browse';
 import Dashboard from 'pages/dashboard/';
 import Devices from 'pages/device/browse';
 import Device from 'pages/device/';
 import Settings from 'pages/settings';
+import Tokens from 'pages/tokens';
 
 const Container = styled.div`
   position: fixed;
@@ -23,6 +24,13 @@ const Container = styled.div`
 
 const App = () => {
   const navigation = [{
+    title: 'Overview',
+    icon: 'dashboard',
+    path: '/',
+    component: Overview,
+    exact: true,
+    navExact: true
+  },{
     hide: true,
     title: 'Dashboard',
     path: '/dashboards/:id',
@@ -47,6 +55,11 @@ const App = () => {
     component: Devices,
     exact: true
   }, {
+    title: 'Tokens',
+    icon: 'key',
+    path: '/tokens',
+    component: Tokens
+  }, {
     title: 'Settings',
     icon: 'cog',
     path: '/settings',
@@ -58,9 +71,6 @@ const App = () => {
       <div className="flex-grow flex flex--col" style={{ position: 'relative' }}>
         <div className="flex-grow">
           <Switch>
-            <Route exact path="/">
-              <Redirect to="dashboards" />
-            </Route>
             {navigation.map((v) => (
               <Route key={v.path} path={v.path} name={v.title} component={v.component} exact={v.exact} />
             ))}

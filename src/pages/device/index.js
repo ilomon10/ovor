@@ -113,7 +113,7 @@ const Device = () => {
     feathers.dataLake().find({
       query: {
         $limit: 100,
-        deviceId: params.id, 
+        deviceId: params.id,
         $select: ['data', 'createdAt']
       }
     })

@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 import { HTMLTable } from '@blueprintjs/core';
 
 const Notification = () => {
@@ -13,11 +14,11 @@ const Notification = () => {
         </thead>
         <tbody>
           <tr>
-            <td>2020-04-18T09:57:51.648+00:00</td>
+            <td>{moment('2020-04-18T09:57:51.648+00:00').calendar()}</td>
             <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
           </tr>
           <tr>
-            <td>2020-04-18T09:42:09.577+00:00</td>
+            <td>{moment('2020-04-18T09:42:09.577+00:00').calendar()}</td>
             <td>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </td>
           </tr>
         </tbody>

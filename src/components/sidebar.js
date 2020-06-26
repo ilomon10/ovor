@@ -12,6 +12,7 @@ const Comp = ({ className, items }) => {
   const history = useHistory();
   const navList = items.filter((v) => !v.hide) || [];
   const [isToggled, setIsToggled] = useState(false);
+  const [isNotificationTouched, setIsNotificationTouched] = useState(false);
   const [email, setEmail] = useState(null);
   useEffect(() => {
     async function getUserData() {
@@ -39,6 +40,7 @@ const Comp = ({ className, items }) => {
             targetTagName="div">
             <NavLink className={`${Classes.BUTTON} ${Classes.FILL} ${Classes.MINIMAL} ${Classes.ALIGN_LEFT}`}
               activeClassName={Classes.ACTIVE}
+              exact={v.navExact}
               role="button" to={v.path}>
               <Icon icon={v.icon} />
               {isToggled &&
@@ -53,14 +55,20 @@ const Comp = ({ className, items }) => {
           position="left"
           targetTagName="div"
           content={(
-            <Notification />
+            <div style={{width: 260}}>
+              <Notification />
+            </div>
           )}>
-          <Tooltip isOpen
+          <Tooltip isOpen={!isNotificationTouched}
             intent={'warning'}
             content={`${2} New Message`}
             position="left"
             targetTagName="div">
-            <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null} />
+            <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null}
+              onClick={() => {
+                if (!isNotificationTouched)
+                  setIsNotificationTouched(true);
+              }} />
           </Tooltip>
         </Popover>
         <Popover
