@@ -8,50 +8,51 @@ import moment from 'moment';
 import { FeathersContext } from 'components/feathers';
 import LinkButton from 'components/linkButton';
 
+const stateOption = {
+  data: [],
+  total: 0
+}
+
 const Overview = () => {
-  const [dashboards, setDashboards] = useState({
-    data: [],
-    total: 0
-  });
-  const [devices, setDevices] = useState({
-    data: [],
-    total: 0
-  });
-  const [data, setData] = useState({
-    data: [],
-    total: 0
-  });
+  const [dashboards, setDashboards] = useState(stateOption);
+  const [devices, setDevices] = useState(stateOption);
+  const [data, setData] = useState(stateOption);
+  const [tokens, setTokens] = useState(stateOption);
   const feathers = useContext(FeathersContext);
   useEffect(() => {
+    // feathers.client.service('tokens').create().then((res) => {
+    //   console.log(res);
+    // });
     const fetch = async () => {
       let dashboards = await feathers.dashboards().find({
         query: {
           $limit: 10,
           $select: ['title'],
-          $sort: {
-            updatedAt: -1
-          }
+          $sort: { updatedAt: -1 }
         }
-      })
+      });
       let devices = await feathers.devices().find({
         query: {
           $limit: 3,
           $select: ['name'],
-          $sort: {
-            updatedAt: -1
-          }
+          $sort: { updatedAt: -1 }
         }
-      })
+      });
       let data = await feathers.dataLake().find({
         query: {
           $limit: 3,
-          $select: ['deviceId', 'createdAt'],
+          $select: ['deviceId'],
           createdAt: 'all',
-          $sort: {
-            createdAt: -1
-          }
+          $sort: { createdAt: -1 }
         }
-      })
+      });
+      let tokens = await feathers.tokens().find({
+        query: {
+          $limit: 3,
+          $select: ['name', 'key', 'updatedAt'],
+          $sort: { updatedAt: -1 }
+        }
+      });
       setDashboards({
         total: dashboards.total,
         data: dashboards.data.map(v => {
@@ -81,6 +82,16 @@ const Overview = () => {
             path: d._id
           }
         }))
+      })
+      setTokens({
+        total: tokens.total,
+        data: tokens.data.map(v => {
+          return {
+            title: v.name,
+            path: v.key,
+            updatedAt: v.updatedAt
+          }
+        })
       })
     }
     fetch();
@@ -153,37 +164,43 @@ const Overview = () => {
               <h2 className={Classes.HEADING}>Welcome to OVOR</h2>
               <p style={{ marginBottom: 16 }}>Start something new or continue your work</p>
               <h5 className={Classes.HEADING}>Create something</h5>
-              <LinkButton style={{ marginBottom: 8 }}
-                minimal fill
-                alignText="left"
-                icon="application"
-                text="Create a dashboard"
-                to="/dashboards" />
-              <LinkButton style={{ marginBottom: 16 }}
-                minimal fill
-                alignText="left"
-                icon="helper-management"
-                text="Create a device"
-                to={`/devices`} />
+              <div style={{ marginBottom: 8 }} className="flex flex--col flex--i-start">
+                <div className="flex flex--col">
+                  <LinkButton style={{ marginBottom: 8 }}
+                    minimal fill
+                    alignText="left"
+                    icon="application"
+                    text="Create a dashboard"
+                    to="/dashboards" />
+                  <LinkButton style={{ marginBottom: 16 }}
+                    minimal fill
+                    alignText="left"
+                    icon="helper-management"
+                    text="Create a device"
+                    to={`/devices`} />
+                </div>
+              </div>
               {dashboards.total > 0 && <>
                 <h5 className={Classes.HEADING}>Recent dashboards</h5>
-                <div style={{ marginBottom: 8 }}>
-                  {dashboards.data.map((v) => (
-                    <LinkButton key={v.path}
-                      style={{ marginBottom: 8 }}
-                      minimal fill
-                      alignText="left"
-                      icon="application"
-                      text={v.title}
-                      to={`/dashboards/${v.path}`} />
-                  ))}
-                  {dashboards.total > dashboards.data.length &&
-                    <LinkButton style={{ marginBottom: 8 }}
-                      minimal fill
-                      alignText="left"
-                      icon="application"
-                      text="Create a dashboard"
-                      to="/dashboards" />}
+                <div style={{ marginBottom: 8 }} className="flex flex--col flex--i-start">
+                  <div className="flex flex--col">
+                    {dashboards.data.map((v) => (
+                      <LinkButton key={v.path}
+                        style={{ marginBottom: 8 }}
+                        minimal
+                        alignText="left"
+                        icon="application"
+                        text={v.title}
+                        to={`/dashboards/${v.path}`} />
+                    ))}
+                    {dashboards.total > dashboards.data.length &&
+                      <LinkButton style={{ marginBottom: 8 }}
+                        minimal
+                        alignText="left"
+                        icon="application"
+                        text="Create a dashboard"
+                        to="/dashboards" />}
+                  </div>
                 </div>
               </>}
             </div>
@@ -194,20 +211,35 @@ const Overview = () => {
                     <H4><Link to='/tokens'>Access Token</Link></H4>
                   </div>
                   <div className="flex-shrink-0">
-                    <Button
-                      icon="plus"
+                    <LinkButton small
+                      to="/tokens"
+                      rightIcon="plus"
                       text="Generate" />
                   </div>
                 </div>
                 <p>You need API access token to configure on device.</p>
-                <div>
-                  <p>Default token</p>
-                  <div style={{ marginBottom: 10 }}>
-                    <InputCopy fill
-                      defaultValue="eyJhbGciOiJIUzI1NiIsInR5cCI6ImFjY2VzcyJ9.eyJpYXQiOjE1OTMwMDg0ODcsImV4cCI6MTU5MzA5NDg4NywiYXVkIjoiaHR0cHM6Ly95b3VyZG9tYWluLmNvbSIsImlzcyI6ImZlYXRoZXJzIiwic3ViIjoiNWU4ODQzZTIyYzBkOGIwMmUxZDU4ZjIwIiwianRpIjoiNzM0MWM5M2QtMWU1ZS00NDk5LTk2NjctMjNkMWMyOWRhNmVkIn0.nZt1YfE9lYdWYZptMJH-hBiWUEjTQrcwVK1UeWr7jvY" />
+                {tokens.total === 0 &&
+                  <NonIdealState
+                    icon="issue"
+                    title="Empty"
+                    description={(<>
+                      <span>You need to create one.</span>
+                      <br />
+                      <Button minimal small text="Generate new token" />
+                    </>)} />}
+                {tokens.data.map(v => (
+                  <div key={v.path}
+                    style={{
+                      borderBottomColor: Colors.LIGHT_GRAY3, borderBottomWidth: 1, borderBottomStyle: 'solid',
+                      marginBottom: 8
+                    }}>
+                    <p>{v.title}</p>
+                    <div style={{ marginBottom: 10 }}>
+                      <InputCopy fill defaultValue={v.path} />
+                    </div>
+                    <p><strong>Last modified:</strong> {moment(v.updatedAt).calendar()}</p>
                   </div>
-                  <p><strong>Last modified:</strong> {moment().calendar()}</p>
-                </div>
+                ))}
               </Card>
               <Card elevation={Elevation.ONE}>
                 <H4><Link to='/'>Discover</Link></H4>

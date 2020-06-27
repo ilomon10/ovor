@@ -62,13 +62,13 @@ const Dashboards = () => {
               </div>
             ))}
           </div>
+          <Dialog
+            title="Add New Dashboard"
+            isOpen={isDialogOpen}
+            onClose={() => setIsDialogOpen(false)}>
+            <AddNewDashboard onClose={() => setIsDialogOpen(false)} />
+          </Dialog>
         </Container>
-        <Dialog
-          title="Add New Dashboard"
-          isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}>
-          <AddNewDashboard onClose={() => setIsDialogOpen(false)} />
-        </Dialog>
       </Wrapper>
     </div>
   )

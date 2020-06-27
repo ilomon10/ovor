@@ -42,7 +42,7 @@ const Settings = ({ onClose }) => {
       setDevices([...e.data]);
     })
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  const cancle = useCallback(() => {
+  const cancel = useCallback(() => {
     onClose();
   }, [onClose]);
   return (
@@ -151,7 +151,7 @@ const Settings = ({ onClose }) => {
             <div className={Classes.DIALOG_FOOTER}>
               <div className={Classes.DIALOG_FOOTER_ACTIONS}>
                 <Button text="Close" minimal intent="danger"
-                  onClick={cancle} />
+                  onClick={cancel} />
                 <Button text="Save" intent="success"
                   loading={isSubmitting}
                   disabled={Object.entries(errors).length > 0 || Object.entries(touched).length === 0}
