@@ -118,7 +118,7 @@ const Device = () => {
       }
     })
       .then(e => { setData([...e.data.map(transformData)]); })
-      .catch(e => console.log(e));
+      .catch(e => console.error(e));
 
     const onDataCreated = (e) => { setData(d => [...d, transformData(e)]) }
     feathers.dataLake().on('created', onDataCreated);

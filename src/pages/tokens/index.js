@@ -97,6 +97,7 @@ const Tokens = () => {
           </HTMLTable>
           <Dialog
             title="Generate new token"
+            canOutsideClickClose={false}
             isOpen={isDialogOpen}
             onClose={() => setIsDialogOpen(false)}>
             <GenerateNewToken onClose={() => setIsDialogOpen(false)} />

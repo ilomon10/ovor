@@ -32,8 +32,8 @@ const Comp = ({ className, items }) => {
           </Navbar.Group>
         </Navbar>
         {navList.map((v) => (
-          <Tooltip
-            key={v.path}
+          <Tooltip key={v.path}
+            usePortal={false}
             disabled={isToggled}
             content={v.title}
             position="left"
@@ -55,7 +55,7 @@ const Comp = ({ className, items }) => {
           position="left"
           targetTagName="div"
           content={(
-            <div style={{width: 260}}>
+            <div style={{ width: 260 }}>
               <Notification />
             </div>
           )}>
@@ -64,7 +64,9 @@ const Comp = ({ className, items }) => {
             content={`${2} New Message`}
             position="left"
             targetTagName="div">
-            <Button alignText="left" minimal fill icon="notifications" text={isToggled ? "Notifications" : null}
+            <Button alignText="left" minimal fill
+              icon="notifications"
+              text={isToggled ? "Notifications" : null}
               onClick={() => {
                 if (!isNotificationTouched)
                   setIsNotificationTouched(true);
@@ -76,7 +78,7 @@ const Comp = ({ className, items }) => {
           targetTagName="div"
           content={(
             <Menu>
-              <Menu.Item disabled icon="cog" text="Preference" />
+              <Menu.Item disabled icon="cog" text="Preference"/>
               <Divider />
               <Menu.Item icon="log-out" text="Logout" onClick={() => {
                 feathers.doLogout().then(() => {
@@ -85,21 +87,28 @@ const Comp = ({ className, items }) => {
               }} intent="danger" />
             </Menu>)}>
           <Tooltip
+            usePortal={false}
             disabled={isToggled}
             content={email}
             position="left"
             targetTagName="div">
-            <Button alignText="left" minimal fill icon="user" text={isToggled ? email : null} />
+            <Button alignText="left" minimal fill icon="user"
+              text={isToggled ? email : null} />
           </Tooltip>
         </Popover>
         <Tooltip
+          usePortal={false}
           disabled={isToggled}
           content={"Feedback"}
           position="left"
           targetTagName="div">
           <AnchorButton href="https://github.com/ilomon10/ovor-issue_tracker/issues"
+            minimal fill
+            icon="lifesaver"
+            rightIcon={isToggled ? "share" : null}
             target="_blank"
-            alignText="left" minimal fill icon="lifesaver" text={isToggled ? "Feedback" : null} />
+            alignText="left"
+            text={isToggled ? "Feedback" : null} />
         </Tooltip>
         <Divider />
         <Button minimal fill alignText="left"

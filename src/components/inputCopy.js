@@ -1,8 +1,9 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { ControlGroup, InputGroup, Button, Tooltip } from '@blueprintjs/core';
 
 const InputCopy = ({ defaultValue, size, fill, small }) => {
   const eventRef = useRef();
+  const [isClicked, setIsClicked] = useState(false);
   const selectAll = useCallback(() => {
     let eventIdRefCurrent = eventRef.current;
     eventIdRefCurrent.select();
@@ -11,6 +12,7 @@ const InputCopy = ({ defaultValue, size, fill, small }) => {
     selectAll();
     document.execCommand('copy');
     e.target.focus();
+    setIsClicked(true);
   }, [selectAll]);
   return (
     <ControlGroup>
@@ -22,9 +24,16 @@ const InputCopy = ({ defaultValue, size, fill, small }) => {
         onClick={selectAll}
         defaultValue={defaultValue} />
       <Tooltip
-        content={"Copy"}>
+        usePortal={false}
+        isOpen={isClicked}
+        position="left"
+        content={"Copied!"}>
         <Button small={small}
-          icon="clipboard" onClick={copyToClipboard} />
+          icon="clipboard"
+          onClick={copyToClipboard}
+          onMouseLeave={() => {
+            setIsClicked(false);
+          }} />
       </Tooltip>
     </ControlGroup>
   )

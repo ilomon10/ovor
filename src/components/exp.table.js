@@ -3,7 +3,7 @@ import { HTMLTable } from '@blueprintjs/core';
 
 const Table = ({ options, series, style, ...props }) => {
   const heading = options.labels.map((v, i) => (
-    <td key={i}>{v}</td>
+    <th key={i}>{v}</th>
   ))
   const body = series.map((val, idx) => {
     return (

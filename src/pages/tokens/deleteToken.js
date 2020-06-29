@@ -8,8 +8,8 @@ const DeleteToken = ({ onClose, data }) => {
   const feathers = useContext(FeathersContext);
   const Schema = useMemo(() => (Yup.object().shape({
     'last-word': Yup.string()
-      .oneOf([(data.name).split(' ').join('_').toLowerCase()])
-      .required()
+      .oneOf([(data.name).split(' ').join('_').toLowerCase()], 'Not match')
+      .required('Field is required')
   })), [data.name]);
   return (
     <Formik
@@ -29,13 +29,13 @@ const DeleteToken = ({ onClose, data }) => {
       {({ values, errors, handleSubmit, handleChange, isSubmitting }) => (
         <form onSubmit={handleSubmit}>
           <div className={Classes.DIALOG_BODY}>
-            <h5 className={Classes.HEADING}>You are about to delete this <strong>{data.name}</strong> token.</h5>
+            <h5 className={Classes.HEADING}>You are about to delete this `{data.name}` token.</h5>
             <p>Deleted tokens will not be recoverable. Every device and application that uses a token will lose API access and need to be updated.</p>
             <p>Are you sure you want to delete your <strong>{data.name}</strong> token?</p>
             <InputGroup readOnly defaultValue={data.key} />
             <br />
-            <p>Please type <strong>{(data.name).split(' ').join('_').toLowerCase()}</strong> to confirm</p>
             <FormGroup
+              label={(<>Please type <strong>{(data.name).split(' ').join('_').toLowerCase()}</strong> to confirm</>)}
               labelFor={'last-word'}
               intent={errors['last-word'] ? 'danger' : 'none'}
               helperText={errors['last-word']}>

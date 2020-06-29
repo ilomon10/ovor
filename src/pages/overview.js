@@ -26,7 +26,7 @@ const Overview = () => {
     const fetch = async () => {
       let dashboards = await feathers.dashboards().find({
         query: {
-          $limit: 10,
+          $limit: 5,
           $select: ['title'],
           $sort: { updatedAt: -1 }
         }
@@ -110,8 +110,10 @@ const Overview = () => {
                   </div>
                   <div style={{ width: `${100 / 2}%` }}>
                     {[...dashboards.data].splice(0, 3).map((v) => (
-                      <h6 key={v.path} className={`${Classes.HEADING} ${Classes.TEXT_OVERFLOW_ELLIPSIS}`}>
-                        <Link to={`/dashboards/${v.path}`}>
+                      <h6 key={v.path} className={`${Classes.HEADING}`}>
+                        <Link to={`/dashboards/${v.path}`}
+                          className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
+                          style={{ display: 'block' }}>
                           <small>{v.title}</small>
                         </Link>
                       </h6>
@@ -129,8 +131,10 @@ const Overview = () => {
                   </div>
                   <div style={{ width: `${100 / 2}%` }}>
                     {devices.data.map((v) => (
-                      <h6 key={v.path} className={`${Classes.HEADING} ${Classes.TEXT_OVERFLOW_ELLIPSIS}`}>
-                        <Link to={`/devices/${v.path}`}>
+                      <h6 key={v.path} className={`${Classes.HEADING}`}>
+                        <Link to={`/devices/${v.path}`}
+                          className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
+                          style={{ display: 'block' }}>
                           <small>{v.title}</small>
                         </Link>
                       </h6>
@@ -197,8 +201,8 @@ const Overview = () => {
                       <LinkButton style={{ marginBottom: 8 }}
                         minimal
                         alignText="left"
-                        icon="application"
-                        text="Create a dashboard"
+                        icon="applications"
+                        text="View more..."
                         to="/dashboards" />}
                   </div>
                 </div>
@@ -212,6 +216,7 @@ const Overview = () => {
                   </div>
                   <div className="flex-shrink-0">
                     <LinkButton small
+                      minimal
                       to="/tokens"
                       rightIcon="plus"
                       text="Generate" />
