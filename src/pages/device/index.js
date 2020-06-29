@@ -98,29 +98,34 @@ const Device = () => {
     fields: []
   });
   const [data, setData] = useState([]);
-  const transformData = (d) =>
-    [moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...d.data];
+  const transformData = useCallback((d) => {
+    const fields = device.fields.map(field => d.data[field.name]);
+    return ([moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...fields]);
+  }, [device.fields]);
   const eventIdRef = useRef();
   const [contentHeight, setContentHeight] = useState(278);
 
   // Component Did Mount
   useEffect(() => {
-    feathers.devices().get(params.id)
-      .then((e) => {
-        setDevice({ ...e });
-      })
-      .catch((e) => console.log(e));
-    feathers.dataLake().find({
-      query: {
-        $limit: 100,
-        deviceId: params.id,
-        $select: ['data', 'createdAt']
+    const fetch = async () => {
+      try {
+        const device = await feathers.devices().get(params.id);
+        await setDevice({ ...device });
+        const data = await feathers.dataLake().find({
+          query: {
+            $limit: 100,
+            deviceId: params.id,
+            $select: ['data', 'createdAt']
+          }
+        })
+        setData([...data.data]);
+      } catch (e) {
+        console.error(e);
       }
-    })
-      .then(e => { setData([...e.data.map(transformData)]); })
-      .catch(e => console.error(e));
+    }
+    fetch();
 
-    const onDataCreated = (e) => { setData(d => [...d, transformData(e)]) }
+    const onDataCreated = (e) => { setData(d => [...d, e]) }
     feathers.dataLake().on('created', onDataCreated);
     return () => {
       feathers.dataLake().removeListener('created', onDataCreated);
@@ -194,7 +199,10 @@ const Device = () => {
                       <div style={{ height: 127 }}>
                         <BaseTimeseries options={dummy.mini.options} series={[{
                           name: v.name,
-                          data: [...data.map(v => [v[0], v[i + 1]])]
+                          data: [...data.map(d => {
+                            const dt = transformData(d);
+                            return ([dt[0], dt[i + 1]]);
+                          })]
                         }]} />
                       </div>
                     </Card>
@@ -214,7 +222,7 @@ const Device = () => {
                     <div style={{ overflowY: 'auto', height: '100%' }}>
                       <Table interactive
                         options={{ labels: ['timestamp', ...device.fields.map((e) => e.name)] }}
-                        series={data.slice().reverse()} />
+                        series={data.map(d => transformData(d)).reverse()} />
                     </div>
                   </Wrapper>
                 </div>

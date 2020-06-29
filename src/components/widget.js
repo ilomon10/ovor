@@ -11,6 +11,7 @@ import PieChart from './widgets/pieChart';
 import Table from './widgets/table';
 import Empty from './widgets/empty';
 import Numeric from './widgets/numeric';
+import Control from './widgets/control';
 import Settings from './widgets/settings';
 import WidgetContext from './widgets/hocs';
 import { GRAPH_TYPE } from './widgets/constants';
@@ -28,6 +29,9 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
     }
   }, props);
   switch (type) {
+    case GRAPH_TYPE["Control"]:
+      ret = (<Control {...propsForChart} />);
+      break;
     case GRAPH_TYPE["Numeric"]:
       ret = (<Numeric {...propsForChart} />);
       break;

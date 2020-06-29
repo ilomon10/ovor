@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
-import { Classes, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button } from '@blueprintjs/core';
+import { Classes, Callout, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button } from '@blueprintjs/core';
 import { GRAPH_TYPE } from './constants';
 import DashboardContext from 'components/hocs/dashboard';
 import { FeathersContext } from 'components/feathers';
@@ -76,6 +76,10 @@ const Settings = ({ onClose }) => {
         return (
           <form onSubmit={handleSubmit}>
             <div className={Classes.DIALOG_BODY}>
+              {errors.submit &&
+                <Callout intent="danger" style={{ marginBottom: 15 }}>
+                  {errors.submit}
+                </Callout>}
               <FormGroup
                 label="Title"
                 labelInfo="(required)"

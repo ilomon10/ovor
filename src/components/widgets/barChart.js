@@ -39,12 +39,11 @@ const BarChart = ({ ...props }) => {
       let Series = props.series.map(s => {
         const device = devices.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
-        const fieldIndex = device.fields.indexOf(field);
         const data = dataLake
           .filter(dl => dl.deviceId === device._id)
-          .map(dl => [dl.createdAt, dl.data[fieldIndex]]);
+          .map(dl => [dl.createdAt, dl.data[field.name]]);
         return {
-          ...s, fieldIndex, data,
+          ...s, fieldName: field.name, data,
           name: `${field.name} (${device.name})`
         }
       })
@@ -59,7 +58,7 @@ const BarChart = ({ ...props }) => {
       setSeries(d => [
         ...series.map(s => {
           if (s.device !== e.deviceId) return s;
-          s.data.push([e.createdAt, e.data[s.fieldIndex]]);
+          s.data.push([e.createdAt, e.data[s.fieldName]]);
           return s;
         })
       ])

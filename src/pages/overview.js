@@ -20,9 +20,6 @@ const Overview = () => {
   const [tokens, setTokens] = useState(stateOption);
   const feathers = useContext(FeathersContext);
   useEffect(() => {
-    // feathers.client.service('tokens').create().then((res) => {
-    //   console.log(res);
-    // });
     const fetch = async () => {
       let dashboards = await feathers.dashboards().find({
         query: {

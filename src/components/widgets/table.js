@@ -29,8 +29,7 @@ const Table = ({ series, ...props }) => {
         return {
           deviceId: device._id,
           deviceName: device.name,
-          fieldName: field.name,
-          fieldIndex: device.fields.indexOf(field)
+          fieldName: field.name
         }
       })];
       setLabels([...Labels])
@@ -56,9 +55,9 @@ const Table = ({ series, ...props }) => {
       setData(() => [
         ...dataLake.map(dl => {
           return Labels.map((v, i) => {
-            if (i === 0) return dl.createdAt;
+            if (i === 0) return moment(dl.createdAt).calendar();
             if (v.deviceId !== dl.deviceId) return "";
-            return dl.data[v.fieldIndex];
+            return dl.data[v.fieldName];
           });
         })
       ])
@@ -69,12 +68,16 @@ const Table = ({ series, ...props }) => {
   useEffect(() => {
     if (props.timeRange) return;
     const onDataCreated = (e) => {
+      let isOk = false;
+      const ret = labels.map((v, i) => {
+        if (i === 0) return moment(e.createdAt).calendar();
+        if (v.deviceId !== e.deviceId) return "";
+        isOk = true;
+        return e.data[v.fieldName];
+      })
+      if (!isOk) return;
       setData(d => [
-        ...d, labels.map((v, i) => {
-          if (i === 0) return e.createdAt;
-          if (v.deviceId !== e.deviceId) return "";
-          return e.data[v.fieldIndex];
-        })
+        ...d, ...ret
       ])
     }
     feathers.dataLake().on('created', onDataCreated);
@@ -88,7 +91,10 @@ const Table = ({ series, ...props }) => {
       ...props.options,
       labels: labels.map((v, i) => {
         let name = v;
-        if (i !== 0) name = `${v.fieldName} (${v.deviceName})`;
+        if (i !== 0) name = {
+          title: v.fieldName,
+          subtitle: v.deviceName
+        }
         return name;
       })
     }} />

@@ -27,12 +27,10 @@ const AddNewDashboard = ({ onClose }) => {
         })
         onClose();
       } catch (e) {
-        console.log(e);
         setSubmitting(false);
       }
     }
     send();
-    console.log(v);
     // onClose();
   }, [onClose, feathers]);
   const cancel = useCallback(() => {
@@ -40,7 +38,6 @@ const AddNewDashboard = ({ onClose }) => {
   }, [onClose]);
   useEffect(() => {
     feathers.dashboards().find().then(e => {
-      console.log(e);
       setTemplates([...e.data])
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

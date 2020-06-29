@@ -49,7 +49,6 @@ const AddDevice = ({ onClose }) => {
         }}
         validationSchema={Schema}
         onSubmit={async (v, { setSubmitting, setErrors }) => {
-          console.log('submit');
           const fields = [...v['deviceFields']];
           fields.pop();
           try {
@@ -59,7 +58,7 @@ const AddDevice = ({ onClose }) => {
             })
             onClose();
           } catch (e) {
-            console.log(e);
+            console.error(e);
             setErrors({ submit: e.message });
             setSubmitting(false);
           }

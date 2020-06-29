@@ -10,7 +10,6 @@ export default props => {
   const feathers = useContext(FeathersContext);
   useEffect(()=>{
     feathers.doReAuthenticate().then(e => {
-      console.log(e);
       setIsAuth(true);
     }).catch(e => {
       history.push('/login');

@@ -33,7 +33,7 @@ const Devices = () => {
     }).then((e) => {
       setList(e.data);
     }).catch(e => {
-      console.log(e);
+      console.error(e);
     })
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (

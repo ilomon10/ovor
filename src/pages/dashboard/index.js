@@ -32,11 +32,10 @@ const Dashboard = () => {
   useEffect(() => {
     feathers.dashboards().get(params.id).then(e => {
       setDashboardTitle(e.title);
-      console.log(e.widgets);
       setWidgets([...e.widgets]);
       if (e.nodes) setCurrentNode(e.nodes);
     }).catch(e => {
-      console.log(e);
+      console.error(e);
     })
     const onDashboardPatched = (e) => {
       setWidgets([...e.widgets]);

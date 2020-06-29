@@ -37,7 +37,7 @@ const Register = () => {
                 <FormGroup
                   label="Full Name"
                   labelFor="f-fullName"
-                  intent={errors.email ? "danger" : "none"}
+                  intent={errors['fullName'] ? "danger" : "none"}
                   helperText={errors['fullName']}>
                   <InputGroup name="fullName" id="f-fullName" type="text"
                     value={values['fullName']}
