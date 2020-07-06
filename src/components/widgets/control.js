@@ -10,24 +10,28 @@ const Control = ({ ...props }) => {
   useEffect(() => {
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
-      let devices = (await feathers.devices().find({
+      let devices = await feathers.devices().find({
         query: {
           _id: { $in: deviceIds },
           $select: ['fields', 'name']
         }
-      })).data;
+      });
       const query = {
-        $limit: 1,
+        $aggregate: 'deviceId',
         deviceId: { $in: deviceIds },
         $select: ['data', 'deviceId']
       }
-      let dataLake = (await feathers.dataLake().find({ query })).data;
+      let dataLake = await feathers.dataLake().find({ query });
       let Series = props.series.map(s => {
-        const device = devices.find(d => d._id === s.device);
+        const device = devices.data.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
-        let data = undefined;
-        if (typeof dataLake[0] !== 'undefined')
-          data = dataLake[0].data[field.name];
+
+        let data = dataLake.data.filter(dl => (dl.deviceId === device._id));
+        if (typeof data[0] !== 'undefined')
+          data = data[0].data[field.name];
+        else
+          data = undefined;
+
         return {
           ...s, data,
           fieldName: field.name,
@@ -58,12 +62,18 @@ const Control = ({ ...props }) => {
     }
   }, [series]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const onClick = useCallback((s) => {
+  const onClick = useCallback((cs) => {
     const push = async () => {
       setIsLoading(true);
+      let data = {};
+      series.forEach(s => {
+        let res = s.data;
+        if (s.fieldName === cs.fieldName) res = !cs.data;
+        data[s.fieldName] = res;
+      });
       const payload = {
-        deviceId: s.device,
-        data: { [s.fieldName]: !s.data }
+        deviceId: cs.device,
+        data
       }
       try {
         await feathers.dataLake().create(payload);
@@ -73,7 +83,7 @@ const Control = ({ ...props }) => {
       setIsLoading(false);
     }
     push();
-  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
+  }, [series]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={{ width: '100%', height: '100%' }} className="flex flex--col">

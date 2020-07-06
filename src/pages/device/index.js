@@ -98,8 +98,18 @@ const Device = () => {
     fields: []
   });
   const [data, setData] = useState([]);
-  const transformData = useCallback((d) => {
-    const fields = device.fields.map(field => d.data[field.name]);
+  const transformData = useCallback((d, type) => {
+    const fields = device.fields.map(field => {
+      if (type === 'chart') {
+        if (field.type === 'boolean')
+          if (d.data[field.name])
+            return 1;
+          else
+            return 0;
+      }
+      if (typeof d.data[field.name] === 'undefined') return '';
+      return String(d.data[field.name]);
+    });
     return ([moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...fields]);
   }, [device.fields]);
   const eventIdRef = useRef();
@@ -195,12 +205,12 @@ const Device = () => {
                 {device.fields.map((v, i) => (
                   <div key={v._id} style={{ width: `${100 / device.fields.length}%`, paddingRight: 6, paddingLeft: 6 }}>
                     <Card style={{ padding: 0 }}>
-                      <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name}</H5>
+                      <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name} ({v.type})</H5>
                       <div style={{ height: 127 }}>
                         <BaseTimeseries options={dummy.mini.options} series={[{
-                          name: v.name,
+                          name: `${v.name} (${v.type})`,
                           data: [...data.map(d => {
-                            const dt = transformData(d);
+                            const dt = transformData(d, 'chart');
                             return ([dt[0], dt[i + 1]]);
                           })]
                         }]} />

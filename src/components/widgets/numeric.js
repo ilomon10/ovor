@@ -1,49 +1,75 @@
-import React from 'react';
-import { Tab, Tabs, Classes, Colors } from '@blueprintjs/core';
-import styled from 'styled-components';
-import { Group } from '@vx/group';
-import { Text } from '@vx/text';
+import React, { useContext, useEffect, useState } from 'react';
+import _uniqBy from 'lodash.uniqby';
+import { FeathersContext } from 'components/feathers';
+import BaseNumeric from './baseNumeric';
 
-const Comp = ({ options, className, key, ...props }) => {
-  let data = options.labels.map((v, i) => ({
-    label: v,
-    data: props.series[i]
-  }));
-  const series = data.map((v, i) => (<Tab
-    id={i} title={v.label} key={i} panel={(
-      <svg style={{ height: '100%', width: '100%' }} viewBox="0 0 36 24">
-        <Group top={12} left={18}>
-          <Text style={{ fill: Colors.DARK_GRAY1 }} textAnchor="middle" verticalAnchor="end">{v.data}</Text>
-          <Text width={36} style={{ fontSize: '40%', fill: Colors.GRAY1 }} dy={1} lineHeight={5} textAnchor="middle" verticalAnchor="start">{v.label}</Text>
-        </Group>
-      </svg>
-    )} />));
+const Numeric = ({ ...props }) => {
+  const feathers = useContext(FeathersContext);
+  const [labels, setLabels] = useState([]);
+  const [series, setSeries] = useState([]);
+  useEffect(() => {
+    const fetch = async () => {
+      const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
+      console.log(deviceIds);
+      const devices = await feathers.devices().find({
+        query: {
+          _id: { $in: deviceIds },
+          $select: ['fields', 'name']
+        }
+      })
+      const dataLake = await feathers.dataLake().find({
+        query: {
+          $aggregate: 'deviceId',
+          deviceId: { $in: deviceIds },
+          $select: ['data', 'deviceId']
+        }
+      });
+      const Series = props.series.map(s => {
+        const device = devices.data.find(d => d._id === s.device);
+        const field = device.fields.find(f => f._id === s.field);
+        let data = dataLake.data.filter(dl => (dl.deviceId === device._id));
+        if (typeof data[0] !== 'undefined')
+          data = data[0].data[field.name];
+        else
+          data = undefined;
+
+        return {
+          ...s, data,
+          fieldName: field.name,
+          deviceName: device.name,
+          name: field.name
+        }
+      })
+      setLabels(Series.map(s => s.fieldName));
+      setSeries(Series);
+    }
+    fetch();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    const onDataCreated = (e) => {
+      console.log(e);
+      setSeries(series => ([
+        ...series.map(s => {
+          if (s.device !== e.deviceId) return s;
+          if (typeof e.data[s.fieldName] === 'undefined') return s;
+          s.data = e.data[s.fieldName];
+          return s;
+        })
+      ]))
+    }
+    feathers.dataLake().on('created', onDataCreated);
+    return () => {
+      feathers.dataLake().removeListener('created', onDataCreated);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <div key={key} className={className}>
-      <Tabs defaultSelectedTabId={3}>
-        {series}
-      </Tabs>
-    </div>
+    <BaseNumeric
+      options={{
+        ...props.options,
+        labels
+      }}
+      series={series.map(s => s.data)} />
   )
 }
-
-const Numeric = styled(Comp)`
-  height: 100%;
-  .${Classes.TABS} {
-    height: 100%;
-    .${Classes.TAB_LIST} {
-      justify-content: center;
-    }
-    .${Classes.TAB_PANEL} {
-      height: 100%;
-      > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-      }
-    }
-  }
-`
 
 export default Numeric;

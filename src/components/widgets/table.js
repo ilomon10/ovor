@@ -57,7 +57,8 @@ const Table = ({ series, ...props }) => {
           return Labels.map((v, i) => {
             if (i === 0) return moment(dl.createdAt).calendar();
             if (v.deviceId !== dl.deviceId) return "";
-            return dl.data[v.fieldName];
+            if(typeof dl.data[v.fieldName] === 'undefined') return '';
+            return String(dl.data[v.fieldName]);
           });
         })
       ])
@@ -75,9 +76,10 @@ const Table = ({ series, ...props }) => {
         isOk = true;
         return e.data[v.fieldName];
       })
+      console.log(ret);
       if (!isOk) return;
       setData(d => [
-        ...d, ...ret
+        ...d, ret
       ])
     }
     feathers.dataLake().on('created', onDataCreated);

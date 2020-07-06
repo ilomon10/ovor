@@ -13,7 +13,10 @@ const Schema = Yup.object().shape({
     .min(3, "Min have 2 field")
     .test('test', 'Please leave no one empty (except last one)', function (value) {
       const scheme = Yup.object().shape({
-        name: Yup.string().required('Req'),
+        name: Yup.string()
+          .min(3, "Too Short!")
+          .max(16, "Too Long!")
+          .required('Req'),
         type: Yup.string().required('Req'),
       })
       for (let i = 0; i < value.length - 1; i++) {
@@ -27,10 +30,10 @@ const Schema = Yup.object().shape({
 
 const AddDevice = ({ onClose }) => {
   const fieldType = [
-    { label: 'Text', value: 'string' },
-    { label: 'Date Time', value: 'date' },
     { label: 'Number', value: 'number' },
     { label: 'Boolean', value: 'boolean' },
+    { label: 'Text', value: 'string', disabled: true },
+    { label: 'Date Time', value: 'date', disabled: true },
   ];
   const feathers = useContext(FeathersContext);
   const [sending, setSending] = useState(false);
@@ -44,7 +47,7 @@ const AddDevice = ({ onClose }) => {
         initialValues={{
           'deviceName': '',
           'deviceFields': [
-            { name: '', type: 'string' }
+            { name: '', type: 'number' }
           ]
         }}
         validationSchema={Schema}
