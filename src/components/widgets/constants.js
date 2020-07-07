@@ -1,5 +1,8 @@
+import { sliderOptions } from './controlSlider';
+
 export const GRAPH_TYPE = {
-  "Control": 'control',
+  "Button": 'control.button',
+  "Slider": 'control.slider',
   "Bar Chart": 'plot.bar',
   "Pie Chart": 'radial',
   "Time Series Graph": 'plot.line',
@@ -7,4 +10,8 @@ export const GRAPH_TYPE = {
   "Numeric": 'numeric',
   "Table": 'table',
   "Geo": 'geo',
+}
+
+export const GRAPH_OPTIONS = {
+  [GRAPH_TYPE["Slider"]]: sliderOptions
 }

@@ -143,6 +143,7 @@ const Dashboard = () => {
           <Mosaic
             renderTile={(id, path) => {
               const widget = widgets.find(v => v._id === id);
+              if(typeof widget === 'undefined') return;
               return (<Widget
                 path={path}
                 tileId={widget._id}

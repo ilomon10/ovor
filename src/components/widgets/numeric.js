@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
 import BaseNumeric from './baseNumeric';
+import moment from 'moment';
 
 const Numeric = ({ ...props }) => {
   const feathers = useContext(FeathersContext);
@@ -17,13 +18,21 @@ const Numeric = ({ ...props }) => {
           $select: ['fields', 'name']
         }
       })
-      const dataLake = await feathers.dataLake().find({
-        query: {
-          $aggregate: 'deviceId',
-          deviceId: { $in: deviceIds },
-          $select: ['data', 'deviceId']
+      let query = {
+        $aggregate: 'deviceId',
+        deviceId: { $in: deviceIds },
+        $select: ['data', 'deviceId'],
+      }
+      if (props.timeRange) {
+        query = {
+          ...query,
+          createdAt: {
+            $gte: moment(props.timeRange[0]).toISOString(),
+            $lte: moment(props.timeRange[1]).toISOString()
+          }
         }
-      });
+      }
+      const dataLake = await feathers.dataLake().find({ query });
       const Series = props.series.map(s => {
         const device = devices.data.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
@@ -44,8 +53,9 @@ const Numeric = ({ ...props }) => {
       setSeries(Series);
     }
     fetch();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (props.timeRange) return;
     const onDataCreated = (e) => {
       console.log(e);
       setSeries(series => ([
@@ -61,7 +71,7 @@ const Numeric = ({ ...props }) => {
     return () => {
       feathers.dataLake().removeListener('created', onDataCreated);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <BaseNumeric
       options={{

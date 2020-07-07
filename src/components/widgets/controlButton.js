@@ -68,6 +68,7 @@ const Control = ({ ...props }) => {
       let data = {};
       series.forEach(s => {
         let res = s.data;
+        if (s.device !== cs.device) return;
         if (s.fieldName === cs.fieldName) res = !cs.data;
         data[s.fieldName] = res;
       });

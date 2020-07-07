@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Group } from '@vx/group';
 import { Text } from '@vx/text';
 
-const Comp = ({ options, className, key, ...props }) => {
+const Comp = ({ options, className, ...props }) => {
   let data = options.labels.map((v, i) => ({
     label: v,
     data: props.series[i]
@@ -19,7 +19,7 @@ const Comp = ({ options, className, key, ...props }) => {
       </svg>
     )} />));
   return (
-    <div key={key} className={className}>
+    <div className={className}>
       <Tabs defaultSelectedTabId={0}>
         {series}
       </Tabs>

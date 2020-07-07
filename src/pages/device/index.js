@@ -88,10 +88,21 @@ const dummy = {
   }
 }
 
+const dateRange = {
+  'day': 1,
+  '3 day': 3,
+  'week': 7,
+  'month': 30
+}
+
 const Device = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
   const history = useHistory();
+  const [timeRange, setTimeRange] = useState([
+    moment().startOf('day').toDate(),
+    moment().endOf('day').toDate()
+  ]);
   const [device, setDevice] = useState({
     _id: '',
     name: '',
@@ -115,6 +126,15 @@ const Device = () => {
   const eventIdRef = useRef();
   const [contentHeight, setContentHeight] = useState(278);
 
+  const changeTimeRange = useCallback(({ target }) => {
+    const now = moment();
+    const past = moment().subtract(dateRange[target.value], 'days');
+    setTimeRange([
+      past.startOf('day').toDate(),
+      now.endOf('day').toDate()
+    ])
+  }, []);
+
   // Component Did Mount
   useEffect(() => {
     const fetch = async () => {
@@ -123,11 +143,18 @@ const Device = () => {
         await setDevice({ ...device });
         const data = await feathers.dataLake().find({
           query: {
-            $limit: 100,
+            $limit: 10000,
             deviceId: params.id,
-            $select: ['data', 'createdAt']
+            $select: ['data', 'createdAt'],
+            createdAt: {
+              $gte: moment(timeRange[0]).toISOString(),
+              $lte: moment(timeRange[1]).toISOString()
+            }
           }
         })
+
+        console.log(moment(timeRange[0]).toISOString(), moment(timeRange[1]).toISOString());
+        console.log(data);
         setData([...data.data]);
       } catch (e) {
         console.error(e);
@@ -140,7 +167,7 @@ const Device = () => {
     return () => {
       feathers.dataLake().removeListener('created', onDataCreated);
     }
-  }, [params.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [params.id, timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
   const copyToClipboard = useCallback((e) => {
     let eventIdRefCurrent = eventIdRef.current;
     eventIdRefCurrent.select();
@@ -194,7 +221,7 @@ const Device = () => {
                   <H4 className="flex-grow" style={{ margin: 0 }}>Recent Activity</H4>
                   <div>
                     <span>last </span>
-                    <HTMLSelect options={["day", "3 day", "week", "month"]} />
+                    <HTMLSelect options={Object.keys(dateRange)} />
                   </div>
                 </div>
                 <div style={{ height: 127 }}>
@@ -207,7 +234,12 @@ const Device = () => {
                     <Card style={{ padding: 0 }}>
                       <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name} ({v.type})</H5>
                       <div style={{ height: 127 }}>
-                        <BaseTimeseries options={dummy.mini.options} series={[{
+                        <BaseTimeseries options={{
+                          ...dummy.mini.options,
+                          stroke: {
+                            curve: (v.type === 'boolean') ? 'stepline' : 'straight'
+                          }
+                        }} series={[{
                           name: `${v.name} (${v.type})`,
                           data: [...data.map(d => {
                             const dt = transformData(d, 'chart');
@@ -224,7 +256,8 @@ const Device = () => {
                   <H4 className="flex-grow" style={{ margin: 0 }}>Recent Incoming Data</H4>
                   <div>
                     <span>last </span>
-                    <HTMLSelect options={["day", "3 day", "week", "month"]} />
+                    <HTMLSelect options={Object.keys(dateRange)}
+                      onChange={changeTimeRange} />
                   </div>
                 </div>
                 <div className="flex-grow" style={{ position: "relative" }}>

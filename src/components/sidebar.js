@@ -102,7 +102,7 @@ const Comp = ({ className, items }) => {
           content={"Feedback"}
           position="left"
           targetTagName="div">
-          <AnchorButton href="https://github.com/ilomon10/ovor-issue_tracker/issues"
+          <AnchorButton href="https://github.com/ilomon10/ovor-docs/issues"
             minimal fill
             icon="lifesaver"
             rightIcon={isToggled ? "share" : null}

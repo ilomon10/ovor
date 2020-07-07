@@ -74,9 +74,8 @@ const Table = ({ series, ...props }) => {
         if (i === 0) return moment(e.createdAt).calendar();
         if (v.deviceId !== e.deviceId) return "";
         isOk = true;
-        return e.data[v.fieldName];
+        return String(e.data[v.fieldName]);
       })
-      console.log(ret);
       if (!isOk) return;
       setData(d => [
         ...d, ret
