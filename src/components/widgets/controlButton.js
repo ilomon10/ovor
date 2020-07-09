@@ -2,12 +2,36 @@ import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { Button, Classes } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import _uniqBy from 'lodash.uniqby';
+import _merge from 'lodash.merge';
 
-const Control = ({ ...props }) => {
+export const buttonOptions = {
+  iconName: {
+    type: 'oneOf',
+    options: ['blank', 'asterisk', 'lightbulb', 'dot', 'full-circle']
+  },
+  direction: {
+    type: 'oneOf',
+    options: ['vertical', 'horizontal']
+  }
+}
+
+export const buttonConfig = {
+  maxSeries: 3,
+  acceptedType: ['boolean']
+}
+
+const defaultOptions = {
+  iconName: '',
+  direction: 'vertical'
+}
+
+const ControlButton = ({ ...props }) => {
   const feathers = useContext(FeathersContext);
+  const options = _merge(defaultOptions, props.options)
   const [isLoading, setIsLoading] = useState(false);
   const [series, setSeries] = useState([]);
   useEffect(() => {
+    console.log(options);
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
       let devices = await feathers.devices().find({
@@ -87,13 +111,14 @@ const Control = ({ ...props }) => {
   }, [series]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ width: '100%', height: '100%' }} className="flex flex--col">
+    <div style={{ width: '100%', height: '100%' }} className={`flex ${options.direction === 'vertical' ? "flex--col" : "flex--row"}`}>
       {series.map((s, i) => (
         <Button key={i} fill
           className="flex-grow"
           loading={isLoading}
           onClick={() => onClick(s)}
-          intent={s.data ? "success" : "none"}
+          active={s.data}
+          icon={options.iconName}
           text={(<>
             <div className={Classes.TEXT_OVERFLOW_ELLIPSIS}>{s.name}</div>
             <div className={Classes.TEXT_OVERFLOW_ELLIPSIS}>
@@ -105,4 +130,4 @@ const Control = ({ ...props }) => {
   )
 }
 
-export default Control;
+export default ControlButton;

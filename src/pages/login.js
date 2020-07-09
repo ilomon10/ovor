@@ -22,7 +22,7 @@ const Login = () => {
         <div style={{ textAlign: "center", paddingTop: 24, paddingBottom: 12 }}>
           <FontAwesomeIcon style={{ color: Colors.DARK_GRAY4 }} icon={['ovor', 'logo']} size="4x" />
         </div>
-        <H1 style={{ textAlign: "center", fontSize: 22, fontWeight: 'lighter', marginBottom: 15 }}>Masuk ke Ovord</H1>
+        <H1 style={{ textAlign: "center", fontSize: 22, fontWeight: 'lighter', marginBottom: 15 }}>Masuk ke Ovor</H1>
         <Card style={{ marginBottom: 24 }}>
           <Formik
             initialValues={{

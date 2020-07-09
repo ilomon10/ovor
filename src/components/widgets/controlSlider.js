@@ -5,15 +5,16 @@ import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
 
 export const sliderOptions = {
-  max: 'number',
-  min: 'number',
-  stepSize: 'number',
-  vertical: 'boolean',
-  labelStepSize: 'number',
+  max: { type: 'number' },
+  min: { type: 'number' },
+  stepSize: { type: 'number' },
+  vertical: { type: 'boolean' },
+  labelStepSize: { type: 'number' },
 }
 
 export const sliderConfig = {
   maxSeries: 1,
+  acceptedType: ['number']
 }
 
 const defaultOptions = {

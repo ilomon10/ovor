@@ -1,12 +1,12 @@
 import React from 'react';
-import { FormGroup, InputGroup, Switch } from '@blueprintjs/core';
+import { FormGroup, InputGroup, Switch, HTMLSelect } from '@blueprintjs/core';
 
 const SettingsOptions = ({ label, name, type, value, onChange }) => {
-  switch (type) {
+  switch (type.type) {
     case 'number':
       return (
         <FormGroup
-          labelInfo={`(${type})`}
+          labelInfo={`(${type.type})`}
           labelFor={`option-${name}`}
           label={label}>
           <InputGroup
@@ -17,8 +17,20 @@ const SettingsOptions = ({ label, name, type, value, onChange }) => {
             type="number" />
         </FormGroup>);
     case 'boolean':
-      return (<Switch label={`${label} (${type})`} name={name} checked={value}
+      return (<Switch label={`${label} (${type.type})`} name={name} checked={value}
         onChange={onChange} />);
+    case 'oneOf':
+      return (
+        <FormGroup
+          labelInfo={`(${type.type})`}
+          labelFor={`option-${name}`}
+          label={label}>
+          <HTMLSelect
+            name={name}
+            value={value}
+            onChange={onChange}
+            options={type.options} />
+        </FormGroup>);
     default: return type;
   }
 }
