@@ -30,7 +30,7 @@ const App = () => {
     component: Overview,
     exact: true,
     navExact: true
-  },{
+  }, {
     hide: true,
     title: 'Dashboard',
     path: '/dashboards/:id',

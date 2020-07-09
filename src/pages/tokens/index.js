@@ -7,6 +7,7 @@ import InputCopy from 'components/inputCopy';
 import { FeathersContext } from 'components/feathers';
 import GenerateNewToken from './generateNewToken';
 import DeleteToken from './deleteToken';
+import { Helmet } from 'react-helmet';
 
 const Tokens = () => {
   const feathers = useContext(FeathersContext);
@@ -55,62 +56,68 @@ const Tokens = () => {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
-      <Wrapper style={{ overflowY: 'auto' }}>
-        <Container style={{ paddingTop: 16 }}>
-          <div className="flex">
-            <div className="flex-grow">
-              <H2>Access Token</H2>
+    <>
+      <Helmet>
+        <title>Token | Ovor</title>
+        <meta name="description" content="Access token manager" />
+      </Helmet>
+      <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
+        <Wrapper style={{ overflowY: 'auto' }}>
+          <Container style={{ paddingTop: 16 }}>
+            <div className="flex">
+              <div className="flex-grow">
+                <H2>Access Token</H2>
+              </div>
+              <div className="flex-shrink-0">
+                <Button icon="plus"
+                  text="Generate new token"
+                  onClick={() => {
+                    setIsDialogOpen(true);
+                  }} />
+              </div>
             </div>
-            <div className="flex-shrink-0">
-              <Button icon="plus"
-                text="Generate new token"
-                onClick={() => {
-                  setIsDialogOpen(true);
-                }} />
-            </div>
-          </div>
-          <p>You need API access token to configure on device.</p>
-          <HTMLTable style={{ width: '100%' }}>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Token</th>
-                <th>Last modified</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {tokens.data.map(v => (
-                <tr key={v._id}>
-                  <td style={{ verticalAlign: "middle" }}>{v.name}</td>
-                  <td><InputCopy fill small defaultValue={v.key} /></td>
-                  <td style={{ verticalAlign: "middle" }}>{moment(v.updatedAt).calendar()}</td>
-                  <td>
-                    <Button minimal small
-                      intent="danger"
-                      icon="trash"
-                      onClick={() => removeToken(v)} />
-                  </td>
-                </tr>))}
-            </tbody>
-          </HTMLTable>
-          <Dialog
-            title="Generate new token"
-            canOutsideClickClose={false}
-            isOpen={isDialogOpen}
-            onClose={() => setIsDialogOpen(false)}>
-            <GenerateNewToken onClose={() => setIsDialogOpen(false)} />
-          </Dialog>
-          <Dialog
-            title="Delete token"
-            isOpen={typeof selectedToken !== 'undefined'}
-            onClose={() => setSelectedToken(undefined)}>
-            <DeleteToken data={selectedToken} onClose={() => setSelectedToken(undefined)} />
-          </Dialog>
-        </Container>
-      </Wrapper>
-    </div>
+            <p>You need API access token to configure on device.</p>
+            <HTMLTable style={{ width: '100%' }}>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Token</th>
+                  <th>Last modified</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {tokens.data.map(v => (
+                  <tr key={v._id}>
+                    <td style={{ verticalAlign: "middle" }}>{v.name}</td>
+                    <td><InputCopy fill small defaultValue={v.key} /></td>
+                    <td style={{ verticalAlign: "middle" }}>{moment(v.updatedAt).calendar()}</td>
+                    <td>
+                      <Button minimal small
+                        intent="danger"
+                        icon="trash"
+                        onClick={() => removeToken(v)} />
+                    </td>
+                  </tr>))}
+              </tbody>
+            </HTMLTable>
+            <Dialog
+              title="Generate new token"
+              canOutsideClickClose={false}
+              isOpen={isDialogOpen}
+              onClose={() => setIsDialogOpen(false)}>
+              <GenerateNewToken onClose={() => setIsDialogOpen(false)} />
+            </Dialog>
+            <Dialog
+              title="Delete token"
+              isOpen={typeof selectedToken !== 'undefined'}
+              onClose={() => setSelectedToken(undefined)}>
+              <DeleteToken data={selectedToken} onClose={() => setSelectedToken(undefined)} />
+            </Dialog>
+          </Container>
+        </Wrapper>
+      </div>
+    </>
   )
 }
 

@@ -78,7 +78,7 @@ const Comp = ({ className, items }) => {
           targetTagName="div"
           content={(
             <Menu>
-              <Menu.Item disabled icon="cog" text="Preference"/>
+              <Menu.Item disabled icon="cog" text="Preference" />
               <Divider />
               <Menu.Item icon="log-out" text="Logout" onClick={() => {
                 feathers.doLogout().then(() => {
@@ -113,6 +113,7 @@ const Comp = ({ className, items }) => {
         <Divider />
         <Button minimal fill alignText="left"
           icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
+        <div className={Classes.TEXT_MUTED} style={{ textAlign: 'center' }}><small>v0.0.1 {!isToggled ? '' : '(alpha)'}</small></div>
       </div>
     </div >
   )

@@ -19,6 +19,7 @@ import Widget from 'components/widget';
 import { FeathersContext } from 'components/feathers';
 import BSON from 'bson-objectid';
 import DashboardContext from 'components/hocs/dashboard';
+import { Helmet } from 'react-helmet';
 
 const Dashboard = () => {
   const feathers = useContext(FeathersContext);
@@ -102,65 +103,71 @@ const Dashboard = () => {
     return params.id;
   }, [params.id]);
   return (
-    <DashboardContext.Provider value={{ removeWidget, getWidget, getId: getDashboardId }}>
-      <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
-        <Navbar className="flex flex-shrink-0">
-          <Navbar.Group className="flex-grow" style={{ width: 0 }}>
-            <Button icon="chevron-left" onClick={() => { history.goBack() }} />
-            <Navbar.Divider />
-            <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
-              <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
-                <EditableText selectAllOnFocus value={dashboardTitle} onChange={v => setDashboardTitle(v)} />
-              </h4>
-            </Navbar.Heading>
-          </Navbar.Group>
-          <Navbar.Group className="flex-shrink-0">
-            <ControlGroup className="flex--i-center">
-              {watchMode === 'Range' && <>
-                <DateInput style={{ textAlign: 'center' }}
-                  maxDate={moment(timeRange[1]).toDate()}
-                  formatDate={date => moment(date).format('DD-MMM \'YY')}
-                  parseDate={str => moment(str, 'DD-MM \'YY')}
-                  onChange={v => setTimeRange([moment(v).startOf('day').toDate(), timeRange[1]])}
-                  value={timeRange[0]} inputProps={{ size: 6 }} />
-                <span className={Classes.INPUT}>to</span>
-                <DateInput
-                  minDate={moment(timeRange[0]).toDate()}
-                  formatDate={date => moment(date).format('DD-MMM \'YY')}
-                  parseDate={str => moment(str, 'DD-MM \'YY')}
-                  onChange={v => setTimeRange([timeRange[0], moment(v).endOf('day').toDate()])}
-                  value={timeRange[1]} inputProps={{ size: 6 }} />
-              </>}
-              <HTMLSelect options={['Range', 'Live']} value={watchMode} onChange={e => setWatchMode(e.target.value)} />
-            </ControlGroup>
-            <Navbar.Divider />
-            <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
-            <Navbar.Divider />
-            <Button icon="insert" onClick={addNewWindow} text="Add New Window" />
-          </Navbar.Group>
-        </Navbar>
-        <div className="flex-grow">
-          <Mosaic
-            renderTile={(id, path) => {
-              const widget = widgets.find(v => v._id === id);
-              if(typeof widget === 'undefined') return;
-              return (<Widget
-                path={path}
-                tileId={widget._id}
-                title={widget.title}
-                type={widget.type}
-                series={widget.series}
-                options={widget.options}
-                timeRange={watchMode === 'Live' ? null : timeRange} />)
-            }}
-            zeroStateView={<MosaicZeroState createNode={createNode} />}
-            onChange={currentNode => {
-              updateCurrentNodeToDB(currentNode);
-            }}
-            value={currentNode} />
+    <>
+      <Helmet>
+        <title>{dashboardTitle} - Dashboard | Ovor</title>
+        <meta name="description" content="Dashboard view" />
+      </Helmet>
+      <DashboardContext.Provider value={{ removeWidget, getWidget, getId: getDashboardId }}>
+        <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
+          <Navbar className="flex flex-shrink-0">
+            <Navbar.Group className="flex-grow" style={{ width: 0 }}>
+              <Button icon="chevron-left" onClick={() => { history.goBack() }} />
+              <Navbar.Divider />
+              <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
+                <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
+                  <EditableText selectAllOnFocus value={dashboardTitle} onChange={v => setDashboardTitle(v)} />
+                </h4>
+              </Navbar.Heading>
+            </Navbar.Group>
+            <Navbar.Group className="flex-shrink-0">
+              <ControlGroup className="flex--i-center">
+                {watchMode === 'Range' && <>
+                  <DateInput style={{ textAlign: 'center' }}
+                    maxDate={moment(timeRange[1]).toDate()}
+                    formatDate={date => moment(date).format('DD-MMM \'YY')}
+                    parseDate={str => moment(str, 'DD-MM \'YY')}
+                    onChange={v => setTimeRange([moment(v).startOf('day').toDate(), timeRange[1]])}
+                    value={timeRange[0]} inputProps={{ size: 6 }} />
+                  <span className={Classes.INPUT}>to</span>
+                  <DateInput
+                    minDate={moment(timeRange[0]).toDate()}
+                    formatDate={date => moment(date).format('DD-MMM \'YY')}
+                    parseDate={str => moment(str, 'DD-MM \'YY')}
+                    onChange={v => setTimeRange([timeRange[0], moment(v).endOf('day').toDate()])}
+                    value={timeRange[1]} inputProps={{ size: 6 }} />
+                </>}
+                <HTMLSelect options={['Range', 'Live']} value={watchMode} onChange={e => setWatchMode(e.target.value)} />
+              </ControlGroup>
+              <Navbar.Divider />
+              <Button icon="grid-view" onClick={autoArrange} text="Re-arrange" />
+              <Navbar.Divider />
+              <Button icon="insert" onClick={addNewWindow} text="Add New Window" />
+            </Navbar.Group>
+          </Navbar>
+          <div className="flex-grow">
+            <Mosaic
+              renderTile={(id, path) => {
+                const widget = widgets.find(v => v._id === id);
+                if (typeof widget === 'undefined') return;
+                return (<Widget
+                  path={path}
+                  tileId={widget._id}
+                  title={widget.title}
+                  type={widget.type}
+                  series={widget.series}
+                  options={widget.options}
+                  timeRange={watchMode === 'Live' ? null : timeRange} />)
+              }}
+              zeroStateView={<MosaicZeroState createNode={createNode} />}
+              onChange={currentNode => {
+                updateCurrentNodeToDB(currentNode);
+              }}
+              value={currentNode} />
+          </div>
         </div>
-      </div>
-    </DashboardContext.Provider>
+      </DashboardContext.Provider>
+    </>
   )
 }
 
