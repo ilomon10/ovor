@@ -4,11 +4,11 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
+import { FeathersProvider } from 'components/feathers';
 import App from './App';
 import Login from 'pages/login';
 import Register from 'pages/register';
 import PrivateRoute from './components/privateRoute';
-import { FeathersProvider } from 'components/feathers';
 
 const Router = () => {
   return (
