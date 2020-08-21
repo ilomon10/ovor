@@ -3,17 +3,17 @@ import styled from 'styled-components';
 import { Navbar, Colors, ButtonGroup, Button, Classes, Card, FormGroup, InputGroup } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Box } from 'components/utility/grid';
-import utilConst from 'components/utility/constants';
+import { container } from 'components/utility/constants';
+import LinkButton from 'components/linkButton';
 
 const Component = ({ className }) => {
-  console.log(utilConst.container.slice(0, utilConst.container.length - 1));
   return (
     <div className={className}>
       <Navbar>
         <Box px={3}
           mx="auto"
           position="relative"
-          width={utilConst.container}>
+          width={[...container]}>
           <Navbar.Group align="left">
             <Navbar.Heading>
               <FontAwesomeIcon style={{ color: Colors.GRAY1 }} icon={['ovor', 'logo']} size="2x" />
@@ -28,7 +28,7 @@ const Component = ({ className }) => {
             </ButtonGroup>
           </Navbar.Group>
           <Navbar.Group align="right">
-            <Button text="Masuk" minimal />
+            <LinkButton to="/login" text="Masuk" minimal />
             <Navbar.Divider />
             <Button text="Daftar" outlined />
           </Navbar.Group>
@@ -36,15 +36,15 @@ const Component = ({ className }) => {
       </Navbar>
       <Box bg={Colors.DARK_GRAY2}>
         <Box mx="auto" py={5}
-          width={utilConst.container.slice(0, utilConst.container.length - 1)}>
-          <Flex px={3} mx={-3} alignItems="center">
+          width={[container.sm, container.md, container.lg]}>
+          <Flex px={3} mx={-3} alignItems="center" flexDirection={['column', 'row']}>
             <Box px={3} className={Classes.DARK}
-              width={[1 / 5 * 3]}>
+              width={[1 / 9 * 5]}>
               <h1 className={Classes.HEADING}>Menghemat waktu kerja Anda</h1>
               <Box as="p" fontSize={3} opacity={0.5}>Ovor adalah platform yang terinspirasi dari cara Anda bekerja. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu.</Box>
             </Box>
             <Box px={3}
-              width={[1 / 5 * 2]}>
+              width={[1 / 9 * 4]}>
               <Card>
                 <FormGroup label="Nama Lengkap"
                   labelFor="reqister-full_name">
@@ -64,12 +64,6 @@ const Component = ({ className }) => {
                   <InputGroup large type="password"
                     name="password"
                     id="reqister-password" />
-                </FormGroup>
-                <FormGroup label="Verifikasi Password"
-                  labelFor="reqister-confirm_password">
-                  <InputGroup large type="password"
-                    name="confirm-password"
-                    id="reqister-confirm_password" />
                 </FormGroup>
                 <FormGroup
                   helperText={`Dengan menekan tombol "Dapatkan Akses", Anda telah menyetujui syarat dan ketentuan yang berlaku. Kami akan mengirimkan email konfirmasi setelah produk ini rilis. `}>
