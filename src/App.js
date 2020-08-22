@@ -13,6 +13,7 @@ import Devices from 'pages/device/browse';
 import Device from 'pages/device/';
 import Settings from 'pages/settings';
 import Tokens from 'pages/tokens';
+import ReteEngine from 'pages/reteEngine';
 
 const Container = styled.div`
   position: fixed;
@@ -53,6 +54,12 @@ const App = () => {
     icon: 'helper-management',
     path: '/devices',
     component: Devices,
+    exact: true
+  }, {
+    title: 'Rete Engine',
+    icon: 'graph',
+    path: '/rete',
+    component: ReteEngine,
     exact: true
   }, {
     title: 'Tokens',

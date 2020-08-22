@@ -7,6 +7,7 @@ import Wrapper from 'components/wrapper';
 import AddNewDevice from './addNewDevice';
 import { FeathersContext } from 'components/feathers';
 import { Helmet } from 'react-helmet';
+import { Box } from 'components/utility/grid';
 
 const Devices = () => {
   const feathers = useContext(FeathersContext);
@@ -48,7 +49,8 @@ const Devices = () => {
           <Container style={{ paddingTop: 12 }}>
             {list.length > 0 &&
               <div style={{ padding: '0 8px' }} className="flex flex--wrap">
-                <div style={{ width: `${100 / 4}%`, padding: "0 8px", marginBottom: 16 }}>
+                <Box width={[1, 1 / 2, 1 / 3, 1 / 4]}
+                  px={2} mb={3}>
                   <Card interactive
                     style={{ backgroundColor: "transparent" }}
                     onClick={() => setIsDialogOpen(true)}>
@@ -58,10 +60,11 @@ const Devices = () => {
                       </div>
                     </AspectRatio>
                   </Card>
-                </div>
+                </Box>
                 {list.map((v) =>
-                  (<div key={v._id}
-                    style={{ width: `${100 / 4}%`, padding: "0 8px", marginBottom: 16 }}>
+                  (<Box key={v._id}
+                    width={[1, 1 / 2, 1 / 3, 1 / 4]}
+                    px={2} mb={3}>
                     <Card interactive onClick={() => history.push(`/devices/${v._id}`)}>
                       <AspectRatio ratio="4:3">
                         <div className="flex flex--col" style={{ height: "100%" }}>
@@ -88,7 +91,7 @@ const Devices = () => {
                         </div>
                       </AspectRatio>
                     </Card>
-                  </div>))}
+                  </Box>))}
               </div>}
             {list.length === 0 &&
               <NonIdealState

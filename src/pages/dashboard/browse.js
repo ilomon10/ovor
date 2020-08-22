@@ -8,6 +8,7 @@ import Container from "components/container";
 import { FeathersContext } from 'components/feathers';
 import AddNewDashboard from "./addNewDashboard";
 import { Helmet } from "react-helmet";
+import { Box } from "components/utility/grid";
 
 const Dashboards = () => {
   const feathers = useContext(FeathersContext);
@@ -44,33 +45,39 @@ const Dashboards = () => {
           <Container style={{ paddingTop: 24 }}>
             {list.length > 0 &&
               <div style={{ margin: "0 -8px" }} className="flex flex--wrap">
-                <div style={{ width: `${100 / 3}%`, padding: "0 8px", marginBottom: 16 }}>
+                <Box width={[1, 1 / 2, 1 / 3]}
+                  px={2} mb={3}>
                   <Card interactive onClick={() => setIsDialogOpen(true)}
                     style={{ padding: 0, height: '100%', backgroundColor: "transparent" }}>
-                    <div className="flex flex--i-center flex--j-center" style={{ height: "100%" }}>
-                      <Icon icon="plus" iconSize={64} color={Colors.GRAY1} />
-                    </div>
-                  </Card>
-                </div>
-                {list.map((v) => (
-                  <div key={v._id}
-                    style={{ width: `${100 / 3}%`, padding: "0 8px", marginBottom: 16 }}>
-                    <Card style={{ padding: 0 }}>
-                      <AspectRatio ratio="16:9">
-                        <img style={{ height: '100%', width: '100%', display: 'block', backgroundColor: Colors.LIGHT_GRAY3 }} alt="boo" />
-                      </AspectRatio>
-                      <div style={{ padding: "8px 15px" }}>
-                        <h6 className={`${Classes.HEADING}`}>
-                          <Link to={`/dashboards/${v._id}`}
-                            className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
-                            style={{ display: 'block' }}>
-                            {v.title}
-                          </Link>
-                        </h6>
-                        <p style={{ margin: 0 }}>{moment(v.updatedAt).format('LLLL')}</p>
+                    <AspectRatio ratio="4:3">
+                      <div className="flex flex--i-center flex--j-center" style={{ height: "100%" }}>
+                        <Icon icon="plus" iconSize={64} color={Colors.GRAY1} />
                       </div>
+                    </AspectRatio>
+                  </Card>
+                </Box>
+                {list.map((v) => (
+                  <Box key={v._id}
+                    width={[1, 1 / 2, 1 / 3]}
+                    px={2} mb={3}>
+                    <Card style={{ padding: 0 }}>
+                      <AspectRatio ratio="4:3">
+                        <img style={{ height: '100%', width: '100%', display: 'block', backgroundColor: Colors.LIGHT_GRAY3 }} alt="boo" />
+                        <Box bg="white"
+                          style={{ position: "absolute", right: 0, bottom: 0, left: 0 }}
+                          px={3} py={2}>
+                          <h6 className={`${Classes.HEADING}`}>
+                            <Link to={`/dashboards/${v._id}`}
+                              className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
+                              style={{ display: 'block' }}>
+                              {v.title}
+                            </Link>
+                          </h6>
+                          <p style={{ margin: 0 }}>{moment(v.updatedAt).format('LLLL')}</p>
+                        </Box>
+                      </AspectRatio>
                     </Card>
-                  </div>
+                  </Box>
                 ))}
               </div>}
             {list.length === 0 &&
