@@ -6,7 +6,7 @@ import { numSocket } from './sockets';
 
 class OutputComponent extends Rete.Component {
   constructor() {
-    super("OutputGroup");
+    super("GroupOutput");
     this.data.component = Node; // optional
   }
 

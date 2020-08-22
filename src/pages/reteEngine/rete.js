@@ -59,23 +59,20 @@ export async function createEditor(container) {
   var i1 = await components[0].createNode();
   var o1 = await components[1].createNode();
   var n1 = await components[2].createNode({ num: 2 });
-  var n2 = await components[2].createNode({ num: 3 });
   var opr = await components[3].createNode({});
 
   i1.position = [80, 0];
   o1.position = [800, 200];
   n1.position = [80, 200];
-  n2.position = [80, 400];
-  opr.position = [500, 240];
+  opr.position = [500, 200];
 
   editor.addNode(i1);
   editor.addNode(o1);
   editor.addNode(n1);
-  editor.addNode(n2);
   editor.addNode(opr);
 
   editor.connect(n1.outputs.get("num"), opr.inputs.get("num1"));
-  editor.connect(n2.outputs.get("num"), opr.inputs.get("num2"));
+  editor.connect(i1.outputs.get("num"), opr.inputs.get("num2"));
   editor.connect(opr.outputs.get("num"), o1.inputs.get("num1"));
 
   editor.on(
@@ -86,7 +83,6 @@ export async function createEditor(container) {
       await engine.process(editor.toJSON());
     }
   );
-  console.log(editor.toJSON());
 
   editor.view.resize();
   editor.trigger("process");

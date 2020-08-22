@@ -34,7 +34,6 @@ class OperationComponent extends Rete.Component {
   worker(node, inputs, outputs) {
     var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
     var n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
-    console.log(node);
     let sum = 0;
     switch (node.data.type) {
       case 'Add':
