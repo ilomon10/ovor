@@ -13,7 +13,7 @@ const Component = ({ className }) => {
         <Box px={3}
           mx="auto"
           position="relative"
-          width={[...container]}>
+          maxWidth={[...container]}>
           <Navbar.Group align="left">
             <Navbar.Heading>
               <FontAwesomeIcon style={{ color: Colors.GRAY1 }} icon={['ovor', 'logo']} size="2x" />
@@ -36,15 +36,15 @@ const Component = ({ className }) => {
       </Navbar>
       <Box bg={Colors.DARK_GRAY2}>
         <Box mx="auto" py={5}
-          width={[container.sm, container.md, container.lg]}>
-          <Flex px={3} mx={-3} alignItems="center" flexDirection={['column', 'row']}>
+          maxWidth={[container.sm, container.md, container.lg]}>
+          <Flex px={3} mx={-3} alignItems="center" flexDirection={['column', 'row']} >
             <Box px={3} className={Classes.DARK}
-              width={[1 / 9 * 5]}>
+              width={[1, 1 / 2, 1 / 9 * 5]} textAlign={['center', 'left']}>
               <h1 className={Classes.HEADING}>Menghemat waktu kerja Anda</h1>
               <Box as="p" fontSize={3} opacity={0.5}>Ovor adalah platform yang terinspirasi dari cara Anda bekerja. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu.</Box>
             </Box>
             <Box px={3}
-              width={[1 / 9 * 4]}>
+              width={[1, 1 / 2, 1 / 9 * 4]}>
               <Card>
                 <FormGroup label="Nama Lengkap"
                   labelFor="reqister-full_name">

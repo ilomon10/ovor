@@ -47,6 +47,7 @@ export async function createEditor(container) {
   background.classList = 'background';
   background.style.backgroundImage = `url(${backgroundImage})`;
   background.style.opacity = 0.05;
+  
   editor.use(AreaPlugin, { background });
 
   var engine = new Rete.Engine("demo@0.1.0");
