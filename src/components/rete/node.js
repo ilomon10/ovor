@@ -8,18 +8,23 @@ const NodeStyle = styled(Box)`
   border-radius: 8px;
   box-shadow: 0px 0px 0px 0px ${Colors.BLUE1};
   && {
-    background-color: ${Colors.GRAY1};
+    background-color: ${Colors.WHITE};
     border: 1px solid ${Colors.DARK_GRAY1};
   }
   &.selected {
     box-shadow: 0px 0px 0px 4px ${Colors.GOLD4};
+  }
+  & .input-title {
+    color: ${Colors.DARK_GRAY1};
+  }
+  & .input > .input-control {
+    padding: 5px 0;
   }
 `
 
 const SocketStyle = styled(Box)`
   height: 16px;
   width: 16px;
-  margin: 8px;
   background-color: ${Colors.GRAY5};
   &.used {
     background-color: ${Colors.COBALT3};
@@ -43,6 +48,7 @@ export class Socket extends RSocket {
     const { socket, type, used } = this.props;
     return (
       <SocketStyle className={`socket ${type} ${used ? 'used' : ''} ${kebab(socket.name)}`}
+        m={2}
         title={socket.name}
         ref={el => this.createRef(el)} // force update for new IO with a same key 
       />
@@ -59,14 +65,20 @@ export class Node extends RNode {
         <Box p={2}
           color={"white"}
           fontSize={1}
-          style={{ borderRadius: "8px 8px 0 0" }}
+          style={{ borderRadius: "7px 7px 0 0" }}
           bg={node.meta.color}>
           {node.name}
         </Box>
         {/* Outputs */}
         {outputs.map(output => (
           <div className="output" key={output.key}>
-            <div className="output-title">{output.name}</div>
+            <Box p={2} m={0}
+              display={"inline-block"}
+              verticalAlign={'middle'}
+              lineHeight={'24px'}
+              color={Colors.DARK_GRAY1}
+              fontSize={1}
+            >{output.name}</Box>
             <Socket
               type="output"
               used={output.connections.length > 0}
@@ -96,7 +108,13 @@ export class Node extends RNode {
               innerRef={bindSocket}
             />
             {!input.showControl() && (
-              <div className="input-title">{input.name}</div>
+              <Box p={2} m={0}
+                verticalAlign={'middle'}
+                display={"inline-block"}
+                lineHeight={'24px'}
+                color={Colors.DARK_GRAY1}
+                fontSize={1}
+              >{input.name}</Box>
             )}
             {input.showControl() && (
               <Control

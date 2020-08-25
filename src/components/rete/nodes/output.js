@@ -1,8 +1,7 @@
 import Rete from "rete";
 import { Colors } from "@blueprintjs/core";
 import { Node } from "../node";
-import NumControl from '../controls/numeric';
-import { numSocket } from './sockets';
+import { NumberSocket, TimestampSocket } from '../sockets';
 
 class OutputComponent extends Rete.Component {
   constructor() {
@@ -12,13 +11,28 @@ class OutputComponent extends Rete.Component {
 
   builder(node) {
     node.meta.color = Colors.DARK_GRAY1;
-    var inp1 = new Rete.Input("num1", "Number", numSocket);
 
-    inp1.addControl(new NumControl(this.editor, "num1", node));
+    if (node.data.meta) {
+      const meta = node.data.meta;
+      meta.inputs.forEach(({ key, name, type }) => {
+        let socket;
+        switch (type) {
+          case 'number':
+            socket = NumberSocket;
+            break;
+          case 'timestamp':
+            socket = TimestampSocket;
+            break;
+          case 'string':
+            break;
+          default:
+            break;
+        }
+        node.addInput(new Rete.Input(key, `${name}-${type}`, socket))
+      })
+    }
 
-    return node
-      .addInput(inp1)
-      .addControl(new NumControl(this.editor, "preview", node, true));
+    return node;
   }
 
   worker(node, inputs, outputs) {

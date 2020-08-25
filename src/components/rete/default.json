@@ -1,0 +1,95 @@
+{
+  "id": "demo@0.1.0",
+  "nodes": {
+    "1": {
+      "id": 1,
+      "data": {
+        "meta": {
+          "outputs": [
+            {
+              "key": "temp",
+              "name": "temperature",
+              "type": "number"
+            },
+            {
+              "key": "time",
+              "name": "timestamp",
+              "type": "timestamp"
+            }
+          ]
+        }
+      },
+      "inputs": {},
+      "outputs": {
+        "temp": {
+          "connections": [
+            {
+              "node": 2,
+              "input": "temp",
+              "data": {}
+            }
+          ]
+        },
+        "time": {
+          "connections": [
+            {
+              "node": 2,
+              "input": "time",
+              "data": {}
+            }
+          ]
+        }
+      },
+      "position": [
+        80,
+        0
+      ],
+      "name": "GroupInput"
+    },
+    "2": {
+      "id": 2,
+      "data": {
+        "meta": {
+          "inputs": [
+            {
+              "key": "temp",
+              "name": "temperature",
+              "type": "number"
+            },
+            {
+              "key": "time",
+              "name": "timestamp",
+              "type": "timestamp"
+            }
+          ]
+        }
+      },
+      "inputs": {
+        "temp": {
+          "connections": [
+            {
+              "node": 1,
+              "output": "temp",
+              "data": {}
+            }
+          ]
+        },
+        "time": {
+          "connections": [
+            {
+              "node": 1,
+              "output": "time",
+              "data": {}
+            }
+          ]
+        }
+      },
+      "outputs": {},
+      "position": [
+        600,
+        80
+      ],
+      "name": "GroupOutput"
+    }
+  }
+}

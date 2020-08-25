@@ -1,11 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import Canvas from './canvas';
+import { ReteEngineProvider } from 'components/hocs/reteEngine';
 
 const Component = ({ className }) => {
   return (
     <div className={className}>
-      <Canvas />
+      <ReteEngineProvider>
+        <Canvas />
+      </ReteEngineProvider>
     </div>
   )
 }

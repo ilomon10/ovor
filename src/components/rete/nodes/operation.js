@@ -2,7 +2,7 @@ import Rete from "rete";
 import { Colors } from "@blueprintjs/core";
 import { Node } from "../node";
 import NumControl from '../controls/numeric';
-import { numSocket } from './sockets';
+import { NumberSocket } from '../sockets';
 import SelectControl from "../controls/select";
 
 class OperationComponent extends Rete.Component {
@@ -16,9 +16,9 @@ class OperationComponent extends Rete.Component {
       node.meta.type = node.data.meta.type;
     }
     node.meta.color = Colors.VERMILION1;
-    var inp1 = new Rete.Input("num1", "Number", numSocket);
-    var inp2 = new Rete.Input("num2", "Number2", numSocket);
-    var out = new Rete.Output("num", "Number", numSocket);
+    var inp1 = new Rete.Input("num1", "Number", NumberSocket);
+    var inp2 = new Rete.Input("num2", "Number2", NumberSocket);
+    var out = new Rete.Output("num", "Number", NumberSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
     inp2.addControl(new NumControl(this.editor, "num2", node));
