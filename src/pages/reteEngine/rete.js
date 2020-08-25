@@ -1,3 +1,7 @@
+/*
+  Just for Reference
+*/
+
 import Rete from "rete";
 import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
@@ -42,12 +46,16 @@ export async function createEditor(container) {
   var editor = new Rete.NodeEditor("demo@0.1.0", container);
   editor.use(ConnectionPlugin);
   editor.use(ReactRenderPlugin);
+  editor.use(DockPlugin, {
+    container: document.querySelector('.rete-dock'),
+    plugins: [ReactRenderPlugin]
+  });
 
   const background = document.createElement('div');
   background.classList = 'background';
   background.style.backgroundImage = `url(${backgroundImage})`;
   background.style.opacity = 0.05;
-  
+
   editor.use(AreaPlugin, { background });
 
   var engine = new Rete.Engine("demo@0.1.0");
@@ -79,7 +87,6 @@ export async function createEditor(container) {
   editor.on(
     "process nodecreated noderemoved connectioncreated connectionremoved",
     async () => {
-      console.log("process");
       await engine.abort();
       await engine.process(editor.toJSON());
     }

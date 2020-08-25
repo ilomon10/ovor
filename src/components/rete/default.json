@@ -10,6 +10,10 @@
               "key": "temp",
               "name": "temperature",
               "type": "number"
+            },{
+              "key": "humi",
+              "name": "humidity",
+              "type": "number"
             },
             {
               "key": "time",

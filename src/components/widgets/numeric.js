@@ -11,7 +11,6 @@ const Numeric = ({ ...props }) => {
   useEffect(() => {
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
-      console.log(deviceIds);
       const devices = await feathers.devices().find({
         query: {
           _id: { $in: deviceIds },
@@ -57,7 +56,6 @@ const Numeric = ({ ...props }) => {
   useEffect(() => {
     if (props.timeRange) return;
     const onDataCreated = (e) => {
-      console.log(e);
       setSeries(series => ([
         ...series.map(s => {
           if (s.device !== e.deviceId) return s;

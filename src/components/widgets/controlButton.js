@@ -31,7 +31,6 @@ const ControlButton = ({ ...props }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [series, setSeries] = useState([]);
   useEffect(() => {
-    console.log(options);
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
       let devices = await feathers.devices().find({

@@ -5,13 +5,17 @@ import { NumberSocket } from '../sockets';
 import { Node } from "../node";
 
 class NumericComponent extends Rete.Component {
-  constructor() {
+  constructor(config) {
     super("Number");
     this.data.component = Node; // optional
+    this.config = {
+      ...config,
+      color: Colors.ORANGE1
+    }
   }
 
   builder(node) {
-    node.meta.color = Colors.ORANGE1;
+    node.meta.color = this.config.color;
     var out1 = new Rete.Output("num", "Number", NumberSocket);
     var ctrl = new NumericControl(this.editor, "num", node);
 

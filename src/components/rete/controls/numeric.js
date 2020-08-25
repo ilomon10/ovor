@@ -3,14 +3,15 @@ import Rete from "rete";
 import { InputGroup } from '@blueprintjs/core';
 
 class NumericControl extends Rete.Control {
-  static component = ({ value, onChange }) => (
+  static component = ({ value, onChange, readonly }) => (
     <InputGroup
       type="number"
+      readOnly={readonly}
       value={value}
       elementRef={ref => {
         ref && ref.addEventListener("pointerdown", e => e.stopPropagation());
       }}
-      onChange={e => onChange(+e.target.value)}
+      onChange={e => onChange(Number(e.target.value))}
     />
   );
 

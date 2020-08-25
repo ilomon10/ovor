@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import ReteJS from "rete";
 import AreaPlugin from "rete-area-plugin";
 import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
+import DockPlugin from "rete-dock-plugin";
+
 import InputComponent from 'components/rete/nodes/input';
 import OutputComponent from 'components/rete/nodes/output';
 import OperationComponent from 'components/rete/nodes/operation';
@@ -11,24 +13,17 @@ import backgroundImage from '../../assets/bg-editor.png';
 
 const ReteEngineContext = React.createContext(null);
 
-class Rete {
-  constructor() {
-    this.engine = new ReteJS.Engine("demo@0.1.0");
-    this.editor = null;
-    this.components = [
-      new InputComponent(),
-      new OutputComponent(),
-      new NumericComponent(),
-      new OperationComponent()
-    ];
-  }
-
-  createEditor(container) {
-
-    const components = this.components;
+export const ReteEngineProvider = ({ children }) => {
+  const [editor, setEditor] = useState(null);
+  const [engine] = useState(new ReteJS.Engine("demo@0.1.0"));
+  const [components] = useState([
+    new InputComponent(),
+    new OutputComponent(),
+    new NumericComponent(),
+    new OperationComponent()
+  ]);
+  const createEditor = useCallback((container) => {
     const editor = new ReteJS.NodeEditor("demo@0.1.0", container);
-    this.editor = editor;
-
     editor.use(ConnectionPlugin);
     editor.use(ReactRenderPlugin);
 
@@ -39,23 +34,28 @@ class Rete {
 
     editor.use(AreaPlugin, { background });
 
-    const engine = this.engine;
-
     components.forEach(c => {
-      editor.register(c);
-      engine.register(c);
+      try {
+        editor.register(c);
+        engine.register(c);
+      } catch (e) {
+        return;
+      }
     });
 
     editor.view.resize();
     // editor.trigger("process");
     // AreaPlugin.zoomAt(editor, editor.nodes);
+    setEditor(editor);
     return editor;
-  }
-}
-
-export const ReteEngineProvider = ({ children }) => {
+  }, []);
   return (
-    <ReteEngineContext.Provider value={new Rete()}>
+    <ReteEngineContext.Provider value={{
+      createEditor,
+      editor,
+      engine,
+      components
+    }}>
       {children}
     </ReteEngineContext.Provider>
   )

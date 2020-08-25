@@ -33,7 +33,6 @@ const Control = ({ ...props }) => {
   useEffect(() => {
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
-      console.log(deviceIds);
       const devices = await feathers.devices().find({
         query: {
           _id: { $in: deviceIds },

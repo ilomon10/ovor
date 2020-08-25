@@ -35,6 +35,7 @@
     "rete": "^1.4.4",
     "rete-area-plugin": "^0.2.1",
     "rete-connection-plugin": "^0.9.0",
+    "rete-dock-plugin": "^0.2.1",
     "rete-react-render-plugin": "^0.2.1",
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.1.1",

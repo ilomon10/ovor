@@ -6,16 +6,20 @@ import { NumberSocket } from '../sockets';
 import SelectControl from "../controls/select";
 
 class OperationComponent extends Rete.Component {
-  constructor() {
+  constructor(config) {
     super("Operation");
     this.data.component = Node; // optional
+    this.config = {
+      ...config,
+      color: Colors.VERMILION1
+    }
   }
 
   builder(node) {
     if (node.data.meta) {
       node.meta.type = node.data.meta.type;
     }
-    node.meta.color = Colors.VERMILION1;
+    node.meta.color = this.config.color;
     var inp1 = new Rete.Input("num1", "Number", NumberSocket);
     var inp2 = new Rete.Input("num2", "Number2", NumberSocket);
     var out = new Rete.Output("num", "Number", NumberSocket);
