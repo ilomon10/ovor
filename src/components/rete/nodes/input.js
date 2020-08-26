@@ -16,9 +16,8 @@ class InputComponent extends Rete.Component {
 
   builder(node) {
     node.meta.color = this.config.color;
-    if (node.data.meta) {
-      const meta = node.data.meta;
-      let outputs = meta.outputs;
+    if (this.config.outputs) {
+      const outputs = this.config.outputs;
       outputs.forEach(({ key, name, type }) => {
         let socket;
         switch (type) {
@@ -33,7 +32,7 @@ class InputComponent extends Rete.Component {
           default:
             break;
         }
-        node.addOutput(new Rete.Output(key, `${name}-${type}`, socket))
+        node.addOutput(new Rete.Output(key, `${name}`, socket))
       })
     }
 

@@ -30,7 +30,8 @@ const Components = ({ className }) => {
     }
     if (rete.editor) {
       onCreateEditor();
-      rete.editor.on('contextmenu', ({ e, node }) => {
+      const { editor } = rete;
+      editor.on('contextmenu', ({ e, node }) => {
         e.preventDefault();
         e.stopPropagation();
         let menus = [{
@@ -43,10 +44,14 @@ const Components = ({ className }) => {
             text: "Delete",
             intent: "danger",
             icon: "trash",
-            onClick: () => { rete.editor.removeNode(node) }
+            onClick: () => { editor.removeNode(node) }
           };
-          if (['GroupInput', 'GroupOutput'].indexOf(node.name) !== -1)
+          if (['GroupInput', 'GroupOutput'].indexOf(node.name) !== -1) {
             item.disabled = true;
+            if (editor.nodes.filter((v) => v.name === node.name).length > 1) {
+              item.disabled = false;
+            }
+          }
           menus.push(item);
         }
         const menu = (

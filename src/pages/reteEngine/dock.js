@@ -11,7 +11,7 @@ const Component = ({ className }) => {
     const onCreateEditor = async () => {
       const { editor } = rete;
       editor.view.container.addEventListener('dragover', e => e.preventDefault())
-      editor.view.container.addEventListener('drop', async e => {
+      editor.view.container.addEventListener('drop', async (e) => {
         if (!e.dataTransfer) return;
         const name = e.dataTransfer.getData('componentName');
         const component = editor.components.get(name);
@@ -29,7 +29,7 @@ const Component = ({ className }) => {
       onCreateEditor();
     }
 
-  }, [rete.editor]);
+  }, [rete]);
   const onDragStart = useCallback((e, cname) => {
     e.dataTransfer.setData('componentName', cname)
   }, []);

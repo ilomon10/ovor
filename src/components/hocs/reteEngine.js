@@ -3,25 +3,14 @@ import ReteJS from "rete";
 import AreaPlugin from "rete-area-plugin";
 import ReactRenderPlugin from "rete-react-render-plugin";
 import ConnectionPlugin from "rete-connection-plugin";
-import DockPlugin from "rete-dock-plugin";
 
-import InputComponent from 'components/rete/nodes/input';
-import OutputComponent from 'components/rete/nodes/output';
-import OperationComponent from 'components/rete/nodes/operation';
-import NumericComponent from 'components/rete/nodes/numeric';
 import backgroundImage from '../../assets/bg-editor.png';
 
 const ReteEngineContext = React.createContext(null);
 
-export const ReteEngineProvider = ({ children }) => {
+export const ReteEngineProvider = ({ children, components }) => {
   const [editor, setEditor] = useState(null);
   const [engine] = useState(new ReteJS.Engine("demo@0.1.0"));
-  const [components] = useState([
-    new InputComponent(),
-    new OutputComponent(),
-    new NumericComponent(),
-    new OperationComponent()
-  ]);
   const createEditor = useCallback((container) => {
     const editor = new ReteJS.NodeEditor("demo@0.1.0", container);
     editor.use(ConnectionPlugin);
@@ -48,7 +37,7 @@ export const ReteEngineProvider = ({ children }) => {
     // AreaPlugin.zoomAt(editor, editor.nodes);
     setEditor(editor);
     return editor;
-  }, []);
+  }, [components]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <ReteEngineContext.Provider value={{
       createEditor,

@@ -3,26 +3,7 @@
   "nodes": {
     "1": {
       "id": 1,
-      "data": {
-        "meta": {
-          "outputs": [
-            {
-              "key": "temp",
-              "name": "temperature",
-              "type": "number"
-            },{
-              "key": "humi",
-              "name": "humidity",
-              "type": "number"
-            },
-            {
-              "key": "time",
-              "name": "timestamp",
-              "type": "timestamp"
-            }
-          ]
-        }
-      },
+      "data": {},
       "inputs": {},
       "outputs": {
         "temp": {
@@ -52,22 +33,7 @@
     },
     "2": {
       "id": 2,
-      "data": {
-        "meta": {
-          "inputs": [
-            {
-              "key": "temp",
-              "name": "temperature",
-              "type": "number"
-            },
-            {
-              "key": "time",
-              "name": "timestamp",
-              "type": "timestamp"
-            }
-          ]
-        }
-      },
+      "data": {},
       "inputs": {
         "temp": {
           "connections": [
