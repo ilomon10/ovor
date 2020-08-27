@@ -23,21 +23,11 @@ export const ReteEngineProvider = ({ children, components }) => {
 
     editor.use(AreaPlugin, { background });
 
-    components.forEach(c => {
-      try {
-        editor.register(c);
-        engine.register(c);
-      } catch (e) {
-        return;
-      }
-    });
-
     editor.view.resize();
-    // editor.trigger("process");
-    // AreaPlugin.zoomAt(editor, editor.nodes);
+
     setEditor(editor);
     return editor;
-  }, [components]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <ReteEngineContext.Provider value={{
       createEditor,

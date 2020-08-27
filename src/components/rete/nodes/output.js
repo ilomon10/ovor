@@ -15,7 +15,6 @@ class OutputComponent extends Rete.Component {
 
   builder(node) {
     node.meta.color = this.config.color;
-
     if (this.config.inputs) {
       const inputs = this.config.inputs;
       inputs.forEach(({ key, name, type }) => {
@@ -35,12 +34,13 @@ class OutputComponent extends Rete.Component {
         node.addInput(new Rete.Input(key, `${name}`, socket))
       })
     }
-
     return node;
   }
 
   worker(node, inputs, outputs) {
-    outputs["num"] = 0;
+    Object.keys(inputs).forEach((key)=> {
+      node.data[key] = inputs[key][0];
+    })
   }
 }
 

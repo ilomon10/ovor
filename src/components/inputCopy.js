@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useState } from 'react';
 import { ControlGroup, InputGroup, Button, Tooltip } from '@blueprintjs/core';
 
-const InputCopy = ({ defaultValue, size, fill, small }) => {
+const InputCopy = ({ defaultValue, value, size, fill, small }) => {
   const eventRef = useRef();
   const [isClicked, setIsClicked] = useState(false);
   const selectAll = useCallback(() => {
@@ -22,7 +22,8 @@ const InputCopy = ({ defaultValue, size, fill, small }) => {
         inputRef={eventRef}
         size={size}
         onClick={selectAll}
-        defaultValue={defaultValue} />
+        defaultValue={defaultValue}
+        value={value} />
       <Tooltip
         usePortal={false}
         isOpen={isClicked}

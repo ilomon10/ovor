@@ -1,6 +1,6 @@
-import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, InputGroup, ControlGroup, Button, ResizeSensor } from '@blueprintjs/core';
+import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider } from '@blueprintjs/core';
 import Table from 'components/exp.table';
 import BaseTimeseries from 'components/widgets/baseTimeseries';
 import BaseBarChart from 'components/widgets/baseBarChart';
@@ -10,6 +10,7 @@ import Wrapper from 'components/wrapper';
 import Container from 'components/container';
 import { FeathersContext } from 'components/feathers';
 import { Helmet } from 'react-helmet';
+import InputCopy from 'components/inputCopy';
 
 const dummy = {
   incoming: {
@@ -124,7 +125,7 @@ const Device = () => {
     });
     return ([moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...fields]);
   }, [device.fields]);
-  const eventIdRef = useRef();
+
   const [contentHeight, setContentHeight] = useState(278);
 
   const changeTimeRange = useCallback(({ target }) => {
@@ -166,12 +167,6 @@ const Device = () => {
       feathers.dataLake().removeListener('created', onDataCreated);
     }
   }, [params.id, timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
-  const copyToClipboard = useCallback((e) => {
-    let eventIdRefCurrent = eventIdRef.current;
-    eventIdRefCurrent.select();
-    document.execCommand('copy');
-    e.target.focus();
-  }, [eventIdRef]);
   return (
     <>
       <Helmet>
@@ -205,11 +200,10 @@ const Device = () => {
                 <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
               </div>
               <div style={{ marginLeft: 8 }}>
-                <ControlGroup>
-                  <InputGroup size="24" readOnly defaultValue={device._id} inputRef={eventIdRef} />
-                  <Button icon="clipboard" onClick={copyToClipboard} />
-                </ControlGroup>
+                <InputCopy size="24" value={`${device._id}`} />
               </div>
+              <NavbarDivider />
+              <Button icon="graph" onClick={() => history.push(`/rete/${device.reteId}`, { device })} />
             </Navbar.Group>
           </div>
         </Navbar>

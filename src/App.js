@@ -44,6 +44,12 @@ const App = () => {
     component: Device,
     exact: true
   }, {
+    hide: true,
+    title: 'Rete Engine',
+    icon: 'graph',
+    path: '/rete/:id',
+    component: ReteEngine,
+  }, {
     title: 'Dashboards',
     icon: 'application',
     path: '/dashboards',
@@ -54,12 +60,6 @@ const App = () => {
     icon: 'helper-management',
     path: '/devices',
     component: Devices,
-    exact: true
-  }, {
-    title: 'Rete Engine',
-    icon: 'graph',
-    path: '/rete',
-    component: ReteEngine,
     exact: true
   }, {
     title: 'Tokens',

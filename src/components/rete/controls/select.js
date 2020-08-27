@@ -19,7 +19,7 @@ class SelectControl extends Rete.Control {
     this.key = key;
     this.component = SelectControl.component;
 
-    const initial = node.data[key] || 'Add';
+    const initial = node.data[key];
 
     node.data[key] = initial;
     this.props = {

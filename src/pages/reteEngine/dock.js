@@ -8,10 +8,13 @@ const Component = ({ className }) => {
   const rete = useContext(ReteEngineContext);
   const ref = useRef(null);
   useEffect(() => {
-    const onCreateEditor = async () => {
-      const { editor } = rete;
-      editor.view.container.addEventListener('dragover', e => e.preventDefault())
-      editor.view.container.addEventListener('drop', async (e) => {
+    if (!rete.editor) return;
+    const { editor } = rete;
+    const handlers = [
+      (e) => {
+        e.preventDefault();
+      },
+      async (e) => {
         if (!e.dataTransfer) return;
         const name = e.dataTransfer.getData('componentName');
         const component = editor.components.get(name);
@@ -20,15 +23,18 @@ const Component = ({ className }) => {
 
         editor.view.area.pointermove(e);
         const node = await component.createNode({});
-        const point = editor.view.area.mouse
+        const point = editor.view.area.mouse;
         node.position = [point.x, point.y];
         editor.addNode(node);
-      })
-    }
-    if (rete.editor) {
-      onCreateEditor();
-    }
+      }];
 
+    editor.view.container.addEventListener('dragover', handlers[0]);
+    editor.view.container.addEventListener('drop', handlers[1]);
+
+    return () => {
+      editor.view.container.removeEventListener('dragover', handlers[0]);
+      editor.view.container.removeEventListener('drop', handlers[1]);
+    }
   }, [rete]);
   const onDragStart = useCallback((e, cname) => {
     e.dataTransfer.setData('componentName', cname)
@@ -38,6 +44,7 @@ const Component = ({ className }) => {
       <Menu>
         {rete.components.map((c, i) => (
           <Menu.Item text={c.name} key={i}
+            style={{ cursor: "initial" }}
             draggable
             onDragStart={(e) => onDragStart(e, c.name)}
             labelElement={<Icon icon="drag-handle-vertical"

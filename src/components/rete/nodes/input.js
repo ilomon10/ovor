@@ -40,11 +40,9 @@ class InputComponent extends Rete.Component {
   }
 
   worker(node, inputs, outputs) {
-    if (node.data.meta) {
-      node.data.meta.outputs.forEach(s => {
-        outputs[s.key] = 1;
-      })
-    }
+    this.config.outputs.forEach(s => {
+      outputs[s.key] = 0;
+    })
   }
 }
 
