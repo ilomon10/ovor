@@ -19,6 +19,7 @@ export const ReteEngineProvider = ({ children, components }) => {
     const background = document.createElement('div');
     background.classList = 'background';
     background.style.backgroundImage = `url(${backgroundImage})`;
+    background.style.backgroundSize = `16px`;
     background.style.opacity = 0.05;
 
     editor.use(AreaPlugin, { background });

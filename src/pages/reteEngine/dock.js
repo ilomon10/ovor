@@ -1,8 +1,9 @@
 import React, { useRef, useContext, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { Menu, Icon } from '@blueprintjs/core';
+import { Menu, Icon, Colors } from '@blueprintjs/core';
 
 import ReteEngineContext from 'components/hocs/reteEngine';
+import Draggable from 'components/draggable';
 
 const Component = ({ className }) => {
   const rete = useContext(ReteEngineContext);
@@ -43,13 +44,22 @@ const Component = ({ className }) => {
     <div className={className} ref={ref}>
       <Menu>
         {rete.components.map((c, i) => (
-          <Menu.Item text={c.name} key={i}
-            style={{ cursor: "initial" }}
-            draggable
-            onDragStart={(e) => onDragStart(e, c.name)}
-            labelElement={<Icon icon="drag-handle-vertical"
-              style={{ cursor: "grab" }} />}
-            icon={<Icon icon="dot" color={c.config.color} />} />
+          <Draggable key={i}>
+            {({ isDrag, onDragEndHandler,
+              onMouseDownHandler, onMouseUpHandler }) => (
+                <Menu.Item text={c.name}
+                  draggable={isDrag}
+                  onDragStart={(e) => onDragStart(e, c.name)}
+                  onDragEnd={onDragEndHandler}
+                  style={{ cursor: "initial" }}
+                  labelElement={<Icon icon="drag-handle-vertical"
+                    style={{ cursor: "grab" }}
+                    onMouseDown={onMouseDownHandler}
+                    onMouseUp={onMouseUpHandler} />}
+                  icon={<Icon icon="dot" color={c.config.color} />} />
+              )}
+          </Draggable>
+
         ))}
       </Menu>
     </div>
@@ -57,7 +67,8 @@ const Component = ({ className }) => {
 }
 
 const Dock = styled(Component)`
-
+  height: 100%;
+  border-right: 1px solid ${Colors.GRAY5};
 `
 
 export default Dock;

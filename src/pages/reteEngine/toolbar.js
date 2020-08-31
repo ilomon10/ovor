@@ -10,6 +10,7 @@ const Toolbar = ({ onDeploy }) => {
   const rete = useContext(ReteEngineContext);
   const history = useHistory();
   const [version, setVersion] = useState('...');
+  const [deploying, setDeploying] = useState(false);
   const [jsonDialog, setJsonDialog] = useState({
     isOpen: false,
     data: ''
@@ -38,9 +39,11 @@ const Toolbar = ({ onDeploy }) => {
     if (rete.editor) onCreateEditor();
   }, [rete.editor]);
 
-  const onDeployClick = useCallback(() => {
+  const onDeployClick = useCallback(async () => {
     const { editor } = rete;
-    onDeploy(editor.toJSON());
+    setDeploying(true);
+    await onDeploy(editor.toJSON());
+    setDeploying(false);
   }, [rete.editor, onDeploy]);  // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <Box>
@@ -61,7 +64,8 @@ const Toolbar = ({ onDeploy }) => {
           <Navbar.Divider />
           <ButtonGroup>
             <Button text="Json" icon="code" onClick={downloadJSON} />
-            <Button text="Deploy" icon="upload" onClick={onDeployClick} />
+            <Button text="Deploy" icon="upload" onClick={onDeployClick}
+              loading={deploying} />
           </ButtonGroup>
           <Dialog isOpen={jsonDialog.isOpen} onClose={() => setJsonDialog(a => ({ ...a, isOpen: false }))}>
             <div className={Classes.DIALOG_HEADER}>

@@ -1,6 +1,6 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useContext, useRef, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { ContextMenu, Menu, MenuItem } from '@blueprintjs/core';
+import { ContextMenu, Menu, MenuItem, ResizeSensor, Colors } from '@blueprintjs/core';
 
 import ReteEngineContext from 'components/hocs/reteEngine';
 
@@ -49,15 +49,29 @@ const Components = ({ className, onCreated }) => {
       ContextMenu.show(menu, { left: e.clientX, top: e.clientY }, () => { });
     });
   }, [ref, rete.editor, rete.components]);  // eslint-disable-line react-hooks/exhaustive-deps
+  const onResize = useCallback(() => {
+    const { editor } = rete;
+    editor.view.resize();
+  }, [rete.editor]);
   return (
-    <div className={className}>
-      <div ref={ref}></div>
-    </div>
+    <ResizeSensor onResize={onResize}>
+      <div className={className}>
+        <div ref={ref}></div>
+      </div>
+    </ResizeSensor>
   )
 }
 
 const Canvas = styled(Components)`
-  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  .connection .main-path {
+    stroke-width: 2px;
+    stroke: ${Colors.GRAY1};
+  }
 `
 
 export default Canvas;

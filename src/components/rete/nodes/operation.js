@@ -57,7 +57,6 @@ class OperationComponent extends Rete.Component {
       default:
         sum = 0;
     }
-    console.log(node.data.type);
 
     this.editor.nodes
       .find(n => n.id === node.id)

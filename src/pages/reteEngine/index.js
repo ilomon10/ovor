@@ -59,7 +59,6 @@ const Component = ({ className }) => {
       const { _id, ...rete } = await feathers.retes().get(params.id, {
         query: { $select: ['id', 'nodes'] }
       });
-      // await setDevice({ ...device });
       await setRete(rete);
       await setDevice(device);
     }
@@ -83,21 +82,17 @@ const Component = ({ className }) => {
 
     const onProcess = async () => {
       await engine.abort();
-      await engine.process(editor.toJSON(rete));
+      await engine.process(editor.toJSON());
     }
 
     editor.on('process connectioncreated connectionremoved', onProcess);
 
   }, [components.length, rete]); // eslint-disable-line react-hooks/exhaustive-deps
   const onDeploy = useCallback(async (json) => {
-    console.log('deploy');
-    feathers.retes().patch(device.reteId, {
+    await feathers.retes().patch(device.reteId, {
       id: json.id,
       nodes: json.nodes,
-    }).then(res => {
-      console.log(res);
-    });
-    console.log(json);
+    })
   }, [feathers, rete, device.reteId]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <>
@@ -113,7 +108,7 @@ const Component = ({ className }) => {
               width="200px">
               <Dock />
             </Box>
-            <Box flexGrow={1} >
+            <Box flexGrow={1} style={{ position: 'relative' }}  >
               <Canvas onCreated={onEditorCreated} />
             </Box>
           </Flex>
