@@ -120,10 +120,15 @@ const Device = () => {
           else
             return 0;
       }
+
+      if (field.type === 'date')
+        return moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a');
+
       if (typeof d.data[field.name] === 'undefined') return '';
+
       return String(d.data[field.name]);
     });
-    return ([moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a'), ...fields]);
+    return ([...fields]);
   }, [device.fields]);
 
   const [contentHeight, setContentHeight] = useState(278);
@@ -226,8 +231,8 @@ const Device = () => {
                   </div>
                 </Card>
                 <div className="flex" style={{ marginBottom: 16, marginLeft: -6, marginRight: -6 }}>
-                  {device.fields.map((v, i) => (
-                    <div key={v._id} style={{ width: `${100 / device.fields.length}%`, paddingRight: 6, paddingLeft: 6 }}>
+                  {device.fields.filter(field => field.name !== 'timestamp').map((v, i) => (
+                    <div key={v._id} style={{ width: `${100 / (device.fields.length - 1)}%`, paddingRight: 6, paddingLeft: 6 }}>
                       <Card style={{ padding: 0 }}>
                         <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name} ({v.type})</H5>
                         <div style={{ height: 127 }}>
@@ -261,7 +266,7 @@ const Device = () => {
                     <Wrapper>
                       <div style={{ overflowY: 'auto', height: '100%' }}>
                         <Table interactive
-                          options={{ labels: ['timestamp', ...device.fields.map((e) => e.name)] }}
+                          options={{ labels: [...device.fields.map((e) => e.name)] }}
                           series={data.map(d => transformData(d)).reverse()} />
                       </div>
                     </Wrapper>

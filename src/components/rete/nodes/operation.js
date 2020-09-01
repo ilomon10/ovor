@@ -18,12 +18,12 @@ class OperationComponent extends Rete.Component {
   }
 
   builder(node) {
-    if (!_get(node, 'node.data.type')) {
+    if (!_get(node, 'data.type')) {
       node.data.type = 'Add';
     }
     node.meta.color = this.config.color;
-    var inp1 = new Rete.Input("num1", "Number", NumberSocket);
-    var inp2 = new Rete.Input("num2", "Number2", NumberSocket);
+    var inp1 = new Rete.Input("num1", "First", NumberSocket);
+    var inp2 = new Rete.Input("num2", "Second", NumberSocket);
     var out = new Rete.Output("num", "Number", NumberSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
@@ -57,6 +57,8 @@ class OperationComponent extends Rete.Component {
       default:
         sum = 0;
     }
+    
+    if(isNaN(sum)) sum = 0;
 
     this.editor.nodes
       .find(n => n.id === node.id)

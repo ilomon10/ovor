@@ -1,7 +1,7 @@
 import Rete from "rete";
 import { Colors } from "@blueprintjs/core";
 import { Node } from "../node";
-import { NumberSocket, TimestampSocket } from '../sockets';
+import { NumberSocket, DateSocket, StringSocket, BooleanSocket } from '../sockets';
 
 class OutputComponent extends Rete.Component {
   constructor(config) {
@@ -23,13 +23,15 @@ class OutputComponent extends Rete.Component {
           case 'number':
             socket = NumberSocket;
             break;
-          case 'timestamp':
-            socket = TimestampSocket;
+          case 'date':
+            socket = DateSocket;
+            break;
+          case 'boolean':
+            socket = BooleanSocket;
             break;
           case 'string':
-            break;
           default:
-            break;
+            socket = StringSocket;
         }
         node.addInput(new Rete.Input(key, `${name}`, socket))
       })
@@ -38,7 +40,7 @@ class OutputComponent extends Rete.Component {
   }
 
   worker(node, inputs, outputs) {
-    Object.keys(inputs).forEach((key)=> {
+    Object.keys(inputs).forEach((key) => {
       node.data[key] = inputs[key][0];
     })
   }

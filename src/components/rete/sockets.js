@@ -1,4 +1,6 @@
-import Rete from 'rete';
+import { Socket } from 'rete';
 
-export const NumberSocket = new Rete.Socket("Number");
-export const TimestampSocket = new Rete.Socket("Timestamp");
+export const NumberSocket = new Socket("Number");
+export const DateSocket = new Socket("Date");
+export const BooleanSocket = new Socket("Boolean");
+export const StringSocket = new Socket("String");

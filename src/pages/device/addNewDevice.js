@@ -32,8 +32,8 @@ const AddDevice = ({ onClose }) => {
   const fieldType = [
     { label: 'Number', value: 'number' },
     { label: 'Boolean', value: 'boolean' },
-    { label: 'Text', value: 'string', disabled: true },
-    { label: 'Date Time', value: 'date', disabled: true },
+    { label: 'Text', value: 'string' },
+    { label: 'Date Time', value: 'date' },
   ];
   const feathers = useContext(FeathersContext);
   const [sending, setSending] = useState(false);
@@ -47,18 +47,21 @@ const AddDevice = ({ onClose }) => {
         initialValues={{
           'deviceName': '',
           'deviceFields': [
+            { name: 'timestamp', type: 'date', required: true },
             { name: '', type: 'number' }
           ]
         }}
         validationSchema={Schema}
         onSubmit={async (v, { setSubmitting, setErrors }) => {
-          const fields = [...v['deviceFields']];
+          const fields = [...v['deviceFields']]
+            .map(({ name, type }) => ({
+              name, type
+            }));
           fields.pop();
           try {
             await feathers.devices().create({
-              name: v['deviceName'],
-              fields
-            })
+              name: v['deviceName'], fields
+            });
             onClose();
           } catch (e) {
             console.error(e);
@@ -95,6 +98,7 @@ const AddDevice = ({ onClose }) => {
                       <InputGroup
                         name={`deviceFields[${i}].name`}
                         type="text" value={v.name}
+                        readOnly={values['deviceFields'][i].required}
                         onChange={e => {
                           setFieldValue(`deviceFields[${i}].name`, '');
                           handleChange(e);
@@ -103,11 +107,12 @@ const AddDevice = ({ onClose }) => {
                         placeholder={i === values['deviceFields'].length - 1 ? "Enter a new field name" : null} />
                       <HTMLSelect
                         name={`deviceFields[${i}].type`}
+                        disabled={values['deviceFields'][i].required}
                         onChange={handleChange} value={v.type} options={fieldType} />
                     </ControlGroup>
-                    <Button minimal icon="trash" intent={i === values['deviceFields'].length - 1 ? null : "danger"}
+                    <Button minimal icon="trash" intent={(i === values['deviceFields'].length - 1) || values['deviceFields'][i].required ? null : "danger"}
                       onClick={() => arr.remove(i)}
-                      disabled={i === values['deviceFields'].length - 1} />
+                      disabled={(i === values['deviceFields'].length - 1) || values['deviceFields'][i].required} />
                   </div>
                 ))} />
             </FormGroup>
