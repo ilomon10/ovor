@@ -6,9 +6,9 @@ import NumControl from '../controls/numeric';
 import { NumberSocket } from '../sockets';
 import SelectControl from "../controls/select";
 
-class TrigonometryComponent extends Rete.Component {
+class TrigonometricComponent extends Rete.Component {
   constructor(config) {
-    super("Trigonometry");
+    super("Trigonometric");
     this.data.component = Node; // optional
     this.config = {
       ...config,
@@ -18,18 +18,17 @@ class TrigonometryComponent extends Rete.Component {
 
   builder(node) {
     if (!_get(node, 'node.data.type')) {
-      node.data.type = 'Sin';
+      node.data.type = 'Sine';
     }
     node.meta.color = this.config.color;
-    var inp1 = new Rete.Input("num1", "Number", NumberSocket);
-    var out = new Rete.Output("num", "Number", NumberSocket);
+    var inp1 = new Rete.Input("num1", "Value", NumberSocket);
+    var out = new Rete.Output("num", "Value", NumberSocket);
 
     inp1.addControl(new NumControl(this.editor, "num1", node));
 
     return node
       .addInput(inp1)
-      .addControl(new SelectControl(this.editor, "type", node, ['Sin', 'Cos', 'Tan']))
-      .addControl(new NumControl(this.editor, "preview", node, true))
+      .addControl(new SelectControl(this.editor, "type", node, ['Sine', 'Cosine', 'Tangent']))
       .addOutput(out);
   }
 
@@ -38,25 +37,21 @@ class TrigonometryComponent extends Rete.Component {
     console.log(node.data);
     let sum = 0;
     switch (node.data.type) {
-      case 'Sin':
+      case 'Sine':
         sum = Math.sin(n1);
         break;
-      case 'Cos':
+      case 'Cosine':
         sum = Math.cos(n1);
         break;
-      case 'Tan':
+      case 'Tangent':
         sum = Math.tan(n1);
         break;
       default:
         sum = 0;
     }
 
-    this.editor.nodes
-      .find(n => n.id === node.id)
-      .controls.get("preview")
-      .setValue(sum);
     outputs["num"] = sum;
   }
 }
 
-export default TrigonometryComponent;
+export default TrigonometricComponent;

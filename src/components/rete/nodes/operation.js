@@ -22,24 +22,23 @@ class OperationComponent extends Rete.Component {
       node.data.type = 'Add';
     }
     node.meta.color = this.config.color;
-    var inp1 = new Rete.Input("num1", "First", NumberSocket);
-    var inp2 = new Rete.Input("num2", "Second", NumberSocket);
-    var out = new Rete.Output("num", "Number", NumberSocket);
+    var inp = new Rete.Input("inp", "Value", NumberSocket);
+    var inp2 = new Rete.Input("inp2", "Value", NumberSocket);
+    var out = new Rete.Output("out", "Value", NumberSocket);
 
-    inp1.addControl(new NumControl(this.editor, "num1", node));
-    inp2.addControl(new NumControl(this.editor, "num2", node));
+    inp.addControl(new NumControl(this.editor, "inp", node));
+    inp2.addControl(new NumControl(this.editor, "inp2", node));
 
     return node
-      .addInput(inp1)
+      .addInput(inp)
       .addInput(inp2)
       .addControl(new SelectControl(this.editor, "type", node, ['Add', 'Subtract', 'Multiply', 'Divide']))
-      .addControl(new NumControl(this.editor, "preview", node, true))
       .addOutput(out);
   }
 
   worker(node, inputs, outputs) {
-    var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
-    var n2 = inputs["num2"].length ? inputs["num2"][0] : node.data.num2;
+    var n1 = inputs["inp"].length ? inputs["inp"][0] : node.data['inp'];
+    var n2 = inputs["inp2"].length ? inputs["inp2"][0] : node.data['inp2'];
     let sum = 0;
     switch (node.data.type) {
       case 'Add':
@@ -57,14 +56,10 @@ class OperationComponent extends Rete.Component {
       default:
         sum = 0;
     }
-    
-    if(isNaN(sum)) sum = 0;
 
-    this.editor.nodes
-      .find(n => n.id === node.id)
-      .controls.get("preview")
-      .setValue(sum);
-    outputs["num"] = sum;
+    if (isNaN(sum)) sum = 0;
+
+    outputs["out"] = sum;
   }
 }
 

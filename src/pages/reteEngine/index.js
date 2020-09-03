@@ -9,9 +9,12 @@ import { ReteEngineProvider } from 'components/hocs/reteEngine';
 import { Box, Flex } from 'components/utility/grid';
 import InputComponent from 'components/rete/nodes/input';
 import OutputComponent from 'components/rete/nodes/output';
+import ViewerComponent from 'components/rete/nodes/viewer';
 import OperationComponent from 'components/rete/nodes/operation';
 import NumericComponent from 'components/rete/nodes/numeric';
-import TrigonometryComponent from 'components/rete/nodes/trigonometry';
+import TrigonometricComponent from 'components/rete/nodes/trigonometric';
+import ComparisonComponent from 'components/rete/nodes/comparison';
+import RoundingComponent from 'components/rete/nodes/rounding';
 import { FeathersContext } from 'components/feathers';
 
 import Canvas from './canvas';
@@ -25,9 +28,12 @@ const Component = ({ className }) => {
   const [device, setDevice] = useState({});
   const [rete, setRete] = useState({});
   const [components, setComponents] = useState([
+    new ViewerComponent(),
     new NumericComponent(),
     new OperationComponent(),
-    new TrigonometryComponent()
+    new TrigonometricComponent(),
+    new ComparisonComponent(),
+    new RoundingComponent()
   ]);
 
   useEffect(() => {

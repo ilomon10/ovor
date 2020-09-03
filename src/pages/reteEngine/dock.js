@@ -56,7 +56,7 @@ const Component = ({ className }) => {
                     style={{ cursor: "grab" }}
                     onMouseDown={onMouseDownHandler}
                     onMouseUp={onMouseUpHandler} />}
-                  icon={<Icon icon="dot" color={c.config.color} />} />
+                  icon={<Icon icon="symbol-square" color={c.config.color} />} />
               )}
           </Draggable>
 

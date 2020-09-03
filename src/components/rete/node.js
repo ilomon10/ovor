@@ -31,9 +31,11 @@ const SocketStyle = styled(Box)`
   }
   &.output {
     margin-right: -8px;
+    margin-left: 10px;
   }
   &.input {
     margin-left: -8px;
+    margin-right: 10px;
   }
 `
 
