@@ -1,26 +1,30 @@
 import React from "react";
 import Rete from "rete";
-import { HTMLSelect } from "@blueprintjs/core";
+import { Switch } from '@blueprintjs/core';
 
-class SelectControl extends Rete.Control {
-  static component = ({ value, onChange, options, readOnly }) => (
-    <HTMLSelect fill
-      value={value}
-      disabled={readOnly}
-      elementRef={ref => {
+class BooleanControl extends Rete.Control {
+  static component = ({ value, onChange, label, readonly }) => (
+    <Switch
+      style={{ marginBottom: 0, lineHeight: '29px' }}
+      checked={value}
+      label={label}
+      readOnly={readonly}
+      inputRef={ref => {
         ref && ref.addEventListener("pointerdown", e => e.stopPropagation());
       }}
-      onChange={e => onChange(e.target.value)}
-      options={options} />
+      onChange={() => {
+        onChange(!value);
+      }}
+    />
   );
 
   constructor(emitter, key, node, options) {
     super(key);
     this.emitter = emitter;
     this.key = key;
-    this.component = SelectControl.component;
+    this.component = BooleanControl.component;
 
-    const initial = node.data[key];
+    const initial = node.data[key] || false;
 
     node.data[key] = initial;
     this.props = {
@@ -41,4 +45,4 @@ class SelectControl extends Rete.Control {
   }
 }
 
-export default SelectControl;
+export default BooleanControl;

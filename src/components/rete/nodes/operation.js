@@ -32,7 +32,9 @@ class OperationComponent extends Rete.Component {
     return node
       .addInput(inp)
       .addInput(inp2)
-      .addControl(new SelectControl(this.editor, "type", node, ['Add', 'Subtract', 'Multiply', 'Divide']))
+      .addControl(new SelectControl(this.editor, "type", node, {
+        options: ['Add', 'Subtract', 'Multiply', 'Divide']
+      }))
       .addOutput(out);
   }
 

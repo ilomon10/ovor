@@ -5,17 +5,19 @@ import { useParams, useLocation } from 'react-router-dom';
 import _get from 'lodash.get';
 import AreaPlugin from 'rete-area-plugin';
 
+import { FeathersContext } from 'components/feathers';
 import { ReteEngineProvider } from 'components/hocs/reteEngine';
 import { Box, Flex } from 'components/utility/grid';
 import InputComponent from 'components/rete/nodes/input';
 import OutputComponent from 'components/rete/nodes/output';
 import ViewerComponent from 'components/rete/nodes/viewer';
 import OperationComponent from 'components/rete/nodes/operation';
-import NumericComponent from 'components/rete/nodes/numeric';
+import InjectComponent from 'components/rete/nodes/inject';
 import TrigonometricComponent from 'components/rete/nodes/trigonometric';
 import ComparisonComponent from 'components/rete/nodes/comparison';
 import RoundingComponent from 'components/rete/nodes/rounding';
-import { FeathersContext } from 'components/feathers';
+import LoggerComponent from 'components/rete/nodes/logger';
+import ConversionComponent from 'components/rete/nodes/conversion';
 
 import Canvas from './canvas';
 import Toolbar from './toolbar';
@@ -29,7 +31,9 @@ const Component = ({ className }) => {
   const [rete, setRete] = useState({});
   const [components, setComponents] = useState([
     new ViewerComponent(),
-    new NumericComponent(),
+    new LoggerComponent(),
+    new ConversionComponent(),
+    // new InjectComponent(),
     new OperationComponent(),
     new TrigonometricComponent(),
     new ComparisonComponent(),
