@@ -37,6 +37,7 @@ class Feathers {
   dataLake = () => this.client.service('data-lake');
   tokens = () => this.client.service('tokens');
   retes = () => this.client.service('rete');
+  logger = () => this.client.service('logger');
 
 }
 

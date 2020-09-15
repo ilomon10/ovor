@@ -6,6 +6,7 @@ import { Colors, Classes, Divider, Navbar, Button, AnchorButton, Icon, H5, Menu,
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FeathersContext } from './feathers';
 import Notification from '../pages/notification';
+import { Box } from './utility/grid';
 
 const Comp = ({ className, items }) => {
   const feathers = useContext(FeathersContext);
@@ -20,7 +21,16 @@ const Comp = ({ className, items }) => {
       setEmail(user.email);
     }
     getUserData();
-  }, [feathers])
+  }, [feathers]);
+  useEffect(() => {
+    const onLoggerCreated = () => {
+      setIsNotificationTouched(false);
+    }
+    feathers.logger().on('created', onLoggerCreated);
+    return () => {
+      feathers.logger().removeListener('created', onLoggerCreated);
+    }
+  }, []);
   return (
     <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ maxWidth: isToggled ? 240 : "auto" }}>
       <div className="flex-grow">
@@ -55,13 +65,13 @@ const Comp = ({ className, items }) => {
           position="left"
           targetTagName="div"
           content={(
-            <div style={{ width: 260 }}>
+            <Box width={260}>
               <Notification />
-            </div>
+            </Box>
           )}>
           <Tooltip isOpen={!isNotificationTouched}
             intent={'warning'}
-            content={`${2} New Message`}
+            content={`New Message`}
             position="left"
             targetTagName="div">
             <Button alignText="left" minimal fill

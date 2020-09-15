@@ -1,37 +1,39 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
-import { HTMLTable } from '@blueprintjs/core';
+import { HTMLTable, Menu, MenuItem, Colors } from '@blueprintjs/core';
+import { FeathersContext } from 'components/feathers';
+import { Box } from 'components/utility/grid';
 
 const Notification = () => {
+  const feathers = useContext(FeathersContext);
+  const [log, setLog] = useState([]);
+  useEffect(() => {
+    const onLoggerCreated = (log) => {
+      console.log(log);
+    }
+    feathers.logger().on('created', onLoggerCreated);
+    return () => {
+      feathers.logger().removeListener('created', onLoggerCreated);
+    }
+  }, []);
+  useEffect(() => {
+    const fetch = async () => {
+      let log = (await feathers.logger().find({
+        query: { $select: ['intent', 'message', 'createdAt'], $sort: { createdAt: -1 } }
+      })).data;
+      setLog(log);
+    }
+    fetch();
+  }, []);
   return (
-    <div>
-      <HTMLTable condensed interactive>
-        <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>Message</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{moment('2020-04-18T09:57:51.648+00:00').calendar()}</td>
-            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-          </tr>
-          <tr>
-            <td>{moment('2020-04-18T09:42:09.577+00:00').calendar()}</td>
-            <td>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </td>
-          </tr>
-          <tr>
-            <td>{moment('2020-04-18T09:57:51.648+00:00').calendar()}</td>
-            <td>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</td>
-          </tr>
-          <tr>
-            <td>{moment('2020-04-18T09:42:09.577+00:00').calendar()}</td>
-            <td>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. </td>
-          </tr>
-        </tbody>
-      </HTMLTable>
-    </div>
+    <Box py={2}>
+      {log.map(l => (
+        <Box key={l._id} px={3} mb={2}>
+          <Box fontSize={0} color={Colors.GRAY3}>{moment(l.createdAt).calendar()}</Box>
+          <Box fontSize={2}>{l.message}</Box>
+        </Box>
+      ))}
+    </Box>
   )
 }
 

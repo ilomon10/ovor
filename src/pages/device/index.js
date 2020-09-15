@@ -71,7 +71,18 @@ const dummy = {
   },
   mini: {
     options: {
+      stroke: {
+        // show: false,
+        width: 1
+      },
+      markers: {
+        show: true,
+        size: 5
+      },
       chart: {
+        sparkline: {
+          enabled: true,
+        },
         zoom: {
           enabled: false
         },
@@ -239,7 +250,8 @@ const Device = () => {
                           <BaseTimeseries options={{
                             ...dummy.mini.options,
                             stroke: {
-                              curve: (v.type === 'boolean') ? 'stepline' : 'straight'
+                              ...dummy.mini.options.stroke,
+                              curve: (v.type === 'boolean') ? 'stepline' : 'smooth'
                             }
                           }} series={[{
                             name: `${v.name} (${v.type})`,
