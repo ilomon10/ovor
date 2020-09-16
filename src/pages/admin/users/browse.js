@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Helmet } from "react-helmet";
 import { Button, ButtonGroup, HTMLTable, Colors, H2, Dialog, Tag } from "@blueprintjs/core";
 import Container from "components/container";
@@ -7,11 +7,13 @@ import { Box, Flex } from "components/utility/grid";
 import { FeathersContext } from 'components/feathers';
 import AddNewUser from './addNewUser';
 import { useHistory } from 'react-router-dom';
+import DeleteUser from './deleteUser';
 
 const Users = () => {
   const feathers = useContext(FeathersContext);
   const history = useHistory();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(undefined);
   const [list, setList] = useState([]);
   useEffect(() => {
     feathers.users.find({
@@ -25,6 +27,9 @@ const Users = () => {
       console.error(e);
     })
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const removeUser = useCallback((user) => {
+    setSelectedUser(user);
+  }, []);
   return (
     <>
       <Helmet>
@@ -60,17 +65,23 @@ const Users = () => {
                   <td>
                     <ButtonGroup minimal>
                       <Button small icon="edit" onClick={() => history.push(`/users/${u._id}`)} />
-                      <Button small icon="trash" intent="danger" />
+                      <Button small icon="trash" intent="danger" onClick={() => removeUser(u)} />
                     </ButtonGroup>
                   </td>
                 </tr>))}
               </tbody>
             </HTMLTable>
-            <Dialog
+            <Dialog usePortal={true}
+              title="Add new user account"
               isOpen={isDialogOpen}
-              usePortal={true}
               onClose={() => setIsDialogOpen(false)} >
               <AddNewUser onClose={() => setIsDialogOpen(false)} />
+            </Dialog>
+            <Dialog usePortal={true}
+              title="Delete account"
+              isOpen={typeof selectedUser !== 'undefined'}
+              onClose={() => { setSelectedUser(undefined); }}>
+              <DeleteUser data={selectedUser} onClose={() => { setSelectedUser(undefined); }} />
             </Dialog>
           </Container>
         </Wrapper>
