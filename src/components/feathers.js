@@ -32,13 +32,13 @@ class Feathers {
     return this.client.get(name);
   }
 
-  dashboards = () => this.client.service('dashboards');
-  devices = () => this.client.service('devices');
-  dataLake = () => this.client.service('data-lake');
-  tokens = () => this.client.service('tokens');
-  retes = () => this.client.service('rete');
-  users = () => this.client.service('users');
-  logger = () => this.client.service('logger');
+  get dashboards() { return this.client.service('dashboards'); }
+  get devices() { return this.client.service('devices'); }
+  get dataLake() { return this.client.service('data-lake'); }
+  get tokens() { return this.client.service('tokens'); }
+  get retes() { return this.client.service('rete'); }
+  get users() { return this.client.service('users'); }
+  get logger() { return this.client.service('logger'); }
 
 }
 

@@ -6,13 +6,15 @@ import Wrapper from "components/wrapper";
 import { Box, Flex } from "components/utility/grid";
 import { FeathersContext } from 'components/feathers';
 import AddNewUser from './addNewUser';
+import { useHistory } from 'react-router-dom';
 
 const Users = () => {
   const feathers = useContext(FeathersContext);
+  const history = useHistory();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [list, setList] = useState([]);
   useEffect(() => {
-    feathers.users().find({
+    feathers.users.find({
       query: {
         $sort: { createdAt: -1 },
         $select: ['email', 'permissions']
@@ -57,7 +59,7 @@ const Users = () => {
                     <Box key={p} display="inline-block" mr={1}><Tag>{p}</Tag></Box>))}</td>
                   <td>
                     <ButtonGroup minimal>
-                      <Button small icon="edit" />
+                      <Button small icon="edit" onClick={() => history.push(`/users/${u._id}`)} />
                       <Button small icon="trash" intent="danger" />
                     </ButtonGroup>
                   </td>

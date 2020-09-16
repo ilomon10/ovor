@@ -16,7 +16,7 @@ const Table = ({ series, ...props }) => {
       let devices = [];
       let dataLake = [];
       let Labels = [];
-      devices = await feathers.devices().find({
+      devices = await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
           $select: ['fields', 'name']
@@ -50,7 +50,7 @@ const Table = ({ series, ...props }) => {
         }
       }
 
-      dataLake = await feathers.dataLake().find({ query });
+      dataLake = await feathers.dataLake.find({ query });
       dataLake = dataLake.data;
       setData(() => [
         ...dataLake.map(dl => {
@@ -81,9 +81,9 @@ const Table = ({ series, ...props }) => {
         ...d, ret
       ])
     }
-    feathers.dataLake().on('created', onDataCreated);
+    feathers.dataLake.on('created', onDataCreated);
     return () => { // Cleanup
-      feathers.dataLake().removeListener('created', onDataCreated);
+      feathers.dataLake.removeListener('created', onDataCreated);
     }
   }, [labels, props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 

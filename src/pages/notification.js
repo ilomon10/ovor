@@ -11,14 +11,14 @@ const Notification = () => {
     const onLoggerCreated = (log) => {
       console.log(log);
     }
-    feathers.logger().on('created', onLoggerCreated);
+    feathers.logger.on('created', onLoggerCreated);
     return () => {
-      feathers.logger().removeListener('created', onLoggerCreated);
+      feathers.logger.removeListener('created', onLoggerCreated);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetch = async () => {
-      let log = (await feathers.logger().find({
+      let log = (await feathers.logger.find({
         query: { $select: ['intent', 'message', 'createdAt'], $sort: { createdAt: -1 } }
       })).data;
       setLog(log);

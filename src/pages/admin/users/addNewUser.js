@@ -1,8 +1,9 @@
 import React, { useCallback, useContext } from 'react';
-import { Classes, Button, FormGroup, InputGroup, Callout, Checkbox as BPCheckbox } from '@blueprintjs/core';
-import { FeathersContext } from 'components/feathers';
-import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
+import { Classes, Button, FormGroup, InputGroup, Callout } from '@blueprintjs/core';
+import { Formik } from 'formik';
+import { FeathersContext } from 'components/feathers';
+import Checkbox from 'components/formikCheckbox';
 
 const Schema = Yup.object().shape({
   'name': Yup.string()
@@ -16,28 +17,6 @@ const Schema = Yup.object().shape({
     .required('Confirm your password'),
   'permissions': Yup.array().of(Yup.string().oneOf(['admin', 'public']))
 })
-
-const Checkbox = (props) => {
-  return (<Field name={props.name}>
-    {({ field, form }) => (
-      <BPCheckbox
-        {...props}
-        checked={field.value.includes(props.value)}
-        onChange={() => {
-          if (field.value.includes(props.value)) {
-            const nextValue = field.value.filter(
-              value => value !== props.value
-            );
-            form.setFieldValue(props.name, nextValue);
-          } else {
-            const nextValue = field.value.concat(props.value);
-            form.setFieldValue(props.name, nextValue);
-          }
-        }}
-      />
-    )}
-  </Field>);
-}
 
 const AddNewUser = ({ onClose }) => {
   const feathers = useContext(FeathersContext);

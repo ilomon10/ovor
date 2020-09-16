@@ -22,21 +22,21 @@ const Overview = () => {
   const feathers = useContext(FeathersContext);
   useEffect(() => {
     const fetch = async () => {
-      let dashboards = await feathers.dashboards().find({
+      let dashboards = await feathers.dashboards.find({
         query: {
           $limit: 5,
           $select: ['title'],
           $sort: { updatedAt: -1 }
         }
       });
-      let devices = await feathers.devices().find({
+      let devices = await feathers.devices.find({
         query: {
           $limit: 3,
           $select: ['name'],
           $sort: { updatedAt: -1 }
         }
       });
-      let data = await feathers.dataLake().find({
+      let data = await feathers.dataLake.find({
         query: {
           $limit: 3,
           $select: ['deviceId'],
@@ -44,7 +44,7 @@ const Overview = () => {
           $sort: { createdAt: -1 }
         }
       });
-      let tokens = await feathers.tokens().find({
+      let tokens = await feathers.tokens.find({
         query: {
           $limit: 3,
           $select: ['name', 'key', 'updatedAt'],
@@ -72,7 +72,7 @@ const Overview = () => {
       setData({
         total: data.total,
         data: await Promise.all(data.data.map(async v => {
-          const d = await feathers.devices().get(v.deviceId, {
+          const d = await feathers.devices.get(v.deviceId, {
             query: { $select: ['name'] }
           });
           return {

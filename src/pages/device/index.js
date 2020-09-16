@@ -157,9 +157,9 @@ const Device = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const device = await feathers.devices().get(params.id);
+        const device = await feathers.devices.get(params.id);
         await setDevice({ ...device });
-        const data = await feathers.dataLake().find({
+        const data = await feathers.dataLake.find({
           query: {
             $limit: 10000,
             deviceId: params.id,
@@ -178,9 +178,9 @@ const Device = () => {
     fetch();
 
     const onDataCreated = (e) => { setData(d => [...d, e]) }
-    feathers.dataLake().on('created', onDataCreated);
+    feathers.dataLake.on('created', onDataCreated);
     return () => {
-      feathers.dataLake().removeListener('created', onDataCreated);
+      feathers.dataLake.removeListener('created', onDataCreated);
     }
   }, [params.id, timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
   return (

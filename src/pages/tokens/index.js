@@ -22,7 +22,7 @@ const Tokens = () => {
   }, [tokens]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetch = async () => {
-      const tokens = await feathers.tokens().find({
+      const tokens = await feathers.tokens.find({
         query: {
           $select: ['updatedAt', 'key', 'name'],
           $sort: { updatedAt: -1 }
@@ -49,10 +49,10 @@ const Tokens = () => {
         data: token.data.filter(t => t._id !== res._id)
       }))
     }
-    feathers.tokens().on('created', onTokenCreated)
-    feathers.tokens().on('removed', onTokenRemoved);
+    feathers.tokens.on('created', onTokenCreated)
+    feathers.tokens.on('removed', onTokenRemoved);
     return () => {
-      feathers.tokens().removeListener('removed', onTokenRemoved);
+      feathers.tokens.removeListener('removed', onTokenRemoved);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (

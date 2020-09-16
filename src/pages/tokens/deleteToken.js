@@ -19,7 +19,7 @@ const DeleteToken = ({ onClose, data }) => {
       validationSchema={Schema}
       onSubmit={async (_value, { setErrors, setSubmitting }) => {
         try {
-          await feathers.tokens().remove(data._id);
+          await feathers.tokens.remove(data._id);
           onClose();
         } catch (e) {
           setErrors({ submit: e.message });

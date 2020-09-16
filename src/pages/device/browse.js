@@ -21,13 +21,13 @@ const Devices = () => {
         ...list
       ])
     }
-    feathers.devices().on('created', onDeviceCreated);
+    feathers.devices.on('created', onDeviceCreated);
     return () => {
-      feathers.devices().removeListener('created', onDeviceCreated);
+      feathers.devices.removeListener('created', onDeviceCreated);
     }
   }, [list, feathers]);
   useEffect(() => {
-    feathers.devices().find({
+    feathers.devices.find({
       query: {
         $sort: { createdAt: -1 },
         $select: ['name']

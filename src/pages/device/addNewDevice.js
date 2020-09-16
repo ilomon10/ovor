@@ -59,7 +59,7 @@ const AddDevice = ({ onClose }) => {
             }));
           fields.pop();
           try {
-            await feathers.devices().create({
+            await feathers.devices.create({
               name: v['deviceName'], fields
             });
             onClose();

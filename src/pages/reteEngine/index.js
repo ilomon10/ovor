@@ -65,7 +65,7 @@ const Component = ({ className }) => {
   useEffect(() => {
     const fetch = async () => {
       const { device } = location.state;
-      const { _id, ...rete } = await feathers.retes().get(params.id, {
+      const { _id, ...rete } = await feathers.retes.get(params.id, {
         query: { $select: ['id', 'nodes'] }
       });
       await setRete(rete);
@@ -98,7 +98,7 @@ const Component = ({ className }) => {
 
   }, [components.length, rete]); // eslint-disable-line react-hooks/exhaustive-deps
   const onDeploy = useCallback(async (json) => {
-    await feathers.retes().patch(device.reteId, {
+    await feathers.retes.patch(device.reteId, {
       id: json.id,
       nodes: json.nodes,
     })

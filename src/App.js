@@ -17,6 +17,7 @@ import Settings from 'pages/settings';
 import Tokens from 'pages/tokens';
 import ReteEngine from 'pages/reteEngine';
 import Users from 'pages/admin/users/browse';
+import User from 'pages/admin/users/';
 
 const Container = styled.div`
   position: fixed;
@@ -51,7 +52,6 @@ const nav = [{
 }, {
   hide: true,
   title: 'Rete Engine',
-  icon: 'graph',
   path: '/rete/:id',
   component: ReteEngine,
   permission: 'public'
@@ -81,6 +81,13 @@ const nav = [{
   path: '/settings',
   component: Settings,
   permission: 'public'
+}, {
+  hide: true,
+  title: 'User Manager',
+  path: '/users/:id',
+  component: User,
+  exact: true,
+  permission: 'admin'
 }, {
   title: 'User Manager',
   icon: 'people',

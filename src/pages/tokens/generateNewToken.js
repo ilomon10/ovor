@@ -25,7 +25,7 @@ const GenerateNewToken = ({ onClose }) => {
         validationSchema={Schema}
         onSubmit={async (values, { setErrors, setSubmitting }) => {
           try {
-            await feathers.tokens().create({
+            await feathers.tokens.create({
               name: values['token-name']
             });
             onClose();

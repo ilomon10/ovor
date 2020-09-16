@@ -33,7 +33,7 @@ const ControlButton = ({ ...props }) => {
   useEffect(() => {
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
-      let devices = await feathers.devices().find({
+      let devices = await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
           $select: ['fields', 'name']
@@ -44,7 +44,7 @@ const ControlButton = ({ ...props }) => {
         deviceId: { $in: deviceIds },
         $select: ['data', 'deviceId']
       }
-      let dataLake = await feathers.dataLake().find({ query });
+      let dataLake = await feathers.dataLake.find({ query });
       let Series = props.series.map(s => {
         const device = devices.data.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
@@ -79,9 +79,9 @@ const ControlButton = ({ ...props }) => {
         })
       ])
     }
-    feathers.dataLake().on('created', onDataCreated);
+    feathers.dataLake.on('created', onDataCreated);
     return () => {
-      feathers.dataLake().removeListener('created', onDataCreated);
+      feathers.dataLake.removeListener('created', onDataCreated);
     }
   }, [series]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -100,7 +100,7 @@ const ControlButton = ({ ...props }) => {
         data
       }
       try {
-        await feathers.dataLake().create(payload);
+        await feathers.dataLake.create(payload);
       } catch (e) {
         console.error(e);
       }

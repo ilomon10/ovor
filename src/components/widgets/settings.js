@@ -38,7 +38,7 @@ const Settings = ({ onClose }) => {
   const widget = useContext(WidgetContext);
   const [devices, setDevices] = useState([]);
   useEffect(() => {
-    feathers.devices().find({
+    feathers.devices.find({
       query: { $select: ['name', 'fields'] }
     }).then(e => {
       setDevices([...e.data]);
@@ -63,7 +63,7 @@ const Settings = ({ onClose }) => {
         let options = values['widgetOptions'];
         let series = values['widgetSeries'].slice(0, values['widgetSeries'].length - 1);
         try {
-          await feathers.dashboards().patch(dashboard.getId(), {
+          await feathers.dashboards.patch(dashboard.getId(), {
             $set: {
               "widgets.$.options": { ...options },
               "widgets.$.series": [...series],

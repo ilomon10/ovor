@@ -22,7 +22,7 @@ const AddNewDashboard = ({ onClose }) => {
     const send = async () => {
       let payload = { title: v['dashboard-title'] };
       try {
-        await feathers.dashboards().create({
+        await feathers.dashboards.create({
           ...payload
         })
         onClose();
@@ -37,7 +37,7 @@ const AddNewDashboard = ({ onClose }) => {
     onClose();
   }, [onClose]);
   useEffect(() => {
-    feathers.dashboards().find().then(e => {
+    feathers.dashboards.find().then(e => {
       setTemplates([...e.data])
     })
   }, []) // eslint-disable-line react-hooks/exhaustive-deps

@@ -22,13 +22,13 @@ const Dashboards = () => {
         updatedAt: e.updatedAt,
       }, ...list]);
     }
-    feathers.dashboards().on('created', onDashboardCreated)
+    feathers.dashboards.on('created', onDashboardCreated)
     return () => {
-      feathers.dashboards().removeListener('created', onDashboardCreated);
+      feathers.dashboards.removeListener('created', onDashboardCreated);
     }
   }, [list, feathers])
   useEffect(() => {
-    feathers.dashboards().find({
+    feathers.dashboards.find({
       query: { $select: ['title', 'updatedAt'] }
     }).then((e) => {
       setList([...e.data])

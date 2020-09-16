@@ -26,9 +26,9 @@ const Comp = ({ className, items }) => {
     const onLoggerCreated = () => {
       setIsNotificationTouched(false);
     }
-    feathers.logger().on('created', onLoggerCreated);
+    feathers.logger.on('created', onLoggerCreated);
     return () => {
-      feathers.logger().removeListener('created', onLoggerCreated);
+      feathers.logger.removeListener('created', onLoggerCreated);
     }
   }, []);  // eslint-disable-line react-hooks/exhaustive-deps
   return (

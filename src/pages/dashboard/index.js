@@ -31,7 +31,7 @@ const Dashboard = () => {
   const [timeRange, setTimeRange] = useState([moment().startOf('day').toDate(), moment().endOf('day').toDate()]);
   const [currentNode, setCurrentNode] = useState(null);
   useEffect(() => {
-    feathers.dashboards().get(params.id).then(e => {
+    feathers.dashboards.get(params.id).then(e => {
       setDashboardTitle(e.title);
       setWidgets([...e.widgets]);
       if (e.nodes) setCurrentNode(e.nodes);
@@ -42,13 +42,13 @@ const Dashboard = () => {
       setWidgets([...e.widgets]);
       setCurrentNode(e.nodes);
     }
-    feathers.dashboards().on('patched', onDashboardPatched);
+    feathers.dashboards.on('patched', onDashboardPatched);
     return () => {
-      feathers.dashboards().removeListener('patched', onDashboardPatched);
+      feathers.dashboards.removeListener('patched', onDashboardPatched);
     }
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const updateCurrentNodeToDB = useCallback((currentNode) => {
-    feathers.dashboards().patch(params.id, { nodes: currentNode });
+    feathers.dashboards.patch(params.id, { nodes: currentNode });
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);
@@ -56,7 +56,7 @@ const Dashboard = () => {
   }
   const createNode = useCallback(async () => {
     const _id = BSON.generate();
-    await feathers.dashboards().patch(params.id, {
+    await feathers.dashboards.patch(params.id, {
       $push: { widgets: { _id, title: 'New Widget', type: 'empty' } }
     });
     return _id.toString();
@@ -94,7 +94,7 @@ const Dashboard = () => {
 
   const removeWidget = useCallback(async (removeNodeFirst, id) => {
     removeNodeFirst();
-    await feathers.dashboards().patch(params.id, { $pull: { widgets: { _id: id } } }, { safe: true });
+    await feathers.dashboards.patch(params.id, { $pull: { widgets: { _id: id } } }, { safe: true });
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const getWidget = useCallback((id) => {
     return widgets.find(v => v._id === id);

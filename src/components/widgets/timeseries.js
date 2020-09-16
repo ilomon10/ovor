@@ -12,7 +12,7 @@ const Timeseries = ({ ...props }) => {
   useEffect(() => {
     const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
     const fetch = async () => {
-      let devices = (await feathers.devices().find({
+      let devices = (await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
           $select: ['fields', 'name']
@@ -32,7 +32,7 @@ const Timeseries = ({ ...props }) => {
           },
         }
       }
-      let dataLake = (await feathers.dataLake().find({ query })).data;
+      let dataLake = (await feathers.dataLake.find({ query })).data;
       let Series = props.series.map(s => {
         const device = devices.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
@@ -60,9 +60,9 @@ const Timeseries = ({ ...props }) => {
         })
       ])
     }
-    feathers.dataLake().on('created', onDataCreated);
+    feathers.dataLake.on('created', onDataCreated);
     return () => { // Cleanup
-      feathers.dataLake().removeListener('created', onDataCreated);
+      feathers.dataLake.removeListener('created', onDataCreated);
     }
   }, [series, props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
