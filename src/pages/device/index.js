@@ -219,7 +219,7 @@ const Device = () => {
                 <InputCopy size="24" value={`${device._id}`} />
               </div>
               <NavbarDivider />
-              <Button icon="graph" onClick={() => history.push(`/rete/${device.reteId}`, { device })} />
+              <Button icon="data-lineage" onClick={() => history.push(`/rete/${device.reteId}`, { device })} />
             </Navbar.Group>
           </div>
         </Navbar>

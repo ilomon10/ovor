@@ -52,7 +52,7 @@ const Components = ({ className, onCreated }) => {
   const onResize = useCallback(() => {
     const { editor } = rete;
     editor.view.resize();
-  }, [rete.editor]);
+  }, [rete.editor]);  // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <ResizeSensor onResize={onResize}>
       <div className={className}>

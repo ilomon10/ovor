@@ -12,7 +12,6 @@ import InputComponent from 'components/rete/nodes/input';
 import OutputComponent from 'components/rete/nodes/output';
 import ViewerComponent from 'components/rete/nodes/viewer';
 import OperationComponent from 'components/rete/nodes/operation';
-import InjectComponent from 'components/rete/nodes/inject';
 import TrigonometricComponent from 'components/rete/nodes/trigonometric';
 import ComparisonComponent from 'components/rete/nodes/comparison';
 import RoundingComponent from 'components/rete/nodes/rounding';

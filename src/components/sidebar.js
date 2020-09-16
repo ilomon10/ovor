@@ -30,7 +30,7 @@ const Comp = ({ className, items }) => {
     return () => {
       feathers.logger().removeListener('created', onLoggerCreated);
     }
-  }, []);
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className={`${className} ${isToggled ? "sidebar-toggled" : ""} flex flex--col`} style={{ maxWidth: isToggled ? 240 : "auto" }}>
       <div className="flex-grow">

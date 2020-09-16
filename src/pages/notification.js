@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
-import { HTMLTable, Menu, MenuItem, Colors } from '@blueprintjs/core';
+import { Colors } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import { Box } from 'components/utility/grid';
 
@@ -15,7 +15,7 @@ const Notification = () => {
     return () => {
       feathers.logger().removeListener('created', onLoggerCreated);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     const fetch = async () => {
       let log = (await feathers.logger().find({
@@ -24,7 +24,7 @@ const Notification = () => {
       setLog(log);
     }
     fetch();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <Box py={2}>
       {log.map(l => (
