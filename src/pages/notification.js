@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Colors } from '@blueprintjs/core';
+import { Colors, NonIdealState } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import { Box } from 'components/utility/grid';
 
@@ -33,6 +33,13 @@ const Notification = () => {
           <Box fontSize={2}>{l.message}</Box>
         </Box>
       ))}
+      {log.length === 0 &&
+        <NonIdealState
+          icon="issue"
+          title="Empty"
+          description={(<>
+            <p>There is no message to display.</p>
+          </>)} />}
     </Box>
   )
 }

@@ -51,7 +51,7 @@ const Users = () => {
       <meta name="description" content="User manager" />
     </Helmet>
     <Box backgroundColor={Colors.LIGHT_GRAY5} style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
-      <Navbar>
+      <Navbar style={{ padding: 0 }}>
         <Box mx="auto" px={3}
           maxWidth={[container.lg]}>
           <Navbar.Group align="left">

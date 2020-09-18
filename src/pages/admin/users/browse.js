@@ -14,18 +14,48 @@ const Users = () => {
   const history = useHistory();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(undefined);
-  const [list, setList] = useState([]);
+  const [list, setList] = useState({
+    data: [], total: 0
+  });
   useEffect(() => {
-    feathers.users.find({
-      query: {
-        $sort: { createdAt: -1 },
-        $select: ['email', 'permissions']
+    const fetch = async () => {
+      try {
+        const users = await feathers.users.find({
+          query: {
+            $sort: { createdAt: -1 },
+            $select: ['email', 'permissions']
+          }
+        })
+        setList({
+          data: users.data,
+          total: users.total
+        });
+      } catch (e) {
+        console.error(e);
       }
-    }).then((e) => {
-      setList(e.data);
-    }).catch(e => {
-      console.error(e);
-    })
+    }
+    fetch();
+    const onUserCreated = ({ _id, email, permissions }) => {
+      setList((list) => ({
+        data: [
+          { _id, email, permissions },
+          ...list.data
+        ],
+        total: list.total + 1
+      }))
+    }
+    const onUserRemoved = ({ _id }) => {
+      setList((list) => ({
+        data: list.data.filter(u => u._id !== _id),
+        total: list.total - 1
+      }))
+    }
+    feathers.users.on('created', onUserCreated);
+    feathers.users.on('removed', onUserRemoved);
+    return () => {
+      feathers.users.removeListener('created', onUserCreated);
+      feathers.users.removeListener('removed', onUserRemoved);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const removeUser = useCallback((user) => {
     setSelectedUser(user);
@@ -58,7 +88,7 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody>
-                {list.map((u) => (<tr key={u._id}>
+                {list.data.map((u) => (<tr key={u._id}>
                   <td>{u.email}</td>
                   <td>{u.permissions.map((p) => (
                     <Box key={p} display="inline-block" mr={1}><Tag>{p}</Tag></Box>))}</td>

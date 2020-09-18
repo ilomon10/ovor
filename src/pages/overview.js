@@ -235,11 +235,12 @@ const Overview = () => {
                         <br />
                         <Button minimal small text="Generate new token" />
                       </>)} />}
-                  {tokens.data.map(v => (
+                  {tokens.data.map((v, i) => (
                     <div key={v.path}
                       style={{
-                        borderBottomColor: Colors.LIGHT_GRAY3, borderBottomWidth: 1, borderBottomStyle: 'solid',
-                        marginBottom: 8
+                        borderBottomColor: (tokens.data.length - 1 === i) ? 'transparent' : Colors.LIGHT_GRAY3,
+                        borderBottomWidth: 1, borderBottomStyle: 'solid',
+                        marginBottom: (tokens.data.length - 1 === i) ? 0 : 8
                       }}>
                       <p>{v.title}</p>
                       <div style={{ marginBottom: 10 }}>

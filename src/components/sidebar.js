@@ -13,7 +13,7 @@ const Comp = ({ className, items }) => {
   const history = useHistory();
   const navList = items.filter((v) => !v.hide) || [];
   const [isToggled, setIsToggled] = useState(false);
-  const [isNotificationTouched, setIsNotificationTouched] = useState(false);
+  const [isNotificationTouched, setIsNotificationTouched] = useState(true);
   const [email, setEmail] = useState(null);
   useEffect(() => {
     async function getUserData() {

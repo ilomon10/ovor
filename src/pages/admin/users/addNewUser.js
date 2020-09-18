@@ -23,7 +23,7 @@ const AddNewUser = ({ onClose }) => {
   const createUser = useCallback(({ name, email, password, permissions }, { setErrors, setSubmitting }) => {
     const send = async () => {
       try {
-        await feathers.users().create({
+        await feathers.users.create({
           name, email, password, permissions,
         });
         onClose();

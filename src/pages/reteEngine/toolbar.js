@@ -33,7 +33,7 @@ const Toolbar = ({ onDeploy }) => {
       const editor = rete.editor;
       setJsonDialog(s => ({
         isOpen: true,
-        data: JSON.stringify(editor.toJSON())
+        data: JSON.stringify(editor.toJSON(), null, '\t')
       }))
     }
     if (rete.editor) onCreateEditor();
@@ -74,7 +74,7 @@ const Toolbar = ({ onDeploy }) => {
                 onClick={() => setJsonDialog(a => ({ ...a, isOpen: false }))} />
             </div>
             <div className={Classes.DIALOG_BODY}>
-              <TextArea growVertically fill value={jsonDialog.data} />
+              <TextArea readOnly growVertically fill value={jsonDialog.data} />
             </div>
           </Dialog>
         </Navbar.Group>

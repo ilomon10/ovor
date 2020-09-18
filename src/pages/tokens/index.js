@@ -45,13 +45,14 @@ const Tokens = () => {
     }
     const onTokenRemoved = (res) => {
       setTokens((token) => ({
-        ...token,
-        data: token.data.filter(t => t._id !== res._id)
+        data: token.data.filter(t => t._id !== res._id),
+        total: token.total - 1
       }))
     }
     feathers.tokens.on('created', onTokenCreated)
     feathers.tokens.on('removed', onTokenRemoved);
     return () => {
+      feathers.tokens.removeListener('created', onTokenCreated);
       feathers.tokens.removeListener('removed', onTokenRemoved);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps

@@ -16,7 +16,7 @@ const Checkbox = ({ onChange, ...props }) => {
             const nextValue = field.value.concat(props.value);
             form.setFieldValue(props.name, nextValue);
           }
-          onChange(e);
+          if (typeof onChange === 'function') onChange(e);
         }}
       />
     )}
