@@ -300,7 +300,7 @@ const Device = () => {
                   <Flex alignItems="center">
                     <Box flexGrow={1}>
                       <h4 className={Classes.HEADING}>Delete this device</h4>
-                      <p>Once you delete a repository, there is no going back. Please be certain</p>
+                      <p>Once you delete a device, there is no going back. Please be certain</p>
                     </Box>
                     <Box flexShrink={0} >
                       <Button text="Delete this device" intent="danger" onClick={() => setIsDialogOpen(true)} />
