@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog } from '@blueprintjs/core';
+import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text } from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 
 import Table from 'components/exp.table';
@@ -254,7 +254,7 @@ const Device = () => {
                       <Box key={v._id} px={1}
                         width={`${100 / (device.fields.length - 1)}%`}>
                         <Card style={{ padding: 0 }}>
-                          <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name} ({v.type})</H5>
+                          <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}><Text ellipsize>{v.name} ({v.type})</Text></H5>
                           <div style={{ height: 127 }}>
                             <BaseTimeseries options={{
                               ...dummy.mini.options,

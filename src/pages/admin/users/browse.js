@@ -104,6 +104,7 @@ const Users = () => {
             <Dialog usePortal={true}
               title="Add new user account"
               isOpen={isDialogOpen}
+              canOutsideClickClose={false}
               onClose={() => setIsDialogOpen(false)} >
               <AddNewUser onClose={() => setIsDialogOpen(false)} />
             </Dialog>
