@@ -1,16 +1,20 @@
+import moment from 'moment';
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider } from '@blueprintjs/core';
+import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog } from '@blueprintjs/core';
+import { Helmet } from 'react-helmet';
+
 import Table from 'components/exp.table';
 import BaseTimeseries from 'components/widgets/baseTimeseries';
 import BaseBarChart from 'components/widgets/baseBarChart';
 import { getRandomData } from 'components/helper';
-import moment from 'moment';
 import Wrapper from 'components/wrapper';
-import Container from 'components/container';
 import { FeathersContext } from 'components/feathers';
-import { Helmet } from 'react-helmet';
 import InputCopy from 'components/inputCopy';
+import { Flex, Box } from 'components/utility/grid';
+import { container } from 'components/utility/constants';
+
+import DeleteDevice from './deleteDevice';
 
 const dummy = {
   incoming: {
@@ -112,6 +116,7 @@ const Device = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
   const history = useHistory();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [timeRange, setTimeRange] = useState([
     moment().startOf('day').toDate(),
     moment().endOf('day').toDate()
@@ -191,7 +196,7 @@ const Device = () => {
       </Helmet>
       <div className="flex flex--col" style={{ height: "100%" }}>
         <Navbar className="flex-shrink-0">
-          <div style={{ maxWidth: 1024, margin: '0 auto', height: '100%' }}>
+          <Box maxWidth={[container.sm, container.sm, container.md, container.xl]} mx="auto">
             <Navbar.Group>
               <Button icon="chevron-left" onClick={() => { history.goBack() }} />
               <Navbar.Divider />
@@ -221,70 +226,94 @@ const Device = () => {
               <NavbarDivider />
               <Button icon="data-lineage" onClick={() => history.push(`/rete/${device.reteId}`, { device })} />
             </Navbar.Group>
-          </div>
+          </Box>
         </Navbar>
         <div className="flex-grow" style={{ backgroundColor: Colors.LIGHT_GRAY5, position: 'relative' }}>
           <ResizeSensor onResize={(entries) => {
             entries.forEach(e => setContentHeight(e.contentRect.height));
           }}>
             <Wrapper style={{ overflowY: 'auto' }}>
-              <Container style={{ paddingTop: 12, paddingBottom: 24 }}>
-                <Card style={{ marginBottom: 12, padding: 0 }}>
-                  <div className="flex" style={{ padding: "16px 16px 0 16px" }}>
-                    <H4 className="flex-grow" style={{ margin: 0 }}>Recent Activity</H4>
-                    <div>
-                      <span>last </span>
-                      <HTMLSelect options={Object.keys(dateRange)} />
-                    </div>
-                  </div>
-                  <div style={{ height: 127 }}>
-                    <BaseBarChart options={dummy.incoming.options} series={dummy.incoming.series} />
-                  </div>
-                </Card>
-                <div className="flex" style={{ marginBottom: 16, marginLeft: -6, marginRight: -6 }}>
-                  {device.fields.filter(field => field.name !== 'timestamp').map((v, i) => (
-                    <div key={v._id} style={{ width: `${100 / (device.fields.length - 1)}%`, paddingRight: 6, paddingLeft: 6 }}>
-                      <Card style={{ padding: 0 }}>
-                        <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name} ({v.type})</H5>
-                        <div style={{ height: 127 }}>
-                          <BaseTimeseries options={{
-                            ...dummy.mini.options,
-                            stroke: {
-                              ...dummy.mini.options.stroke,
-                              curve: (v.type === 'boolean') ? 'stepline' : 'smooth'
-                            }
-                          }} series={[{
-                            name: `${v.name} (${v.type})`,
-                            data: [...data.map(d => {
-                              const dt = transformData(d, 'chart');
-                              return ([dt[0], dt[i + 1]]);
-                            })]
-                          }]} />
-                        </div>
-                      </Card>
-                    </div>
-                  ))}
-                </div>
-                <Card className="flex flex--col" style={{ height: contentHeight - 36 }}>
-                  <div className="flex-shrink-0 flex">
-                    <H4 className="flex-grow" style={{ margin: 0 }}>Recent Incoming Data</H4>
-                    <div>
-                      <span>last </span>
-                      <HTMLSelect options={Object.keys(dateRange)}
-                        onChange={changeTimeRange} />
-                    </div>
-                  </div>
-                  <div className="flex-grow" style={{ position: "relative" }}>
-                    <Wrapper>
-                      <div style={{ overflowY: 'auto', height: '100%' }}>
-                        <Table interactive
-                          options={{ labels: [...device.fields.map((e) => e.name)] }}
-                          series={data.map(d => transformData(d)).reverse()} />
+              <Box py={3} maxWidth={[container.sm, container.sm, container.md, container.lg]} mx="auto">
+                <Box px={3} mb={3}>
+                  <Card style={{ padding: 0 }}>
+                    <div className="flex" style={{ padding: "16px 16px 0 16px" }}>
+                      <H4 className="flex-grow" style={{ margin: 0 }}>Recent Activity</H4>
+                      <div>
+                        <span>last </span>
+                        <HTMLSelect options={Object.keys(dateRange)} />
                       </div>
-                    </Wrapper>
-                  </div>
-                </Card>
-              </Container>
+                    </div>
+                    <div style={{ height: 127 }}>
+                      <BaseBarChart options={dummy.incoming.options} series={dummy.incoming.series} />
+                    </div>
+                  </Card>
+                </Box>
+                <Box px={3} mb={3}>
+                  <Flex mb={3} mx={-1}>
+                    {device.fields.filter(field => field.name !== 'timestamp').map((v, i) => (
+                      <Box key={v._id} px={1}
+                        width={`${100 / (device.fields.length - 1)}%`}>
+                        <Card style={{ padding: 0 }}>
+                          <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}>{v.name} ({v.type})</H5>
+                          <div style={{ height: 127 }}>
+                            <BaseTimeseries options={{
+                              ...dummy.mini.options,
+                              stroke: {
+                                ...dummy.mini.options.stroke,
+                                curve: (v.type === 'boolean') ? 'stepline' : 'smooth'
+                              }
+                            }} series={[{
+                              name: `${v.name} (${v.type})`,
+                              data: [...data.map(d => {
+                                const dt = transformData(d, 'chart');
+                                return ([dt[0], dt[i + 1]]);
+                              })]
+                            }]} />
+                          </div>
+                        </Card>
+                      </Box>
+                    ))}
+                  </Flex>
+                </Box>
+                <Box px={3} mb={3}>
+                  <Card className="flex flex--col" style={{ height: contentHeight - 36 }}>
+                    <div className="flex-shrink-0 flex">
+                      <H4 className="flex-grow" style={{ margin: 0 }}>Recent Incoming Data</H4>
+                      <div>
+                        <span>last </span>
+                        <HTMLSelect options={Object.keys(dateRange)}
+                          onChange={changeTimeRange} />
+                      </div>
+                    </div>
+                    <div className="flex-grow" style={{ position: "relative" }}>
+                      <Wrapper>
+                        <div style={{ overflowY: 'auto', height: '100%' }}>
+                          <Table interactive
+                            options={{ labels: [...device.fields.map((e) => e.name)] }}
+                            series={data.map(d => transformData(d)).reverse()} />
+                        </div>
+                      </Wrapper>
+                    </div>
+                  </Card>
+                </Box>
+                <Box mb={3} px={3}>
+                  <Flex alignItems="center">
+                    <Box flexGrow={1}>
+                      <h4 className={Classes.HEADING}>Delete this device</h4>
+                      <p>Once you delete a repository, there is no going back. Please be certain</p>
+                    </Box>
+                    <Box flexShrink={0} >
+                      <Button text="Delete this device" intent="danger" onClick={() => setIsDialogOpen(true)} />
+                    </Box>
+                  </Flex>
+                </Box>
+              </Box>
+              <Dialog usePortal={true}
+                title="Delete device"
+                isOpen={isDialogOpen}
+                onClose={() => { setIsDialogOpen(false); }}>
+                <DeleteDevice data={device} onClose={() => { setIsDialogOpen(false); }} onDeleted={() => history.goBack()} />
+              </Dialog>
             </Wrapper>
           </ResizeSensor>
         </div>
