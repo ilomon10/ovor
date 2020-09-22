@@ -10,6 +10,8 @@ import { ReteEngineProvider } from 'components/hocs/reteEngine';
 import { Box, Flex } from 'components/utility/grid';
 import InputComponent from 'components/rete/nodes/input';
 import OutputComponent from 'components/rete/nodes/output';
+import PastComponent from 'components/rete/nodes/past';
+import InjectComponent from 'components/rete/nodes/inject';
 import ViewerComponent from 'components/rete/nodes/viewer';
 import OperationComponent from 'components/rete/nodes/operation';
 import TrigonometricComponent from 'components/rete/nodes/trigonometric';
@@ -29,10 +31,10 @@ const Component = ({ className }) => {
   const [device, setDevice] = useState({});
   const [rete, setRete] = useState({});
   const [components, setComponents] = useState([
+    new InjectComponent(),
     new ViewerComponent(),
     new LoggerComponent(),
     new ConversionComponent(),
-    // new InjectComponent(),
     new OperationComponent(),
     new TrigonometricComponent(),
     new ComparisonComponent(),
@@ -57,7 +59,11 @@ const Component = ({ className }) => {
       }),
       new OutputComponent({
         inputs: io
-      }), ...comps]));
+      }),
+      new PastComponent({
+        outputs: io
+      }),
+      ...comps]));
 
   }, [device]);
 

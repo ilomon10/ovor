@@ -3,7 +3,7 @@ import { Colors } from "@blueprintjs/core";
 import _get from 'lodash.get';
 import { Node } from "../node";
 import SelectControl from '../controls/select';
-import { UniversalSocket, BooleanSocket, StringSocket, NumberSocket } from '../sockets';
+import { UniversalSocket, BooleanSocket, StringSocket, NumberSocket, DateSocket } from '../sockets';
 import TextControl from "../controls/text";
 
 class ConversionComponent extends Rete.Component {
@@ -28,6 +28,9 @@ class ConversionComponent extends Rete.Component {
       case 'Numeric':
         socket = NumberSocket;
         break;
+      case 'Date':
+        socket = DateSocket;
+        break;
       default: break;
     }
     return socket;
@@ -46,7 +49,7 @@ class ConversionComponent extends Rete.Component {
 
     return node
       .addControl(new SelectControl(this.editor, "type", node, {
-        options: ['Boolean', 'String', 'Numeric']
+        options: ['Boolean', 'String', 'Numeric', 'Date']
       }))
       .addInput(input)
       .addOutput(output);
@@ -81,6 +84,9 @@ class ConversionComponent extends Rete.Component {
         break;
       case 'Numeric':
         outputValue = Number(inputValue);
+        break;
+      case 'Date':
+        outputValue = new Date(inputValue).getTime();
         break;
       default: break;
     }
