@@ -10,7 +10,7 @@ const DeleteUser = ({ onClose, data }) => {
     'last-word': Yup.string()
       .oneOf([(data['email']).split(' ').join('_').toLowerCase()], 'Not match')
       .required('Field is required')
-  })), [data.name]);
+  })), [data]);
   return (
     <Formik
       initialValues={{

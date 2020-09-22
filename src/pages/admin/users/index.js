@@ -40,7 +40,7 @@ const Users = () => {
       setUser({ name, email, permissions });
     }
     fetch();
-  }, [params.id]);
+  }, [params.id, feathers.users]);
   const updateUser = useCallback(async ({ name, email, permissions }, { setErrors, setSubmitting }) => {
     try {
       await feathers.users.patch(params.id, {
@@ -51,7 +51,7 @@ const Users = () => {
       setErrors({ submit: e.message });
     }
     setSubmitting(false);
-  }, []);
+  }, [params.id, feathers.users]);
   const updatePassword = useCallback(async ({ password }, { setErrors, setSubmitting }) => {
     try {
       await feathers.users.patch(params.id, { password });
@@ -60,7 +60,7 @@ const Users = () => {
       setErrors({ submit: e.message });
     }
     setSubmitting(false);
-  }, []);
+  }, [params.id, feathers.users]);
   return (<>
     <Helmet>
       <title>{} User | Ovor</title>

@@ -10,7 +10,7 @@ const DeleteDevice = ({ onClose, onDeleted, data }) => {
     'last-word': Yup.string()
       .oneOf([(data['name']).split(' ').join('_').toLowerCase()], 'Not match')
       .required('Field is required')
-  })), [data.name]);
+  })), [data]);
   return (
     <Formik
       initialValues={{
