@@ -15,6 +15,7 @@ import { Flex, Box } from 'components/utility/grid';
 import { container } from 'components/utility/constants';
 
 import DeleteDevice from './deleteDevice';
+import ConfigFields from './configFields';
 
 const dummy = {
   incoming: {
@@ -116,7 +117,10 @@ const Device = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
   const history = useHistory();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState({
+    delete: false,
+    config: false
+  });
   const [timeRange, setTimeRange] = useState([
     moment().startOf('day').toDate(),
     moment().endOf('day').toDate()
@@ -124,7 +128,8 @@ const Device = () => {
   const [device, setDevice] = useState({
     _id: '',
     name: '',
-    fields: []
+    fields: [],
+    pinned: []
   });
   const [data, setData] = useState([]);
   const transformData = useCallback((d, type) => {
@@ -249,6 +254,21 @@ const Device = () => {
                   </Card>
                 </Box>
                 <Box px={3} mb={3}>
+                  <Flex alignItems="center" mb={2}>
+                    <Box flexGrow={1}>
+                      <h5 style={{ margin: 0 }} className={Classes.HEADING}>Pinned fields</h5>
+                    </Box>
+                    <Box flexShrink={0}>
+                      <Button small minimal text="Configure fields"
+                        onClick={() => { setIsDialogOpen(s => ({ ...s, config: true })); }} />
+                      <Dialog
+                        title="Configure Fields"
+                        isOpen={isDialogOpen['config']}
+                        onClose={() => { setIsDialogOpen(s => ({ ...s, config: false })); }}>
+                        <ConfigFields data={device} onClose={() => { setIsDialogOpen(s => ({ ...s, config: false })); }} />
+                      </Dialog>
+                    </Box>
+                  </Flex>
                   <Flex mb={3} mx={-1}>
                     {device.fields.filter(field => field.name !== 'timestamp').map((v, i) => (
                       <Box key={v._id} px={1}
@@ -303,16 +323,16 @@ const Device = () => {
                       <p>Once you delete a device, there is no going back. Please be certain</p>
                     </Box>
                     <Box flexShrink={0} >
-                      <Button text="Delete this device" intent="danger" onClick={() => setIsDialogOpen(true)} />
+                      <Button text="Delete this device" intent="danger" onClick={() => setIsDialogOpen(s => ({ ...s, delete: true }))} />
                     </Box>
                   </Flex>
                 </Box>
               </Box>
               <Dialog usePortal={true}
                 title="Delete device"
-                isOpen={isDialogOpen}
-                onClose={() => { setIsDialogOpen(false); }}>
-                <DeleteDevice data={device} onClose={() => { setIsDialogOpen(false); }} onDeleted={() => history.goBack()} />
+                isOpen={isDialogOpen['delete']}
+                onClose={() => { setIsDialogOpen(s => ({ ...s, delete: false })); }}>
+                <DeleteDevice data={device} onClose={() => { setIsDialogOpen(s => ({ ...s, delete: false })); }} onDeleted={() => history.goBack()} />
               </Dialog>
             </Wrapper>
           </ResizeSensor>
