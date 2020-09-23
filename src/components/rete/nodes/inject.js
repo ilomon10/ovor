@@ -117,7 +117,6 @@ class InjectComponent extends Rete.Component {
       default: break;
     }
     
-    console.log(outputValue);
     outputs['out'] = outputValue;
   }
 }

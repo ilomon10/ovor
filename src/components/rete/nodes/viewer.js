@@ -2,6 +2,7 @@ import Rete from "rete";
 import { Colors } from "@blueprintjs/core";
 import { Node } from "../node";
 import { UniversalSocket } from '../sockets';
+import TextControl from "../controls/text";
 
 class ViewerComponent extends Rete.Component {
   constructor(config) {
@@ -15,14 +16,16 @@ class ViewerComponent extends Rete.Component {
 
   builder(node) {
     node.meta.color = this.config.color;
-    node.addInput(new Rete.Input('val', `Value`, UniversalSocket));
-    return node;
+    return node
+      .addInput(new Rete.Input('inp', `Value`, UniversalSocket))
+      .addControl(new TextControl(this.editor, "val", node, { readOnly: true }));
   }
 
-  worker(node, inputs, outputs) {
-    Object.keys(inputs).forEach((key) => {
-      node.data[key] = inputs[key][0];
-    })
+  async worker(node, inputs, outputs) {
+    const nodeClass = this.editor.nodes.find(n => n.id === node.id);
+    const control = nodeClass.controls.get('val');
+    node.data['val'] = inputs['inp'][0];
+    control.setValue(node.data['val']);
   }
 }
 

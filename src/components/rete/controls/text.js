@@ -3,10 +3,10 @@ import Rete from "rete";
 import { InputGroup } from '@blueprintjs/core';
 
 class TextControl extends Rete.Control {
-  static component = ({ value, onChange, readonly }) => (
+  static component = ({ value, onChange, readOnly }) => (
     <InputGroup
       type="text"
-      readOnly={readonly}
+      readOnly={readOnly}
       value={value}
       elementRef={ref => {
         ref && ref.addEventListener("pointerdown", e => e.stopPropagation());
@@ -15,7 +15,7 @@ class TextControl extends Rete.Control {
     />
   );
 
-  constructor(emitter, key, node, readonly = false) {
+  constructor(emitter, key, node, options = {}) {
     super(key);
     this.emitter = emitter;
     this.key = key;
@@ -24,8 +24,10 @@ class TextControl extends Rete.Control {
     const initial = node.data[key] || '';
 
     node.data[key] = initial;
+
     this.props = {
-      readonly,
+      readOnly: options.readOnly || false,
+      placeholder: options.placeholder,
       value: initial,
       onChange: v => {
         this.setValue(v);
