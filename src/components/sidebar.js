@@ -92,7 +92,7 @@ const Comp = ({ className, items }) => {
               <Divider />
               <Menu.Item icon="log-out" text="Logout" onClick={() => {
                 feathers.doLogout().then(() => {
-                  history.go('/login');
+                  history.push('/login');
                 });
               }} intent="danger" />
             </Menu>)}>
