@@ -93,7 +93,7 @@ const Register = () => {
           </Link>
           </Card>
           <div style={{ textAlign: 'center' }}>
-            <Link to="/login" className={Classes.TEXT_SMALL}>Lapor Sesuatu</Link>
+            <a href={"mailto:ilomon10@gmail.com"} className={Classes.TEXT_SMALL}>Lapor Sesuatu</a>
           </div>
         </div>
       </div>
