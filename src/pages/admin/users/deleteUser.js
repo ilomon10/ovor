@@ -4,7 +4,7 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { FeathersContext } from 'components/feathers';
 
-const DeleteUser = ({ onClose, data }) => {
+const DeleteUser = ({ onClose, onDeleted, data }) => {
   const feathers = useContext(FeathersContext);
   const Schema = useMemo(() => (Yup.object().shape({
     'last-word': Yup.string()
@@ -20,6 +20,7 @@ const DeleteUser = ({ onClose, data }) => {
       onSubmit={async (_value, { setErrors, setSubmitting }) => {
         try {
           await feathers.users.remove(data._id);
+          if (typeof onDeleted === 'function') onDeleted();
           onClose();
         } catch (e) {
           setErrors({ submit: e.message });

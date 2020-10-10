@@ -90,7 +90,7 @@ const Component = ({ className }) => {
           </Box>
           <Box px={3} width={[1, 1 / 2, 1 / 9 * 5]} textAlign={['center', 'left']}>
             <h2 className={Classes.HEADING}>Platform Untuk Pengembang</h2>
-            <Box as="p" mb={2} fontSize={3} opacity={0.5}>Api dan data terbaru langsung kami berikan ke pengembang untuk membangun pengalaman menyimpan dan menvisualisasi yang lebih baik.</Box>
+            <Box as="p" mb={3} fontSize={3} opacity={0.5}>Api dan data terbaru langsung kami berikan ke pengembang untuk membangun pengalaman menyimpan dan menvisualisasi yang lebih baik.</Box>
             <h4 className={Classes.HEADING}>
               <a href="#">Dapatkan API-key Anda sekarang</a>
             </h4>
@@ -106,7 +106,7 @@ const Component = ({ className }) => {
           </Box>
           <Box px={3} width={[1, 1 / 2, 1 / 9 * 5]} textAlign={['center', 'left']}>
             <h2 className={Classes.HEADING}>Data terbaru akan di sediakan secara langsung</h2>
-            <Box as="p" mb={2} fontSize={3} opacity={0.5}>Kami menggunakan metode messaging sehingga pengguna dapat mengirim dan menerima data secara real-time.</Box>
+            <Box as="p" mb={3} fontSize={3} opacity={0.5}>Kami menggunakan metode messaging sehingga pengguna dapat mengirim dan menerima data secara real-time.</Box>
             <h4 className={Classes.HEADING}>
               <a href="#">Pelajari sekarang</a>
             </h4>
