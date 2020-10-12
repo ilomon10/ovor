@@ -7,6 +7,8 @@ import { container } from 'components/utility/constants';
 import LinkButton from 'components/linkButton';
 import AspectRatio from 'components/aspectratio';
 
+import featureone from '../assets/feature-1.png';
+import featuretwo from '../assets/feature-2.png';
 import sponsorhasbi from '../assets/sponsor-1.png';
 import sponsorcec from '../assets/sponsor-2.png';
 
@@ -84,7 +86,7 @@ const Component = ({ className }) => {
           <Box px={3} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
             <AspectRatio ratio="1:1">
               <Box height={"100%"} width={"100%"} bg={Colors.GRAY5}>
-
+              <img height="100%" width="100%" style={{ objectFit: "cover" }} src={featuretwo} alt={"Rule Engine"} />
               </Box>
             </AspectRatio>
           </Box>
@@ -99,8 +101,8 @@ const Component = ({ className }) => {
         <Flex px={3} mx={-3} alignItems="center" flexDirection={["column", "row-reverse"]}>
           <Box px={3} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
             <AspectRatio ratio="1:1">
-              <Box height={"100%"} width={"100%"} bg={Colors.GRAY5}>
-
+              <Box height={"100%"} width={"100%"} bg={Colors.GRAY5} overflow="hidden">
+                <img height="100%" width="100%" style={{ objectFit: "cover" }} src={featureone} alt={"Dashboard Builder"} />
               </Box>
             </AspectRatio>
           </Box>

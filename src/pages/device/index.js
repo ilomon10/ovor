@@ -174,6 +174,9 @@ const Device = () => {
             $limit: 10000,
             deviceId: params.id,
             $select: ['data', 'createdAt'],
+            $sort: {
+              createdAt: -1
+            },
             createdAt: {
               $gte: moment(timeRange[0]).toISOString(),
               $lte: moment(timeRange[1]).toISOString()
@@ -310,7 +313,7 @@ const Device = () => {
                         <div style={{ overflowY: 'auto', height: '100%' }}>
                           <Table interactive
                             options={{ labels: [...device.fields.map((e) => e.name)] }}
-                            series={data.map(d => transformData(d)).reverse()} />
+                            series={data.map(d => transformData(d))} />
                         </div>
                       </Wrapper>
                     </div>

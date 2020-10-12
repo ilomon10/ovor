@@ -3,6 +3,7 @@ import { Button, Classes } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import _uniqBy from 'lodash.uniqby';
 import _merge from 'lodash.merge';
+import { Box } from 'components/utility/grid';
 
 export const buttonOptions = {
   iconName: {
@@ -110,7 +111,7 @@ const ControlButton = ({ ...props }) => {
   }, [series]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div style={{ width: '100%', height: '100%' }} className={`flex ${options.direction === 'vertical' ? "flex--col" : "flex--row"}`}>
+    <Box width={"100%"} height={"100%"} p={2} className={`flex ${options.direction === 'vertical' ? "flex--col" : "flex--row"}`}>
       {series.map((s, i) => (
         <Button key={i} fill
           className="flex-grow"
@@ -125,7 +126,7 @@ const ControlButton = ({ ...props }) => {
             </div>
           </>)} />
       ))}
-    </div>
+    </Box>
   )
 }
 

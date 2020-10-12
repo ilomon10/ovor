@@ -8,7 +8,7 @@ import { FeathersContext } from 'components/feathers';
 
 const Schema = Yup.object().shape({
   fields: Yup.array()
-    .min(3, "Min have 2 field")
+    .min(2, "Min have 1 field")
     .test('test', 'Please leave no one empty (except last one)', function (value) {
       const scheme = Yup.object().shape({
         name: Yup.string()

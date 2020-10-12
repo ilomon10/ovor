@@ -21,6 +21,9 @@ const Timeseries = ({ ...props }) => {
       let query = {
         $limit: 100,
         deviceId: { $in: deviceIds },
+        $sort: {
+          createdAt: 1
+        },
         $select: ['data', 'deviceId', 'createdAt']
       }
       if (props.timeRange) {
