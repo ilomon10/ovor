@@ -128,6 +128,7 @@ const Device = () => {
   const [device, setDevice] = useState({
     _id: '',
     name: '',
+    key: '',
     fields: [],
     pinned: []
   });
@@ -226,10 +227,15 @@ const Device = () => {
                   style={{ margin: 0 }}>{Math.floor(Math.random() * 99999999999)}</div>
               </div>
               <div style={{ marginLeft: 16 }}>
-                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
+                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE DI</div>
+                <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                  style={{ margin: 0 }}>{device._id}</div>
+              </div>
+              <div style={{ marginLeft: 16 }}>
+                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>KEY</div>
               </div>
               <div style={{ marginLeft: 8 }}>
-                <InputCopy size="24" value={`${device._id}`} />
+                <InputCopy size="24" value={`${device.key}`} />
               </div>
               <NavbarDivider />
               <Button icon="data-lineage" onClick={() => history.push(`/rete/${device.reteId}`, { device })} />
