@@ -26,8 +26,55 @@ const SocketStyle = styled(Box)`
   height: 16px;
   width: 16px;
   background-color: ${Colors.GRAY5};
-  &.used {
-    background-color: ${Colors.COBALT3};
+  &.number {
+    background-color: ${Colors.COBALT5};
+    &.used {
+      background-color: ${Colors.COBALT3};
+    }
+  }
+  &.boolean {
+    background-color: ${Colors.GREEN5};
+    &.used {
+      background-color: ${Colors.GREEN3};
+    }
+  }
+  &.string {
+    background-color: ${Colors.ORANGE5};
+    &.used {
+      background-color: ${Colors.ORANGE4};
+    }
+  }
+  &.date {
+    background-color: ${Colors.DARK_GRAY5};
+    &.used {
+      background-color: ${Colors.DARK_GRAY1};
+    }
+  }
+  &.universal {
+    background: repeating-linear-gradient(
+      45deg,
+      ${Colors.GREEN5},
+      ${Colors.GREEN5} 7px,
+      ${Colors.ORANGE5} 7px,
+      ${Colors.ORANGE5} 10px,
+      ${Colors.COBALT5} 10px,
+      ${Colors.COBALT5} 13px,
+      ${Colors.DARK_GRAY5} 13px,
+      ${Colors.DARK_GRAY5} 17px
+    );
+    &.used {
+      background-color: repeating-linear-gradient(
+        45deg,
+        ${Colors.GREEN4},
+        ${Colors.GREEN4} 7px,
+        ${Colors.ORANGE3} 7px,
+        ${Colors.ORANGE3} 10px,
+        ${Colors.COBALT3} 10px,
+        ${Colors.COBALT3} 13px,
+        ${Colors.DARK_GRAY1} 13px,
+        ${Colors.DARK_GRAY1} 17px
+      );
+    }
   }
   &.output {
     margin-right: -8px;
