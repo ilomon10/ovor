@@ -17,8 +17,11 @@ const SettingsOptions = ({ label, name, type, value, onChange }) => {
             type="number" />
         </FormGroup>);
     case 'boolean':
-      return (<Switch label={`${label} (${type.type})`} name={name} checked={value}
-        onChange={onChange} />);
+      return (<Switch label={`${label} (${type.type})`} name={name} default checked={value}
+        onChange={(e)=>{
+          e.target.value = Boolean(e.target.value);
+          onChange(e);
+        }} />);
     case 'oneOf':
       return (
         <FormGroup

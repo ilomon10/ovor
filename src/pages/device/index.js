@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text } from '@blueprintjs/core';
+import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text, NonIdealState } from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 
 import Table from 'components/exp.table';
@@ -227,7 +227,7 @@ const Device = () => {
                   style={{ margin: 0 }}>{Math.floor(Math.random() * 99999999999)}</div>
               </div>
               <div style={{ marginLeft: 16 }}>
-                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE DI</div>
+                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
                 <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
                   style={{ margin: 0 }}>{device._id}</div>
               </div>
@@ -262,7 +262,7 @@ const Device = () => {
                     </div>
                   </Card>
                 </Box>
-                <Box px={3} mb={3}>
+                <Box px={3}>
                   <Flex alignItems="center" mb={2}>
                     <Box flexGrow={1}>
                       <h5 style={{ margin: 0 }} className={Classes.HEADING}>Pinned fields</h5>
@@ -278,10 +278,10 @@ const Device = () => {
                       </Dialog>
                     </Box>
                   </Flex>
-                  <Flex mb={3} mx={-1}>
+                  <Flex mx={-1} flexWrap="wrap">
                     {device.fields.filter(field => field.name !== 'timestamp').map((v, i) => (
-                      <Box key={v._id} px={1}
-                        width={`${100 / (device.fields.length - 1)}%`}>
+                      <Box key={v._id} px={1} mb={3} 
+                        width={`${100 / (device.fields.length - 1 > 3 ? 3 : device.fields.length - 1)}%`}>
                         <Card style={{ padding: 0 }}>
                           <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}><Text ellipsize>{v.name} ({v.type})</Text></H5>
                           <div style={{ height: 127 }}>
@@ -316,11 +316,19 @@ const Device = () => {
                     </div>
                     <div className="flex-grow" style={{ position: "relative" }}>
                       <Wrapper>
-                        <div style={{ overflowY: 'auto', height: '100%' }}>
-                          <Table interactive
-                            options={{ labels: [...device.fields.map((e) => e.name)] }}
-                            series={data.map(d => transformData(d))} />
-                        </div>
+                        {data.lenght > 0 &&
+                          <div style={{ overflowY: 'auto', height: '100%' }}>
+                            <Table interactive
+                              options={{ labels: [...device.fields.map((e) => e.name)] }}
+                              series={data.map(d => transformData(d))} />
+                          </div>}
+                        {data.length === 0 &&
+                          <NonIdealState
+                            icon="array"
+                            title="Empty"
+                            description={<>
+                              <p>Currently there is no data to show</p>
+                            </>} />}
                       </Wrapper>
                     </div>
                   </Card>
