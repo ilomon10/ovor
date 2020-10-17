@@ -76,32 +76,17 @@ const dummy = {
   },
   mini: {
     options: {
-      stroke: {
-        // show: false,
-        width: 1
-      },
-      markers: {
-        show: true,
-        size: 5
-      },
+      stroke: { width: 1 },
       chart: {
-        sparkline: {
-          enabled: true,
-        },
-        zoom: {
-          enabled: false
-        },
-        toolbar: {
-          show: false
-        }
+        sparkline: { enabled: true, },
+        zoom: { enabled: false },
+        toolbar: { show: false }
       },
       xaxis: {
         show: false,
         type: 'datetime'
       },
-      yaxis: {
-        show: false
-      }
+      yaxis: { show: false }
     }
   }
 }
@@ -280,8 +265,8 @@ const Device = () => {
                   </Flex>
                   <Flex mx={-1} flexWrap="wrap">
                     {device.fields.filter(field => field.name !== 'timestamp').map((v, i) => (
-                      <Box key={v._id} px={1} mb={3} 
-                        width={`${100 / (device.fields.length - 1 > 3 ? 3 : device.fields.length - 1)}%`}>
+                      <Box key={v._id} px={1} mb={3}
+                        width={`${100 / ((device.fields.length - 1) % 2 === 0 ? 2 : 3)}%`}>
                         <Card style={{ padding: 0 }}>
                           <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}><Text ellipsize>{v.name} ({v.type})</Text></H5>
                           <div style={{ height: 127 }}>

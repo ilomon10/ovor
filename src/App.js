@@ -108,7 +108,6 @@ const App = () => {
     const fetch = async () => {
       const { user } = await feathers.client.get('authentication')
       setCurrentUser(user);
-      console.log(user);
     }
     fetch();
   }, [feathers]);
