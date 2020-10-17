@@ -6,7 +6,7 @@ import * as TableClasses from '@blueprintjs/table/lib/esm/common/classes';
 const defaultOptions = {}
 
 const BaseTable = ({ series, ...props }) => {
-  const options = _merge(defaultOptions, props.options);
+  const options = _merge({}, defaultOptions, props.options);
   const getColumn = useCallback((name, index) => {
     let nameProps = { name };
     if (typeof name === 'object')
