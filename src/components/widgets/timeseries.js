@@ -4,6 +4,20 @@ import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
 import BaseTimeseries from './baseTimeseries';
 
+export const timeseriesOptions = {
+  colors: [{ type: "string" }],
+  "stroke.width": { type: "number" },
+  "stroke.colors": [{ type: "string" }],
+  "stroke.curve": {
+    type: "oneOf",
+    options: ["smooth", "straight", "stepline"]
+  },
+}
+
+export const timeseriesConfig = {
+  acceptedType: ["number"]
+}
+
 const Timeseries = ({ ...props }) => {
   const feathers = useContext(FeathersContext);
   const [series, setSeries] = useState([]);
@@ -53,7 +67,7 @@ const Timeseries = ({ ...props }) => {
   }, [props.timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if(props.timeRange) return;
+    if (props.timeRange) return;
     const onDataCreated = (e) => {
       setSeries(d => [
         ...series.map(s => {
