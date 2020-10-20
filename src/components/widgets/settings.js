@@ -130,7 +130,7 @@ const Settings = ({ onClose }) => {
                         <ControlGroup fill className="flex-grow">
                           <HTMLSelect
                             name={`widgetSeries[${i}].device`}
-                            options={[{ label: "Choose device", value: "", disabled: true }, ...devices.map((device) => ({ label: device.name, value: device._id }))]}
+                            options={[{ label: "Choose device", value: "" }, ...devices.map((device) => ({ label: device.name, value: device._id }))]}
                             value={v.device}
                             onBlur={handleBlur}
                             onChange={e => {
@@ -180,7 +180,7 @@ const Settings = ({ onClose }) => {
                       name={`widgetOptions[${optionName}]`}
                       render={arr => (<FormGroup
                         label={optionName}
-                        labelInfo={`(${value.length - 1})`}>
+                        labelInfo={`(${value.length})`}>
                         <Box mb={2}>
                           <Button small fill text="Add" icon="plus"
                             onClick={() => arr.push("")} />

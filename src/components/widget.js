@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import {
   MosaicWindow,
   MosaicContext,
@@ -20,8 +20,9 @@ import DashboardContext from './hocs/dashboard';
 
 const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
   const { removeWidget } = useContext(DashboardContext);
-  let ret = null;
+  let Ret = null;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [rerender, setRerender] = useState(false);
   const propsForChart = _merge({
     options: {
       chart: {
@@ -29,30 +30,41 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
       }
     }
   }, props);
+
+  const forceRerender = useCallback(() => {
+    setRerender(true);
+    const timeout = setTimeout(() => {
+      setRerender(false);
+    }, 1000);
+    return () => {
+      clearTimeout(timeout);
+    }
+  }, []);
+
   switch (type) {
     case GRAPH_TYPE["Slider"]:
-      ret = (<ControlSlider {...propsForChart} />);
+      Ret = (<ControlSlider {...propsForChart} />);
       break;
     case GRAPH_TYPE["Button"]:
-      ret = (<ControlButton {...propsForChart} />);
+      Ret = (<ControlButton {...propsForChart} />);
       break;
     case GRAPH_TYPE["Numeric"]:
-      ret = (<Numeric {...propsForChart} />);
+      Ret = (<Numeric {...propsForChart} />);
       break;
     case GRAPH_TYPE["Bar Chart"]:
-      ret = (<BarChart {...propsForChart} />);
+      Ret = (<BarChart {...propsForChart} />);
       break;
     case GRAPH_TYPE["Time Series Graph"]:
-      ret = (<Timeseries {...propsForChart} />);
+      Ret = (<Timeseries {...propsForChart} />);
       break;
     case GRAPH_TYPE["Pie Chart"]:
-      ret = (<PieChart {...propsForChart} />);
+      Ret = (<PieChart {...propsForChart} />);
       break;
     case GRAPH_TYPE["Table"]:
-      ret = (<Table {...propsForChart} />);
+      Ret = (<Table {...propsForChart} />);
       break;
     default:
-      ret = (<Empty path={path} />);
+      Ret = (<Empty path={path} />);
       break;
   }
   return (
@@ -70,6 +82,10 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
             title={title}
             path={path}
             toolbarControls={([
+              <Button key={"refresh"} className="mosaic-default-control"
+                loading={rerender}
+                minimal icon='refresh'
+                onClick={() => forceRerender()} />,
               <Button key={"cog"} className="mosaic-default-control"
                 minimal icon='cog'
                 onClick={() => setIsDialogOpen(true)} />,
@@ -77,7 +93,7 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
                 removeWidget(mosaicActions.remove.bind(this, path), tileId);
               }} />,
             ])}>
-            {ret}
+            {!rerender && Ret}
             <Dialog
               title={"Configure Widget"}
               canEscapeKeyClose
