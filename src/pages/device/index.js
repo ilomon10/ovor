@@ -5,7 +5,7 @@ import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button
 import { Helmet } from 'react-helmet';
 
 import Table from 'components/exp.table';
-import BaseTimeseries from 'components/widgets/baseTimeseries';
+import Timeseries from 'components/widgets/timeseries';
 import BaseBarChart from 'components/widgets/baseBarChart';
 import { getRandomData } from 'components/helper';
 import Wrapper from 'components/wrapper';
@@ -76,7 +76,7 @@ const dummy = {
   },
   mini: {
     options: {
-      stroke: { width: 1 },
+      stroke: { width: 2 },
       chart: {
         sparkline: { enabled: true, },
         zoom: { enabled: false },
@@ -176,7 +176,14 @@ const Device = () => {
     }
     fetch();
 
-    const onDataCreated = (e) => { setData(d => [...d, e]) }
+    const onDataCreated = (e) => {
+      const result = {
+        _id: e._id,
+        data: e.data,
+        createdAt: e.createdAt
+      }
+      setData(d => [...d, result]);
+    }
     feathers.dataLake.on('created', onDataCreated);
     return () => {
       feathers.dataLake.removeListener('created', onDataCreated);
@@ -270,18 +277,15 @@ const Device = () => {
                         <Card style={{ padding: 0 }}>
                           <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}><Text ellipsize>{v.name} ({v.type})</Text></H5>
                           <div style={{ height: 127 }}>
-                            <BaseTimeseries options={{
+                            <Timeseries options={{
                               ...dummy.mini.options,
                               stroke: {
                                 ...dummy.mini.options.stroke,
                                 curve: (v.type === 'boolean') ? 'stepline' : 'smooth'
                               }
                             }} series={[{
-                              name: `${v.name} (${v.type})`,
-                              data: [...data.map(d => {
-                                const dt = transformData(d, 'chart');
-                                return ([dt[0], dt[i + 1]]);
-                              })]
+                              device: device._id,
+                              field: v._id
                             }]} />
                           </div>
                         </Card>
@@ -301,7 +305,7 @@ const Device = () => {
                     </div>
                     <div className="flex-grow" style={{ position: "relative" }}>
                       <Wrapper>
-                        {data.lenght > 0 &&
+                        {data.length > 0 &&
                           <div style={{ overflowY: 'auto', height: '100%' }}>
                             <Table interactive
                               options={{ labels: [...device.fields.map((e) => e.name)] }}
