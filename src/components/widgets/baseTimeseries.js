@@ -31,7 +31,7 @@ const defaultOptions = {
 
 const BaseTimeseries = ({ series, ...props }) => {
   const options = _merge({}, defaultOptions, props.options);
-  if(_get(options, "stroke.colors").length === 0) options.stroke.colors = undefined;
+  if(options.stroke.colors && _get(options, "stroke.colors").length === 0) options.stroke.colors = undefined;
   return (
     <Chart options={options} series={series} type="line" height="100%" width="100%" />
   );
