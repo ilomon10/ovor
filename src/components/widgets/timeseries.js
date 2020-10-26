@@ -16,7 +16,8 @@ export const timeseriesOptions = {
 }
 
 export const timeseriesConfig = {
-  acceptedType: ["number"]
+  acceptedType: ["number"],
+  minSeries: 1
 }
 
 const Timeseries = ({ onError, ...props }) => {
@@ -28,7 +29,6 @@ const Timeseries = ({ onError, ...props }) => {
   useEffect(() => {
     const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
     const fetch = async () => {
-
       let devices = [];
       try {
         let { data } = await feathers.devices.find({
@@ -40,6 +40,7 @@ const Timeseries = ({ onError, ...props }) => {
         devices = data;
       } catch (e) {
         if (typeof onError === 'function') onError(e);
+        setError(e);
         return;
       }
 
@@ -49,9 +50,9 @@ const Timeseries = ({ onError, ...props }) => {
             let error = new Error(`Device "${v.device}" at series ${i + 1} not found`);
             if (typeof onError === 'function') onError(error);
             setError(error);
+            return;
           }
         });
-        return;
       }
 
       let query = {
@@ -77,6 +78,7 @@ const Timeseries = ({ onError, ...props }) => {
         dataLake = data;
       } catch (e) {
         if (typeof onError === 'function') onError(e);
+        setError(e);
         return;
       }
       let Series = props.series.map(s => {
