@@ -6,7 +6,8 @@ import { FeathersContext } from 'components/feathers';
 
 export const pieChartOptions = {
   colors: [{ type: "string" }],
-  "dataLabels.enabled": { type: "boolean" }
+  "dataLabels.enabled": { type: "boolean" },
+  "legend.show": { type: "boolean" }
 }
 
 export const pieChartConfig = {

@@ -275,18 +275,22 @@ const Device = () => {
                       <Box key={v._id} px={1} mb={3}
                         width={`${100 / ((device.fields.length - 1) % 2 === 0 ? 2 : 3)}%`}>
                         <Card style={{ padding: 0 }}>
-                          <H5 style={{ padding: "12px 12px 0 12px", margin: 0 }}><Text ellipsize>{v.name} ({v.type})</Text></H5>
-                          <div style={{ height: 127 }}>
-                            <Timeseries options={{
-                              ...dummy.mini.options,
-                              stroke: {
-                                ...dummy.mini.options.stroke,
-                                curve: (v.type === 'boolean') ? 'stepline' : 'smooth'
-                              }
-                            }} series={[{
-                              device: device._id,
-                              field: v._id
-                            }]} />
+                          <H5 style={{ padding: "6px 12px 0 12px", margin: 0 }}>
+                            <Text ellipsize>{v.name} ({v.type})</Text>
+                          </H5>
+                          <div style={{ height: 64 }}>
+                            <Timeseries
+                              options={{
+                                ...dummy.mini.options,
+                                stroke: {
+                                  ...dummy.mini.options.stroke,
+                                  curve: (v.type === 'boolean') ? 'stepline' : 'smooth'
+                                }
+                              }}
+                              series={[{
+                                device: device._id,
+                                field: v._id
+                              }]} />
                           </div>
                         </Card>
                       </Box>

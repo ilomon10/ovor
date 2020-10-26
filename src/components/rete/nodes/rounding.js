@@ -27,7 +27,9 @@ class RoundingComponent extends Rete.Component {
 
     return node
       .addInput(input)
-      .addControl(new SelectControl(this.editor, "type", node, ['Round', 'Floor', 'Ceil']))
+      .addControl(new SelectControl(this.editor, "type", node, {
+        options: ["Round", "Floor", "Ceil"]
+      }))
       .addOutput(output)
   }
 

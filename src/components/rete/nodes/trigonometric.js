@@ -17,24 +17,26 @@ class TrigonometricComponent extends Rete.Component {
   }
 
   builder(node) {
-    if (!_get(node, 'node.data.type')) {
+    if (!_get(node, 'data.type')) {
       node.data.type = 'Sine';
     }
     node.meta.color = this.config.color;
-    var inp1 = new Rete.Input("num1", "Value", NumberSocket);
-    var out = new Rete.Output("num", "Value", NumberSocket);
+    var inp = new Rete.Input("inp", "Value", NumberSocket);
+    var out = new Rete.Output("out", "Value", NumberSocket);
 
-    inp1.addControl(new NumControl(this.editor, "num1", node));
+    inp.addControl(new NumControl(this.editor, "inp", node));
 
     return node
-      .addInput(inp1)
-      .addControl(new SelectControl(this.editor, "type", node, ['Sine', 'Cosine', 'Tangent']))
+      .addInput(inp)
+      .addControl(new SelectControl(this.editor, "type", node, {
+        options: ['Sine', 'Cosine', 'Tangent']
+      }))
       .addOutput(out);
   }
 
   worker(node, inputs, outputs) {
-    var n1 = inputs["num1"].length ? inputs["num1"][0] : node.data.num1;
-    console.log(node.data);
+    var n1 = inputs["inp"].length ? inputs["inp"][0] : node.data["inp"];
+
     let sum = 0;
     switch (node.data.type) {
       case 'Sine':
@@ -50,7 +52,7 @@ class TrigonometricComponent extends Rete.Component {
         sum = 0;
     }
 
-    outputs["num"] = sum;
+    outputs["out"] = sum;
   }
 }
 

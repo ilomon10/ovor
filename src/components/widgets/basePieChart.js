@@ -2,7 +2,14 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import _marge from 'lodash.merge';
 
-const defaultOptions = {}
+const defaultOptions = {
+  dataLabels: {
+    enabled: true
+  },
+  legend: {
+    show: true
+  }
+}
 
 const BasePieChart = ({ series, ...props }) => {
   const options = _marge({}, defaultOptions, props.options);
