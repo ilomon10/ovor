@@ -1,32 +1,47 @@
-import React from 'react';
-import { Tab, Tabs, Classes, Colors } from '@blueprintjs/core';
+import React, { useState } from 'react';
+import { Tab, Tabs, Classes, Colors, ResizeSensor } from '@blueprintjs/core';
 import styled from 'styled-components';
-import { Group } from '@vx/group';
-import { Text } from '@vx/text';
+import { Group } from '@visx/group';
+import { Text } from '@visx/text';
+import { Box } from 'components/utility/grid';
 
 const Comp = ({ options, className, ...props }) => {
+  const [contentSize, setContentSize] = useState({
+    height: 0,
+    width: 0
+  });
   let data = options.labels.map((v, i) => ({
     label: v,
     data: props.series[i]
   }));
   const series = data.map((v, i) => {
     let text = `${Number(v.data).toPrecision(options.precision)}`;
-    // if(options.unit) text = (`${text} ${options.unit}`)
+    if (options.unit) text = (`${text}${options.unit}`)
     return (<Tab
       id={i} title={v.label} key={i} panel={(
-        <svg style={{ height: '100%', width: '100%' }} viewBox="0 0 36 24">
-          <Group top={12} left={18}>
-            <Text style={{ fill: Colors.DARK_GRAY1 }} textAnchor="middle" verticalAnchor="end">{text}</Text>
-            <Text width={36} style={{ fontSize: '40%', fill: Colors.GRAY1 }} dy={1} lineHeight={5} textAnchor="middle" verticalAnchor="start">{options.unit}</Text>
-          </Group>
-        </svg>
+        <Box style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
+          <svg xmlns='http://www.w3.org/2000/svg'
+            width={"100%"}
+            height={"100%"}>
+            <Text scaleToFit={true}
+              dy={'50%'}
+              width={contentSize.width}
+              style={{ fill: Colors.DARK_GRAY1, fontSize: "1em" }}
+              textAnchor="start"
+              verticalAnchor="middle">{text}</Text>
+          </svg>
+        </Box>
       )} />)
   });
   return (
     <div className={className}>
-      <Tabs defaultSelectedTabId={0}>
-        {series}
-      </Tabs>
+      <ResizeSensor onResize={(entries) => {
+        entries.forEach(e => setContentSize({ height: e.contentRect.height, width: e.contentRect.width }));
+      }}>
+        <Tabs defaultSelectedTabId={0}>
+          {series}
+        </Tabs>
+      </ResizeSensor>
     </div>
   )
 }
@@ -35,17 +50,18 @@ const BaseNumeric = styled(Comp)`
   height: 100%;
   .${Classes.TABS} {
     height: 100%;
+    display: flex;
+    flex-direction: column;
     .${Classes.TAB_LIST} {
       justify-content: center;
     }
     .${Classes.TAB_PANEL} {
-      height: 100%;
-      > div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-      }
+      margin-top: 0;
+      flex: 1 0 auto;
+      position: relative;
+      // display: flex;
+      // justify-content: center;
+      // align-items: center;
     }
   }
 `
