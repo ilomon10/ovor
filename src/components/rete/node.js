@@ -8,7 +8,7 @@ const NodeStyle = styled(Box)`
   border-radius: 8px;
   box-shadow: 0px 0px 0px 0px ${Colors.BLUE1};
   && {
-    background-color: ${Colors.WHITE};
+    background-color: #ffffffbf;
     border: 1px solid ${Colors.DARK_GRAY1};
   }
   &.selected {
