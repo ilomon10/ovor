@@ -51,11 +51,10 @@ const Component = ({ className }) => {
                   draggable={isDrag}
                   onDragStart={(e) => onDragStart(e, c.name)}
                   onDragEnd={onDragEndHandler}
-                  style={{ cursor: "initial" }}
-                  labelElement={<Icon icon="drag-handle-vertical"
-                    style={{ cursor: "grab" }}
-                    onMouseDown={onMouseDownHandler}
-                    onMouseUp={onMouseUpHandler} />}
+                  style={{ cursor: "grab" }}
+                  onMouseDown={onMouseDownHandler}
+                  onMouseUp={onMouseUpHandler}
+                  labelElement={<Icon icon="drag-handle-vertical" />}
                   icon={<Icon icon="symbol-square" color={c.config.color} />} />
               )}
           </Draggable>

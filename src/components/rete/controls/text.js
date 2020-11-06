@@ -3,9 +3,10 @@ import Rete from "rete";
 import { InputGroup } from '@blueprintjs/core';
 
 class TextControl extends Rete.Control {
-  static component = ({ value, onChange, readOnly }) => (
+  static component = ({ value, onChange, readOnly, placeholder }) => (
     <InputGroup
       type="text"
+      placeholder={placeholder}
       readOnly={readOnly}
       value={value}
       elementRef={ref => {

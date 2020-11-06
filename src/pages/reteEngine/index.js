@@ -23,6 +23,8 @@ import ConversionComponent from 'components/rete/nodes/conversion';
 import Canvas from './canvas';
 import Toolbar from './toolbar';
 import Dock from './dock';
+import SwitchComponent from 'components/rete/nodes/switch';
+import IsEmptyComponent from 'components/rete/nodes/isEmpty';
 
 const Component = ({ className }) => {
   const feathers = useContext(FeathersContext);
@@ -32,10 +34,12 @@ const Component = ({ className }) => {
   const [rete, setRete] = useState({});
   const [components, setComponents] = useState([
     new InjectComponent(),
+    new IsEmptyComponent(),
     new ViewerComponent(),
     new LoggerComponent(),
     new ConversionComponent(),
     new OperationComponent(),
+    new SwitchComponent(),
     new TrigonometricComponent(),
     new ComparisonComponent(),
     new RoundingComponent()

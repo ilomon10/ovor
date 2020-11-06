@@ -6,6 +6,11 @@ export const BooleanSocket = new Socket("Boolean");
 export const StringSocket = new Socket("String");
 export const UniversalSocket = new Socket('Universal');
 
+UniversalSocket.combineWith(NumberSocket);
+UniversalSocket.combineWith(DateSocket);
+UniversalSocket.combineWith(BooleanSocket);
+UniversalSocket.combineWith(StringSocket);
+
 NumberSocket.combineWith(UniversalSocket);
 DateSocket.combineWith(UniversalSocket);
 BooleanSocket.combineWith(UniversalSocket);
