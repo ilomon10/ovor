@@ -86,7 +86,14 @@ const Timeseries = ({ onError, ...props }) => {
         const field = device.fields.find(f => f._id === s.field);
         const data = dataLake
           .filter(dl => dl.deviceId === device._id)
-          .map(dl => [dl.createdAt, dl.data[field.name]]);
+          .map(dl => {
+            let val = dl.data[field.name];
+            if (val === true) val = 1;
+            else if (val === false) val = 0;
+            else if (val === undefined) val = null;
+            return [dl.createdAt, val];
+          });
+
         return {
           ...s, fieldName: field.name, data,
           name: `${field.name} (${device.name})`
@@ -103,7 +110,13 @@ const Timeseries = ({ onError, ...props }) => {
       setSeries(d => [
         ...series.map(s => {
           if (s.device !== e.deviceId) return s;
-          s.data.push([e.createdAt, e.data[s.fieldName]]);
+          
+          let val = e.data[s.fieldName];
+          if (val === true) val = 1;
+          else if (val === false) val = 0;
+          else if (val === undefined) val = null;
+
+          s.data.push([e.createdAt, val]);
           return s;
         })
       ])

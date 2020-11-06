@@ -85,7 +85,12 @@ export default ({ onError, ...props }) => {
         const data = dataLake
           .filter(dl => dl.deviceId === device._id)
           .map(dl => dl.data[field.name]);
-        Series.push(data[0]);
+
+        if (data[0] === null)
+          Series.push(0);
+        else {
+          Series.push(data[0]);
+        }
         Labels.push({
           deviceId: device._id,
           deviceName: device.name,

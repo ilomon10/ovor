@@ -4,6 +4,16 @@ import { FeathersContext } from 'components/feathers';
 import BaseNumeric from './baseNumeric';
 import moment from 'moment';
 
+export const numericOptions = {
+  precision: { type: "number" },
+  unit: { type: "string" }
+}
+
+export const numericConfig = {
+  minSeries: 1,
+  acceptedType: ["number"]
+}
+
 const Numeric = ({ ...props }) => {
   const feathers = useContext(FeathersContext);
   const [labels, setLabels] = useState([]);
@@ -76,7 +86,7 @@ const Numeric = ({ ...props }) => {
         ...props.options,
         labels
       }}
-      series={series.map(s => s.data)} />
+      series={series.map(s => Number(s.data))} />
   )
 }
 

@@ -9,15 +9,19 @@ const Comp = ({ options, className, ...props }) => {
     label: v,
     data: props.series[i]
   }));
-  const series = data.map((v, i) => (<Tab
-    id={i} title={v.label} key={i} panel={(
-      <svg style={{ height: '100%', width: '100%' }} viewBox="0 0 36 24">
-        <Group top={12} left={18}>
-          <Text style={{ fill: Colors.DARK_GRAY1 }} textAnchor="middle" verticalAnchor="end">{v.data}</Text>
-          <Text width={36} style={{ fontSize: '40%', fill: Colors.GRAY1 }} dy={1} lineHeight={5} textAnchor="middle" verticalAnchor="start"></Text>
-        </Group>
-      </svg>
-    )} />));
+  const series = data.map((v, i) => {
+    let text = `${Number(v.data).toPrecision(options.precision)}`;
+    // if(options.unit) text = (`${text} ${options.unit}`)
+    return (<Tab
+      id={i} title={v.label} key={i} panel={(
+        <svg style={{ height: '100%', width: '100%' }} viewBox="0 0 36 24">
+          <Group top={12} left={18}>
+            <Text style={{ fill: Colors.DARK_GRAY1 }} textAnchor="middle" verticalAnchor="end">{text}</Text>
+            <Text width={36} style={{ fontSize: '40%', fill: Colors.GRAY1 }} dy={1} lineHeight={5} textAnchor="middle" verticalAnchor="start">{options.unit}</Text>
+          </Group>
+        </svg>
+      )} />)
+  });
   return (
     <div className={className}>
       <Tabs defaultSelectedTabId={0}>

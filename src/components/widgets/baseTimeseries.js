@@ -17,6 +17,7 @@ const defaultOptions = {
   colors: ['#2E93fA', '#66DA26', '#546E7A', '#E91E63', '#FF9800'],
   chart: {
     sparkline: { enabled: false, },
+    animations: { enabled: false }
   },
   xaxis: {
     show: true,
@@ -31,7 +32,7 @@ const defaultOptions = {
 
 const BaseTimeseries = ({ series, ...props }) => {
   const options = _merge({}, defaultOptions, props.options);
-  if(options.stroke.colors && _get(options, "stroke.colors").length === 0) options.stroke.colors = undefined;
+  if (options.stroke.colors && _get(options, "stroke.colors").length === 0) options.stroke.colors = undefined;
   return (
     <Chart options={options} series={series} type="line" height="100%" width="100%" />
   );
