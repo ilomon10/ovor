@@ -25,6 +25,7 @@ import Toolbar from './toolbar';
 import Dock from './dock';
 import SwitchComponent from 'components/rete/nodes/switch';
 import IsEmptyComponent from 'components/rete/nodes/isEmpty';
+import PIDComponent from 'components/rete/nodes/pid';
 
 const Component = ({ className }) => {
   const feathers = useContext(FeathersContext);
@@ -33,16 +34,17 @@ const Component = ({ className }) => {
   const [device, setDevice] = useState({});
   const [rete, setRete] = useState({});
   const [components, setComponents] = useState([
+    new ComparisonComponent(),
+    new ConversionComponent(),
     new InjectComponent(),
     new IsEmptyComponent(),
-    new ViewerComponent(),
     new LoggerComponent(),
-    new ConversionComponent(),
     new OperationComponent(),
+    new PIDComponent(),
+    new RoundingComponent(),
     new SwitchComponent(),
     new TrigonometricComponent(),
-    new ComparisonComponent(),
-    new RoundingComponent()
+    new ViewerComponent(),
   ]);
 
   useEffect(() => {
@@ -100,8 +102,8 @@ const Component = ({ className }) => {
     }
 
     const onProcess = async () => {
-      await engine.abort();
-      await engine.process(editor.toJSON());
+      // await engine.abort();
+      // await engine.process(editor.toJSON());
     }
 
     editor.on('process connectioncreated connectionremoved', onProcess);

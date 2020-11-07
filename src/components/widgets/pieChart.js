@@ -101,7 +101,7 @@ export default ({ onError, ...props }) => {
       setLabels(Labels);
     }
     fetch();
-  }, []);
+  }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <BasePieChart type="pie" height="100%" width="100%"

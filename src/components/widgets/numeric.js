@@ -63,6 +63,7 @@ const Numeric = ({ ...props }) => {
     }
     fetch();
   }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
+  
   useEffect(() => {
     if (props.timeRange) return;
     const onDataCreated = (e) => {

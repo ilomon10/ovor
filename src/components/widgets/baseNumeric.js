@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Tab, Tabs, Classes, Colors, ResizeSensor } from '@blueprintjs/core';
 import styled from 'styled-components';
-import { Group } from '@visx/group';
 import { Text } from '@visx/text';
 import { Box } from 'components/utility/grid';
 
