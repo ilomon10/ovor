@@ -72,6 +72,10 @@ const Canvas = styled(Components)`
     stroke-width: 2px;
     stroke: ${Colors.GRAY1};
   }
+  .connection .main-path:hover {
+    stroke-width: 5px;
+    stroke: ${Colors.RED3};
+  }
 `
 
 export default Canvas;

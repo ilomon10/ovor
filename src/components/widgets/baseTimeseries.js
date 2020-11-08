@@ -24,6 +24,8 @@ const defaultOptions = {
     type: 'datetime'
   },
   yaxis: {
+    max: max => max,
+    min: min => min,
     labels: {
       formatter: (v) => (typeof v === 'number' ? v.toFixed(2) : 0)
     }

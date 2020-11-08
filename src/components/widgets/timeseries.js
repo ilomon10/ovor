@@ -9,6 +9,8 @@ export const timeseriesOptions = {
   colors: [{ type: "string" }],
   "stroke.width": { type: "number" },
   "stroke.colors": [{ type: "string" }],
+  "yaxis.min": { type: "number" },
+  "yaxis.max": { type: "number" },
   "stroke.curve": {
     type: "oneOf",
     options: ["smooth", "straight", "stepline"]
@@ -56,7 +58,7 @@ const Timeseries = ({ onError, ...props }) => {
       }
 
       let query = {
-        $limit: 100,
+        $limit: 10000,
         deviceId: { $in: deviceIds },
         $sort: {
           createdAt: 1
@@ -110,7 +112,7 @@ const Timeseries = ({ onError, ...props }) => {
       setSeries(d => [
         ...series.map(s => {
           if (s.device !== e.deviceId) return s;
-          
+
           let val = e.data[s.fieldName];
           if (val === true) val = 1;
           else if (val === false) val = 0;
