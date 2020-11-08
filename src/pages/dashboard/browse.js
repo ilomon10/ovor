@@ -8,7 +8,7 @@ import Container from "components/container";
 import { FeathersContext } from 'components/feathers';
 import AddNewDashboard from "./addNewDashboard";
 import { Helmet } from "react-helmet";
-import { Box } from "components/utility/grid";
+import { Flex, Box } from "components/utility/grid";
 
 const Dashboards = () => {
   const feathers = useContext(FeathersContext);
@@ -62,7 +62,12 @@ const Dashboards = () => {
                     px={2} mb={3}>
                     <Card style={{ padding: 0 }}>
                       <AspectRatio ratio="4:3">
-                        <img style={{ height: '100%', width: '100%', display: 'block', backgroundColor: Colors.LIGHT_GRAY3 }} alt="boo" />
+                        <Flex justifyContent="center" alignItems="center" height="100%" backgroundColor={Colors.LIGHT_GRAY3}>
+                          <Box>
+                            <Icon iconSize={24} icon="vertical-bar-chart-asc" color={Colors.GRAY2} />
+                          </Box>
+                        </Flex>
+                        {/* <img style={{ height: '100%', width: '100%', display: 'block', backgroundColor: Colors.LIGHT_GRAY3 }} alt="boo" /> */}
                         <Box bg="white"
                           style={{ position: "absolute", right: 0, bottom: 0, left: 0 }}
                           px={3} py={2}>
