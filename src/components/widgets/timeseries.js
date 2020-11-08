@@ -6,11 +6,11 @@ import BaseTimeseries from './baseTimeseries';
 import { NonIdealState } from '@blueprintjs/core';
 
 export const timeseriesOptions = {
-  colors: [{ type: "string" }],
   "stroke.width": { type: "number" },
-  "stroke.colors": [{ type: "string" }],
-  "yaxis.min": { type: "number" },
   "yaxis.max": { type: "number" },
+  "yaxis.min": { type: "number" },
+  colors: [{ type: "string" }],
+  "stroke.colors": [{ type: "string" }],
   "stroke.curve": {
     type: "oneOf",
     options: ["smooth", "straight", "stepline"]
