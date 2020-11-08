@@ -27,6 +27,32 @@ import SwitchComponent from 'components/rete/nodes/switch';
 import IsEmptyComponent from 'components/rete/nodes/isEmpty';
 import PIDComponent from 'components/rete/nodes/pid';
 
+const removeListener = (obj, names, handler) => {
+  if (typeof handler !== "function") return obj;
+
+  const events = names instanceof Array ? names : (names).split(' ');
+
+  (events).forEach(name => {
+    let event = obj.events[name];
+    if (event.length) {
+      let position = -1;
+      for (let i = event.length - 1; i >= 0; i--) {
+        if (event[i].toString() === handler.toString()) {
+          position = i;
+          break;
+        }
+      }
+
+      if (position < 0)
+        return;
+
+      obj.events[name].splice(position, 1);
+    }
+  });
+
+  return obj;
+}
+
 const Component = ({ className }) => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
@@ -61,12 +87,15 @@ const Component = ({ className }) => {
 
     setComponents(comps => ([
       new InputComponent({
+        alias: "Input",
         outputs: io
       }),
       new OutputComponent({
+        alias: "Output",
         inputs: io
       }),
       new PastComponent({
+        alias: "Past",
         outputs: io
       }),
       ...comps]));
@@ -85,6 +114,7 @@ const Component = ({ className }) => {
     }
     fetch();
   }, [feathers]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const onEditorCreated = useCallback(async (editor, engine) => {
 
     components.forEach(c => {
@@ -106,9 +136,16 @@ const Component = ({ className }) => {
       // await engine.process(editor.toJSON());
     }
 
+    removeListener(editor, "process connectioncreated connectionremoved", onProcess);
+
     editor.on('process connectioncreated connectionremoved', onProcess);
 
+    return () => {
+      removeListener(editor, "process connectioncreated connectionremoved", onProcess);
+    }
+
   }, [components.length, rete]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const onDeploy = useCallback(async (json) => {
     await feathers.retes.patch(device.reteId, {
       id: json.id,

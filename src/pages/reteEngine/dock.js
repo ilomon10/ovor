@@ -47,7 +47,7 @@ const Component = ({ className }) => {
           <Draggable key={i}>
             {({ isDrag, onDragEndHandler,
               onMouseDownHandler, onMouseUpHandler }) => (
-                <Menu.Item text={c.name}
+                <Menu.Item text={c.config.alias || c.name}
                   draggable={isDrag}
                   onDragStart={(e) => onDragStart(e, c.name)}
                   onDragEnd={onDragEndHandler}

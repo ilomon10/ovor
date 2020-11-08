@@ -116,7 +116,7 @@ export class Node extends RNode {
           fontSize={1}
           style={{ borderRadius: "7px 7px 0 0" }}
           bg={node.meta.color}>
-          {node.name}
+          {node.alias || node.name}
         </Box>
         {/* Outputs */}
         {outputs.map(output => (

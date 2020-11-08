@@ -15,6 +15,7 @@ class PastComponent extends Rete.Component {
   }
 
   builder(node) {
+    node.alias = this.config.alias;
     node.meta.color = this.config.color;
     if (this.config.outputs) {
       const outputs = this.config.outputs;
