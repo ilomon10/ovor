@@ -157,7 +157,7 @@ const Device = () => {
         await setDevice({ ...device });
         const data = await feathers.dataLake.find({
           query: {
-            $limit: 10000,
+            $limit: 1000,
             deviceId: params.id,
             $select: ['data', 'createdAt'],
             $sort: {
