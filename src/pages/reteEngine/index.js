@@ -105,7 +105,11 @@ const Component = ({ className }) => {
   // Component Did Mount
   useEffect(() => {
     const fetch = async () => {
-      const { device } = location.state;
+      const deviceId = new URLSearchParams(location.search).get("deviceId");
+      if (!deviceId) return;
+      const device = await feathers.devices.get(deviceId, {
+        query: { $select: ["reteId", "fields"] }
+      });
       const { _id, ...rete } = await feathers.retes.get(params.id, {
         query: { $select: ['id', 'nodes'] }
       });

@@ -230,7 +230,10 @@ const Device = () => {
                 <InputCopy size="24" value={`${device.key}`} />
               </div>
               <NavbarDivider />
-              <Button icon="data-lineage" onClick={() => history.push(`/rete/${device.reteId}`, { device })} />
+              <Button icon="data-lineage" onClick={() => history.push({
+                pathname: `/rete/${device.reteId}`,
+                search: `?deviceId=${device._id}`
+              })} />
             </Navbar.Group>
           </Box>
         </Navbar>

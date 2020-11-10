@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BrowserRouter,
+  HashRouter,
   Route,
   Switch
 } from 'react-router-dom';
@@ -13,13 +13,13 @@ import PrivateRoute from './components/privateRoute';
 const Router = () => {
   return (
     <FeathersProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
           <PrivateRoute path="/" component={App} />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     </FeathersProvider>
   )
 }
