@@ -40,7 +40,7 @@ const dummy = {
         }
       },
       xaxis: {
-        type: 'datetime'
+        type: "datetime",
       },
       yaxis: {
         show: false
@@ -55,24 +55,27 @@ const dummy = {
         enabled: true,
         enabledOnSeries: [1],
         offsetY: -8,
-        formatter: (v) => (v.toFixed(2)),
+        formatter: (v) => {
+          let val = moment.duration(v);
+          console.log(val);
+
+          if (val.hours() > 0)
+            return `${val.hours()}h`;
+
+          if (val.minutes() > 0)
+            return `${val.minutes()}m`;
+
+          if (val.seconds() > 0)
+            return `${val.seconds()}s`;
+
+          if (val.milliseconds() > 0)
+            return `${val.milliseconds()}ms`;
+        },
         style: {
           colors: [Colors.BLACK]
         }
       }
-    },
-    series: (() => {
-      const d = getRandomData(25, true);
-      return ([{
-        name: 'Data used',
-        type: 'column',
-        data: d
-      }, {
-        name: 'Data used',
-        type: 'line',
-        data: d
-      }])
-    })()
+    }
   },
   mini: {
     options: {
@@ -117,7 +120,26 @@ const Device = () => {
     fields: [],
     pinned: []
   });
+
   const [data, setData] = useState([]);
+
+  const transformLatency = useCallback(() => {
+    let dat = data.map((d) => {
+      let x = d.collectedAt;
+      let y = moment(d.createdAt).valueOf() - moment(d.collectedAt).valueOf();
+      return [x, y];
+    })
+    return ([{
+      name: 'Data used',
+      type: 'column',
+      data: [...dat]
+    }, {
+      name: 'Data used',
+      type: 'line',
+      data: [...dat]
+    }])
+  }, [data]);
+
   const transformData = useCallback((d, type) => {
     const fields = device.fields.map(field => {
       if (type === 'chart') {
@@ -129,7 +151,7 @@ const Device = () => {
       }
 
       if (field.type === 'date')
-        return moment(d.createdAt).format('DD MMMM YYYY, h:mm:ss a');
+        return moment(d.data["timestamp"]).format('DD MMMM YYYY, h:mm:ss a');
 
       if (typeof d.data[field.name] === 'undefined') return '';
 
@@ -157,9 +179,9 @@ const Device = () => {
         await setDevice({ ...device });
         const data = await feathers.dataLake.find({
           query: {
-            $limit: 1000,
+            $limit: 2000,
             deviceId: params.id,
-            $select: ['data', 'createdAt'],
+            $select: ['data', 'createdAt', 'collectedAt'],
             $sort: {
               createdAt: -1
             },
@@ -180,7 +202,8 @@ const Device = () => {
       const result = {
         _id: e._id,
         data: e.data,
-        createdAt: e.createdAt
+        createdAt: e.createdAt,
+        collectedAt: e.collectedAt
       }
       setData(d => [...d, result]);
     }
@@ -246,14 +269,14 @@ const Device = () => {
                 <Box px={3} mb={3}>
                   <Card style={{ padding: 0 }}>
                     <div className="flex" style={{ padding: "16px 16px 0 16px" }}>
-                      <H4 className="flex-grow" style={{ margin: 0 }}>Recent Activity</H4>
+                      <H4 className="flex-grow" style={{ margin: 0 }}>Recent Latency</H4>
                       <div>
                         <span>last </span>
                         <HTMLSelect options={Object.keys(dateRange)} />
                       </div>
                     </div>
                     <div style={{ height: 127 }}>
-                      <BaseBarChart options={dummy.incoming.options} series={dummy.incoming.series} />
+                      <BaseBarChart options={dummy.incoming.options} series={transformLatency()} />
                     </div>
                   </Card>
                 </Box>

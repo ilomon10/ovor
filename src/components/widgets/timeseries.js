@@ -58,7 +58,7 @@ const Timeseries = ({ onError, ...props }) => {
       }
 
       let query = {
-        $limit: 10000,
+        $limit: 2000,
         deviceId: { $in: deviceIds },
         $sort: {
           createdAt: 1
