@@ -6,8 +6,6 @@ import { Helmet } from 'react-helmet';
 
 import Table from 'components/exp.table';
 import Timeseries from 'components/widgets/timeseries';
-import BaseBarChart from 'components/widgets/baseBarChart';
-import { getRandomData } from 'components/helper';
 import Wrapper from 'components/wrapper';
 import { FeathersContext } from 'components/feathers';
 import InputCopy from 'components/inputCopy';
@@ -16,67 +14,9 @@ import { container } from 'components/utility/constants';
 
 import DeleteDevice from './deleteDevice';
 import ConfigFields from './configFields';
+import IncomingChart from './IncomingChart';
 
 const dummy = {
-  incoming: {
-    options: {
-      legend: {
-        show: false
-      },
-      chart: {
-        zoom: {
-          enabled: false
-        },
-        toolbar: {
-          show: false
-        }
-      },
-      plotOptions: {
-        bar: {
-          columnWidth: '5%'
-        },
-        dataLabels: {
-          position: 'top'
-        }
-      },
-      xaxis: {
-        type: "datetime",
-      },
-      yaxis: {
-        show: false
-      },
-      markers: {
-        size: 5
-      },
-      tooltip: {
-        enabledOnSeries: [1]
-      },
-      dataLabels: {
-        enabled: true,
-        enabledOnSeries: [1],
-        offsetY: -8,
-        formatter: (v) => {
-          let val = moment.duration(v);
-          console.log(val);
-
-          if (val.hours() > 0)
-            return `${val.hours()}h`;
-
-          if (val.minutes() > 0)
-            return `${val.minutes()}m`;
-
-          if (val.seconds() > 0)
-            return `${val.seconds()}s`;
-
-          if (val.milliseconds() > 0)
-            return `${val.milliseconds()}ms`;
-        },
-        style: {
-          colors: [Colors.BLACK]
-        }
-      }
-    }
-  },
   mini: {
     options: {
       stroke: { width: 2 },
@@ -122,23 +62,6 @@ const Device = () => {
   });
 
   const [data, setData] = useState([]);
-
-  const transformLatency = useCallback(() => {
-    let dat = data.map((d) => {
-      let x = d.collectedAt;
-      let y = moment(d.createdAt).valueOf() - moment(d.collectedAt).valueOf();
-      return [x, y];
-    })
-    return ([{
-      name: 'Data used',
-      type: 'column',
-      data: [...dat]
-    }, {
-      name: 'Data used',
-      type: 'line',
-      data: [...dat]
-    }])
-  }, [data]);
 
   const transformData = useCallback((d, type) => {
     const fields = device.fields.map(field => {
@@ -191,6 +114,7 @@ const Device = () => {
             }
           }
         })
+        console.log(data.data);
         setData([...data.data]);
       } catch (e) {
         console.error(e);
@@ -275,9 +199,7 @@ const Device = () => {
                         <HTMLSelect options={Object.keys(dateRange)} />
                       </div>
                     </div>
-                    <div style={{ height: 127 }}>
-                      <BaseBarChart options={dummy.incoming.options} series={transformLatency()} />
-                    </div>
+                    <IncomingChart style={{ height: 127 }} data={data}/>
                   </Card>
                 </Box>
                 <Box px={3}>
