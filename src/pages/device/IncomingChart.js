@@ -50,6 +50,14 @@ export default ({ style, data }) => {
     if (Math.abs(val.milliseconds()) > 0) return `${val.milliseconds()}ms`;
   }, []);
   useEffect(() => {
+    const intervalFunc = setInterval(() => {
+      setLatestTime(moment().valueOf());
+    }, 5000);
+    return () => {
+      clearInterval(intervalFunc);
+    }
+  }, []);
+  useEffect(() => {
     if (data.length === 0) return;
     let dat = data.map((d) => {
       let collectedAt = moment(d.collectedAt).valueOf()
@@ -66,10 +74,22 @@ export default ({ style, data }) => {
     }}>
       <div style={style}>
         <LineChart height={contentSize.height} width={contentSize.width} data={series}>
-          <Line isAnimationActive={false} type="monotone" dataKey="y" stroke="#8884d8" />
-          <XAxis dataKey="x" tickFormatter={(tickItem) => {
-            return parseDuration(tickItem - latestTime);
-          }} />
+          <Line
+            isAnimationActive={false}
+            type="monotone"
+            dataKey="y"
+            stroke="#8884d8"
+          />
+          <XAxis
+            type="number"
+            domain={[moment(latestTime).subtract(1, 'h').valueOf(), latestTime]}
+            dataKey="x"
+            tickFormatter={(tickItem) => {
+              let result = parseDuration(tickItem - latestTime);
+              if (result) return result;
+              return `now`;
+            }}
+          />
           <Tooltip labelFormatter={(label) => {
             return moment(label).calendar();
           }} formatter={(value) => {
