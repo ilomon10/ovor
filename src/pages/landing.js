@@ -47,7 +47,7 @@ const Component = ({ className }) => {
             <Box px={3} className={Classes.DARK}
               width={[1, 1 / 2, 1 / 9 * 5]} textAlign={['center', 'left']}>
               <h1 className={Classes.HEADING}>Menghemat waktu kerja Anda</h1>
-              <Box as="p" fontSize={3} opacity={0.5}>OVoRD adalah platform yang terinspirasi dari cara Anda bekerja. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu.</Box>
+              <Box as="p" fontSize={3} opacity={0.5}>OVoRD adalah platform yang terinspirasi dari cara Anda mengerjakan sistem khususnya IoT. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu.</Box>
             </Box>
             <Box px={3}
               width={[1, 1 / 2, 1 / 9 * 4]}>
@@ -86,7 +86,7 @@ const Component = ({ className }) => {
           <Box px={3} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
             <AspectRatio ratio="1:1">
               <Box height={"100%"} width={"100%"} bg={Colors.GRAY5}>
-              <img height="100%" width="100%" style={{ objectFit: "cover" }} src={featuretwo} alt={"Rule Engine"} />
+                <img height="100%" width="100%" style={{ objectFit: "cover" }} src={featuretwo} alt={"Rule Engine"} />
               </Box>
             </AspectRatio>
           </Box>
@@ -213,7 +213,7 @@ const Component = ({ className }) => {
           </Flex>
         </Box>
         <Box bg={Colors.LIGHT_GRAY5} py={3}>
-          <Box as="p" textAlign="center" m={0} opacity={0.5}>© 2020 tagConn, All rights reserved.</Box>
+          <Box as="p" textAlign="center" m={0} opacity={0.5}>© 2020 tagConn, All rights reserved. — <a href="https://www.github.com">GitHub</a> design inspired.</Box>
         </Box>
       </Box>
     </div>
