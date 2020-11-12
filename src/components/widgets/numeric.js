@@ -5,8 +5,10 @@ import BaseNumeric from './baseNumeric';
 import moment from 'moment';
 
 export const numericOptions = {
+  fontSize: { type: "number" },
   precision: { type: "number" },
-  unit: { type: "string" }
+  unit: { type: "string" },
+  scaleToFit: { type: "boolean" },
 }
 
 export const numericConfig = {
@@ -63,7 +65,7 @@ const Numeric = ({ ...props }) => {
     }
     fetch();
   }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
-  
+
   useEffect(() => {
     if (props.timeRange) return;
     const onDataCreated = (e) => {
@@ -87,7 +89,8 @@ const Numeric = ({ ...props }) => {
         ...props.options,
         labels
       }}
-      series={series.map(s => Number(s.data))} />
+      series={series.map(s => Number(s.data))}
+    />
   )
 }
 

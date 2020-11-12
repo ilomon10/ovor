@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Tab, Tabs, Classes, Colors, ResizeSensor } from '@blueprintjs/core';
 import styled from 'styled-components';
 import { Text } from '@visx/text';
+
 import { Box } from 'components/utility/grid';
+import { abbreviateNumber } from "components/helper";
 
 const Comp = ({ options, className, ...props }) => {
   const [contentSize, setContentSize] = useState({
@@ -14,7 +16,8 @@ const Comp = ({ options, className, ...props }) => {
     data: props.series[i]
   }));
   const series = data.map((v, i) => {
-    let text = `${Number(v.data).toFixed(options.precision | 2)}`;
+    let num = Number(v.data).toFixed(options.precision || 2);
+    let text = abbreviateNumber(num);
     if (options.unit) text = (`${text}${options.unit}`)
     return (<Tab
       id={i} title={v.label} key={i} panel={(
@@ -22,12 +25,15 @@ const Comp = ({ options, className, ...props }) => {
           <svg xmlns='http://www.w3.org/2000/svg'
             width={"100%"}
             height={"100%"}>
-            <Text scaleToFit={true}
-              dy={'50%'}
+            <Text
+              scaleToFit={options.scaleToFit}
+              dx={"50%"}
+              dy={"50%"}
               width={contentSize.width}
-              style={{ fill: Colors.DARK_GRAY1, fontSize: "1em" }}
-              textAnchor="start"
-              verticalAnchor="middle">{text}</Text>
+              style={{ fill: Colors.DARK_GRAY1, fontSize: options.fontSize ? options.fontSize : "1em" }}
+              textAnchor="middle"
+              verticalAnchor="middle"
+            >{text}</Text>
           </svg>
         </Box>
       )} />)

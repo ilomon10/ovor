@@ -16,9 +16,6 @@ class PIDComponent extends Rete.Component {
   }
 
   builder(node) {
-    if (!_get(node, 'data.type')) {
-      node.data.type = 'Add';
-    }
     node.meta.color = this.config.color;
 
     let inputs = [{

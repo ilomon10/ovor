@@ -97,7 +97,7 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
             <Dialog
               title={"Configure Widget"}
               canEscapeKeyClose
-              canOutsideClickClose
+              canOutsideClickClose={false}
               onClose={() => setIsDialogOpen(false)}
               isOpen={isDialogOpen}
               usePortal>

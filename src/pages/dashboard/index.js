@@ -20,6 +20,7 @@ import { FeathersContext } from 'components/feathers';
 import BSON from 'bson-objectid';
 import DashboardContext from 'components/hocs/dashboard';
 import { Helmet } from 'react-helmet';
+import ErrorBoundary from 'components/ErrorBoundary';
 
 const Dashboard = () => {
   const feathers = useContext(FeathersContext);
@@ -150,14 +151,18 @@ const Dashboard = () => {
               renderTile={(id, path) => {
                 const widget = widgets.find(v => v._id === id);
                 if (typeof widget === 'undefined') return;
-                return (<Widget
-                  path={path}
-                  tileId={widget._id}
-                  title={widget.title}
-                  type={widget.type}
-                  series={widget.series}
-                  options={widget.options}
-                  timeRange={watchMode === 'Live' ? null : timeRange} />)
+                return (
+                  <ErrorBoundary>
+                    <Widget
+                      path={path}
+                      tileId={widget._id}
+                      title={widget.title}
+                      type={widget.type}
+                      series={widget.series}
+                      options={widget.options}
+                      timeRange={watchMode === 'Live' ? null : timeRange} />
+                  </ErrorBoundary>
+                )
               }}
               zeroStateView={<MosaicZeroState createNode={createNode} />}
               onChange={currentNode => {
