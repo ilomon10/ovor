@@ -14,7 +14,7 @@ const Comp = ({ options, className, ...props }) => {
     data: props.series[i]
   }));
   const series = data.map((v, i) => {
-    let text = `${Number(v.data).toPrecision(options.precision)}`;
+    let text = `${Number(v.data).toFixed(options.precision | 2)}`;
     if (options.unit) text = (`${text}${options.unit}`)
     return (<Tab
       id={i} title={v.label} key={i} panel={(
