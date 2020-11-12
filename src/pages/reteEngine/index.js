@@ -136,8 +136,8 @@ const Component = ({ className }) => {
     }
 
     const onProcess = async () => {
-      // await engine.abort();
-      // await engine.process(editor.toJSON());
+      await engine.abort();
+      await engine.process(editor.toJSON());
     }
 
     removeListener(editor, "process connectioncreated connectionremoved", onProcess);
