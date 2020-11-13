@@ -3,6 +3,7 @@ import { sliderOptions, sliderConfig } from './controlSlider';
 import { timeseriesOptions, timeseriesConfig } from './timeseries';
 import { pieChartOptions, pieChartConfig } from './pieChart';
 import { numericOptions, numericConfig } from './numeric';
+import { tableConfig } from './table';
 
 export const GRAPH_TYPE = {
   "Button": 'control.button',
@@ -28,5 +29,6 @@ export const GRAPH_CONFIG = {
   [GRAPH_TYPE["Button"]]: buttonConfig,
   [GRAPH_TYPE["Time Series Graph"]]: timeseriesConfig,
   [GRAPH_TYPE["Pie Chart"]]: pieChartConfig,
-  [GRAPH_TYPE["Numeric"]]: numericConfig
+  [GRAPH_TYPE["Numeric"]]: numericConfig,
+  [GRAPH_TYPE["Table"]]: tableConfig
 }

@@ -17,8 +17,11 @@ const Comp = ({ options, className, ...props }) => {
   }));
   const series = data.map((v, i) => {
     let num = Number(v.data).toFixed(options.precision || 2);
-    let text = abbreviateNumber(num);
-    if (options.unit) text = (`${text}${options.unit}`)
+    let text = "No Data";
+    if (!isNaN(num)) {
+      text = abbreviateNumber(num);
+      if (options.unit) text = (`${text}${options.unit}`)
+    }
     return (<Tab
       id={i} title={v.label} key={i} panel={(
         <Box style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>

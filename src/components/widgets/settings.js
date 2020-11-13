@@ -8,7 +8,7 @@ import DashboardContext from 'components/hocs/dashboard';
 import { FeathersContext } from 'components/feathers';
 import { Box, Flex } from 'components/utility/grid';
 
-import { GRAPH_TYPE, GRAPH_OPTIONS } from './constants';
+import { GRAPH_TYPE, GRAPH_OPTIONS, GRAPH_CONFIG } from './constants';
 import WidgetContext from './hocs';
 import SettingsOptions from './settings.options';
 
@@ -147,7 +147,13 @@ const Settings = ({ onClose }) => {
                                 const deviceSelected = devices.find(device => device._id === values['widgetSeries'][i].device);
                                 if (typeof deviceSelected === 'undefined') return [];
                                 const fields = deviceSelected.fields;
-                                return [...fields.map(field => ({ label: field.name, value: field._id }))];
+                                return [...fields.map(field => {
+                                  let disabled = false;
+                                  if (GRAPH_CONFIG[values["widgetType"]]["acceptedType"].indexOf(field.type) === -1) {
+                                    disabled = true;
+                                  }
+                                  return ({ label: field.name, value: field._id, disabled })
+                                })];
                               })()]}
                             value={v.field}
                             disabled={v.device === ''}

@@ -22,7 +22,7 @@ class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <Box>
-          <Text>Something went wrong</Text>
+          <Text>Something went wrong <a href="mailto:ilomon10@gmail.com">send report</a>.</Text>
         </Box>
       );
     }

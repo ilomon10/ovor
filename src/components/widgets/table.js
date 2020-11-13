@@ -4,6 +4,10 @@ import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
 import BaseTable from './baseTable';
 
+export const tableConfig = {
+  acceptedType: ["number", "boolean", "date"]
+}
+
 const Table = ({ series, ...props }) => {
   const feathers = useContext(FeathersContext);
   const [labels, setLabels] = useState([]);
@@ -57,7 +61,7 @@ const Table = ({ series, ...props }) => {
           return Labels.map((v, i) => {
             if (i === 0) return moment(dl.createdAt).calendar();
             if (v.deviceId !== dl.deviceId) return "";
-            if(typeof dl.data[v.fieldName] === 'undefined') return '';
+            if (typeof dl.data[v.fieldName] === 'undefined') return '';
             return String(dl.data[v.fieldName]);
           });
         })
