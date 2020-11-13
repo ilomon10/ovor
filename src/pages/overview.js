@@ -8,6 +8,7 @@ import moment from 'moment';
 import { FeathersContext } from 'components/feathers';
 import LinkButton from 'components/linkButton';
 import { Helmet } from 'react-helmet';
+import { abbreviateNumber } from 'components/helper';
 
 const stateOption = {
   data: [],
@@ -39,7 +40,7 @@ const Overview = () => {
       let data = await feathers.dataLake.find({
         query: {
           $limit: 3,
-          $select: ['deviceId'],
+          $select: ['deviceId', 'updatedAt'],
           createdAt: 'all',
           $sort: { createdAt: -1 }
         }
@@ -76,7 +77,7 @@ const Overview = () => {
             query: { $select: ['name'] }
           });
           return {
-            title: `${moment(v.createdAt).calendar()} on ${d.name}`,
+            title: `${moment(v.updatedAt).calendar()} on ${d.name}`,
             path: d._id
           }
         }))
@@ -150,7 +151,7 @@ const Overview = () => {
                 <Card elevation={Elevation.ZERO}>
                   <div className="flex">
                     <div style={{ width: `${100 / 3}%` }}>
-                      <h1 className={Classes.HEADING}>{data.total}</h1>
+                      <h1 className={Classes.HEADING}>{abbreviateNumber(data.total)}</h1>
                       <h5 className={Classes.HEADING}>Data</h5>
                     </div>
                     <div style={{ width: `${100 / 3 * 2}%` }}>
