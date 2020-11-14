@@ -13,7 +13,7 @@ class Table extends React.PureComponent {
   _headerColRenderer({ label, ...bb }) {
     return (
       <Box
-        py={3} px={2}
+        px={2}
         fontWeight="bold"
         style={{
           textTransform: "capitalize"
@@ -28,10 +28,8 @@ class Table extends React.PureComponent {
       <Flex
         key={key}
         className={className}
-        style={{
-          ...style,
-          height: "initial"
-        }}
+        style={style}
+        alignItems="center"
       >
         {columns}
       </Flex>
@@ -46,13 +44,14 @@ class Table extends React.PureComponent {
           <RVTable
             height={this.state.height}
             width={this.state.width}
+            headerHeight={48}
             headerRowRenderer={this._RowRenderer}
             rowRenderer={this._RowRenderer}
-            rowHeight={24}
+            rowHeight={36}
             rowCount={this.props.data.length}
             rowGetter={({ index }) => this.props.data[index]}
           >
-            {this.props.columns.length > 0 && this.props.columns.map(({ dataKey, label, cellRenderer }) => {
+            {this.props.columns.length > 0 && this.props.columns.map(({ dataKey, label, cellRenderer, width }) => {
               if (typeof cellRenderer !== "function") {
                 cellRenderer = ({ cellData }) => (
                   <Box px={2}>
@@ -66,7 +65,7 @@ class Table extends React.PureComponent {
                 <Column
                   key={dataKey}
                   label={label}
-                  width={150}
+                  width={width || 150}
                   dataKey={dataKey}
                   cellDataGetter={({ rowData, dataKey }) => _get(rowData, dataKey)}
                   headerRenderer={this._headerColRenderer}

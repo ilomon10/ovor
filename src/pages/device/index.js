@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
-import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text, NonIdealState } from '@blueprintjs/core';
+import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text, NonIdealState, Checkbox, Divider } from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 
 import Timeseries from 'components/widgets/timeseries';
@@ -12,6 +12,7 @@ import { Flex, Box } from 'components/utility/grid';
 import { container } from 'components/utility/constants';
 
 import DeleteDevice from './deleteDevice';
+import DeleteData from './deleteData';
 import ConfigFields from './configFields';
 import IncomingChart from './IncomingChart';
 import Table from './Table';
@@ -46,6 +47,7 @@ const Device = () => {
   const params = useParams();
   const history = useHistory();
   const [isDialogOpen, setIsDialogOpen] = useState({
+    delete_data: false,
     delete: false,
     config: false
   });
@@ -62,28 +64,8 @@ const Device = () => {
   });
 
   const [data, setData] = useState([]);
-
-  const transformData = useCallback((d, type) => {
-    const fields = device.fields.map(field => {
-      if (type === 'chart') {
-        if (field.type === 'boolean')
-          if (d.data[field.name])
-            return 1;
-          else
-            return 0;
-      }
-
-      if (field.type === 'date')
-        return moment(d.data["timestamp"]).format('DD MMMM YYYY, h:mm:ss a');
-
-      if (typeof d.data[field.name] === 'undefined') return '';
-
-      return String(d.data[field.name]);
-    });
-    return ([...fields]);
-  }, [device.fields]);
-
   const [contentHeight, setContentHeight] = useState(278);
+  const [selectedDataIds, setSelectedDataIds] = useState([]);
 
   const changeTimeRange = useCallback(({ target }) => {
     const now = moment();
@@ -158,11 +140,6 @@ const Device = () => {
                 <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>IP ADDRESS</div>
                 <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
                   style={{ margin: 0 }}>192.168.43.{Math.floor(Math.random() * 255)}</div>
-              </div>
-              <div style={{ marginLeft: 16 }}>
-                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>IMEI</div>
-                <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                  style={{ margin: 0 }}>{Math.floor(Math.random() * 99999999999)}</div>
               </div>
               <div style={{ marginLeft: 16 }}>
                 <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
@@ -248,32 +225,75 @@ const Device = () => {
                   <Card className="flex flex--col" style={{ height: contentHeight - 36 }}>
                     <div className="flex-shrink-0 flex">
                       <H4 className="flex-grow" style={{ margin: 0 }}>Recent Incoming Data</H4>
-                      <div>
+                      {selectedDataIds.length > 0 &&
+                        (<>
+                          <Box>
+                            <Button
+                              minimal
+                              intent="danger"
+                              text={(<Text>Delete {selectedDataIds.length} selected data</Text>)}
+                              onClick={() => setIsDialogOpen(s => ({ ...s, "delete_data": true }))}
+                            />
+                          </Box>
+                          <Divider />
+                        </>)}
+                      <Box pl={2}>
                         <span>last </span>
                         <HTMLSelect options={Object.keys(dateRange)}
                           onChange={changeTimeRange} />
-                      </div>
+                      </Box>
                     </div>
                     <div className="flex-grow" style={{ position: "relative" }}>
                       <Wrapper>
                         {data.length > 0 &&
                           <Table
-                            columns={device.fields.map(field => {
-                              let result = {
-                                dataKey: `data.${field.name}`,
-                                label: field.name
-                              }
-                              if (field.type === "date")
-                                result.cellRenderer = ({ cellData }) => (
-                                  <Box
-                                    px={2}
-                                  >
-                                    <Text ellipsize>{moment(cellData).calendar()}</Text>
+                            columns={[
+                              {
+                                dataKey: "_id",
+                                label: (
+                                  <Checkbox
+                                    style={{ marginBottom: 0 }}
+                                    checked={selectedDataIds.length === data.length}
+                                    indeterminate={selectedDataIds.length > 0 && selectedDataIds.length < data.length}
+                                    onClick={(e) => {
+                                      let value = e.target.checked;
+                                      if (value) setSelectedDataIds([...data.map(d => d._id)]);
+                                      else setSelectedDataIds([]);
+                                    }}
+                                  />
+                                ),
+                                width: 50,
+                                cellRenderer: ({ rowData, cellData }) => (
+                                  <Box px={2}>
+                                    <Checkbox
+                                      style={{ marginBottom: 0 }}
+                                      checked={selectedDataIds.indexOf(rowData["_id"]) !== -1}
+                                      onChange={(e) => {
+                                        let value = e.target.checked;
+                                        if (value) setSelectedDataIds(ids => [...ids, cellData]);
+                                        else setSelectedDataIds(ids => [...ids.filter((id) => id !== cellData)]);
+                                      }}
+                                    />
                                   </Box>
-                                );
+                                )
+                              },
+                              ...device.fields.map(field => {
+                                let result = {
+                                  dataKey: `data.${field.name}`,
+                                  label: field.name,
+                                  width: 100
+                                }
+                                if (field.type === "date") {
+                                  result.width = 200;
+                                  result.cellRenderer = ({ cellData }) => (
+                                    <Box px={2}>
+                                      <Text ellipsize>{moment(cellData).calendar()}</Text>
+                                    </Box>
+                                  );
+                                }
 
-                              return result;
-                            })}
+                                return result;
+                              })]}
                             data={data}
                             style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
                           />}
@@ -300,6 +320,12 @@ const Device = () => {
                   </Flex>
                 </Box>
               </Box>
+              <Dialog usePortal={true}
+                title="Delete data"
+                isOpen={isDialogOpen["delete_data"]}
+                onClose={() => { setIsDialogOpen(s => ({ ...s, "delete_data": false })); }}>
+                <DeleteData data={selectedDataIds} onClose={() => { setIsDialogOpen(s => ({ ...s, "delete_data": false })); }} onDeleted={() => history.go(0)} />
+              </Dialog>
               <Dialog usePortal={true}
                 title="Delete device"
                 isOpen={isDialogOpen['delete']}

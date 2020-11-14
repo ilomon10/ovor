@@ -12,8 +12,11 @@ export default ({ style, data }) => {
   const [series, setSeries] = useState([]);
   const parseDuration = useCallback((duration) => {
     let val = moment.duration(duration);
-    if (Math.abs(val.hours()) > 0) return `${val.hours()}h`;
-    if (Math.abs(val.minutes()) > 0) return `${val.minutes()}m`;
+    if (Math.abs(val.years()) > 0) return `${val.years()}yr`;
+    if (Math.abs(val.months()) > 0) return `${val.months()}mth`;
+    if (Math.abs(val.days()) > 0) return `${val.days()}d`;
+    if (Math.abs(val.hours()) > 0) return `${val.hours()}hr`;
+    if (Math.abs(val.minutes()) > 0) return `${val.minutes()}min`;
     if (Math.abs(val.seconds()) > 0) return `${val.seconds()}s`;
     if (Math.abs(val.milliseconds()) > 0) return `${val.milliseconds()}ms`;
   }, []);
