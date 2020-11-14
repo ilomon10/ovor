@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import moment from "moment";
 import { Colors, ResizeSensor } from "@blueprintjs/core";
 import { LineChart, Line, XAxis, Tooltip } from "recharts";
@@ -10,38 +10,6 @@ export default ({ style, data }) => {
   });
   const [latestTime, setLatestTime] = useState(moment().valueOf());
   const [series, setSeries] = useState([]);
-  const [options] = useState({
-    legend: { show: false },
-    chart: {
-      zoom: { enabled: false },
-      toolbar: { show: false }
-    },
-    plotOptions: {
-      bar: { columnWidth: '5%' },
-      dataLabels: { position: 'top' }
-    },
-    xaxis: { type: "datetime", },
-    yaxis: { show: false },
-    markers: { size: 5 },
-    tooltip: { enabledOnSeries: [1] },
-    dataLabels: {
-      enabled: true,
-      enabledOnSeries: [1],
-      offsetY: -8,
-      formatter: (v) => {
-        let val = moment.duration(v);
-
-        if (val.hours() > 0) return `${val.hours()}h`;
-
-        if (val.minutes() > 0) return `${val.minutes()}m`;
-
-        if (val.seconds() > 0) return `${val.seconds()}s`;
-
-        if (val.milliseconds() > 0) return `${val.milliseconds()}ms`;
-      },
-      style: { colors: [Colors.BLACK] }
-    }
-  });
   const parseDuration = useCallback((duration) => {
     let val = moment.duration(duration);
     if (Math.abs(val.hours()) > 0) return `${val.hours()}h`;

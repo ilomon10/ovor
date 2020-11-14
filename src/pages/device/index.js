@@ -4,7 +4,6 @@ import { useParams, useHistory } from 'react-router-dom';
 import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text, NonIdealState } from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 
-import Table from 'components/exp.table';
 import Timeseries from 'components/widgets/timeseries';
 import Wrapper from 'components/wrapper';
 import { FeathersContext } from 'components/feathers';
@@ -15,6 +14,7 @@ import { container } from 'components/utility/constants';
 import DeleteDevice from './deleteDevice';
 import ConfigFields from './configFields';
 import IncomingChart from './IncomingChart';
+import Table from './Table';
 
 const dummy = {
   mini: {
@@ -114,7 +114,6 @@ const Device = () => {
             }
           }
         })
-        console.log(data.data);
         setData([...data.data]);
       } catch (e) {
         console.error(e);
@@ -199,7 +198,7 @@ const Device = () => {
                         <HTMLSelect options={Object.keys(dateRange)} />
                       </div>
                     </div>
-                    <IncomingChart style={{ height: 127 }} data={data}/>
+                    <IncomingChart style={{ height: 127 }} data={data} />
                   </Card>
                 </Box>
                 <Box px={3}>
@@ -258,11 +257,26 @@ const Device = () => {
                     <div className="flex-grow" style={{ position: "relative" }}>
                       <Wrapper>
                         {data.length > 0 &&
-                          <div style={{ overflowY: 'auto', height: '100%' }}>
-                            <Table interactive
-                              options={{ labels: [...device.fields.map((e) => e.name)] }}
-                              series={data.map(d => transformData(d))} />
-                          </div>}
+                          <Table
+                            columns={device.fields.map(field => {
+                              let result = {
+                                dataKey: `data.${field.name}`,
+                                label: field.name
+                              }
+                              if (field.type === "date")
+                                result.cellRenderer = ({ cellData }) => (
+                                  <Box
+                                    px={2}
+                                  >
+                                    <Text ellipsize>{moment(cellData).calendar()}</Text>
+                                  </Box>
+                                );
+
+                              return result;
+                            })}
+                            data={data}
+                            style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
+                          />}
                         {data.length === 0 &&
                           <NonIdealState
                             icon="array"
