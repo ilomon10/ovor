@@ -14,6 +14,8 @@ import {
 } from 'react-mosaic-component';
 import { Navbar, Classes, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
+import _debounce from "lodash.debounce";
+
 import { dropRight } from 'components/helper';
 import Widget from 'components/widget';
 import { FeathersContext } from 'components/feathers';
@@ -26,6 +28,7 @@ const Dashboard = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
   const history = useHistory();
+  const [isSaving, setIsSaving] = useState(false);
   const [watchMode, setWatchMode] = useState('Live');
   const [dashboardTitle, setDashboardTitle] = useState("");
   const [widgets, setWidgets] = useState([]);
@@ -41,7 +44,6 @@ const Dashboard = () => {
     })
     const onDashboardPatched = (e) => {
       setWidgets([...e.widgets]);
-      setCurrentNode(e.nodes);
     }
     feathers.dashboards.on('patched', onDashboardPatched);
     return () => {
@@ -49,8 +51,15 @@ const Dashboard = () => {
     }
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const updateCurrentNodeToDB = useCallback((currentNode) => {
-    feathers.dashboards.patch(params.id, { nodes: currentNode });
+    setIsSaving(true);
+    setCurrentNode(currentNode);
+    updateCurrentNode(currentNode);
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const updateCurrentNode = useCallback(_debounce((curNode) => {
+    feathers.dashboards.patch(params.id, { nodes: curNode }).then((res) => {
+      setIsSaving(false);
+    });
+  }, 1000), [updateCurrentNodeToDB]);
   const autoArrange = () => {
     const leaves = getLeaves(currentNode);
     updateCurrentNodeToDB(createBalancedTreeFromLeaves(leaves));
@@ -122,6 +131,13 @@ const Dashboard = () => {
               </Navbar.Heading>
             </Navbar.Group>
             <Navbar.Group className="flex-shrink-0">
+              <Button
+                minimal
+                icon="tick"
+                loading={isSaving}
+                style={{ pointerEvents: "none" }}
+              />
+              <Navbar.Divider />
               <ControlGroup className="flex--i-center">
                 {watchMode === 'Range' && <>
                   <DateInput style={{ textAlign: 'center' }}

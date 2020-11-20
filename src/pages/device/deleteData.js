@@ -6,12 +6,11 @@ import { FeathersContext } from 'components/feathers';
 
 const DeleteData = ({ onClose, onDeleted, data }) => {
   const feathers = useContext(FeathersContext);
-  console.log(data);
   const Schema = useMemo(() => (Yup.object().shape({
     'last-word': Yup.string()
       .oneOf(["CONFIRM"], 'Not match')
       .required('Field is required')
-  })), [data]);
+  })), []);
   return (
     <Formik
       initialValues={{
