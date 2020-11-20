@@ -50,20 +50,20 @@ const Dashboard = () => {
       feathers.dashboards.removeListener('patched', onDashboardPatched);
     }
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const updateCurrentNodeToDB = useCallback((currentNode) => {
+  const updateCurrentNode = useCallback((currentNode) => {
     setIsSaving(true);
     setCurrentNode(currentNode);
-    updateCurrentNode(currentNode);
+    updateCurrentNodeToDB(currentNode);
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const updateCurrentNode = useCallback(_debounce((curNode) => {
+  const updateCurrentNodeToDB = useCallback(_debounce((curNode) => {
     feathers.dashboards.patch(params.id, { nodes: curNode }).then((res) => {
       setIsSaving(false);
     });
-  }, 1000), [updateCurrentNodeToDB]);
-  const autoArrange = () => {
+  }, 1000), [updateCurrentNode]);
+  const autoArrange = useCallback(() => {
     const leaves = getLeaves(currentNode);
-    updateCurrentNodeToDB(createBalancedTreeFromLeaves(leaves));
-  }
+    updateCurrentNode(createBalancedTreeFromLeaves(leaves));
+  }, [updateCurrentNodeToDB]);
   const createNode = useCallback(async () => {
     const _id = BSON.generate();
     await feathers.dashboards.patch(params.id, {
@@ -99,7 +99,7 @@ const Dashboard = () => {
         }
       ]);
     } else curNode = await createNode();
-    updateCurrentNodeToDB(curNode);
+    updateCurrentNode(curNode);
   }, [createNode, currentNode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const removeWidget = useCallback(async (removeNodeFirst, id) => {
@@ -182,7 +182,7 @@ const Dashboard = () => {
               }}
               zeroStateView={<MosaicZeroState createNode={createNode} />}
               onChange={currentNode => {
-                updateCurrentNodeToDB(currentNode);
+                updateCurrentNode(currentNode);
               }}
               value={currentNode} />
           </div>
