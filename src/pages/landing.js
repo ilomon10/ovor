@@ -127,7 +127,7 @@ const Component = ({ className }) => {
             <Flex mx={[0, -3]} justifyContent="center">
               <Box width={[1 / 2, 1 / 3]} px={3}>
                 <AspectRatio ratio="16:9">
-                  <Flex as={Card} interactive bg="transparent" height="100%" width="100%" alignItems="center">
+                  <Flex as={Card} interactive bg="transparent" height="100%" width="100%" style={{ alignItems: "center" }}>
                     <Box>
                       <img width="100%" src={sponsorhasbi} alt="Harusnya sih bisa!?" />
                     </Box>
@@ -136,7 +136,7 @@ const Component = ({ className }) => {
               </Box>
               <Box width={[1 / 2, 1 / 3]} px={3}>
                 <AspectRatio ratio="16:9">
-                  <Flex as={Card} interactive bg="transparent" height="100%" width="100%" alignItems="center">
+                  <Flex as={Card} interactive bg="transparent" height="100%" width="100%" style={{ alignItems: "center" }}>
                     <Box>
                       <img width="100%" src={sponsorcec} alt="Control Engineering Community" />
                     </Box>
@@ -161,22 +161,22 @@ const Component = ({ className }) => {
             <Box as={FormGroup} helperText={`Dengan menekan tombol "Dapatkan Akses", Anda telah menyetujui syarat dan ketentuan yang berlaku. Kami akan mengirimkan email konfirmasi setelah produk ini rilis. `}>
               <Flex mx={-2} justifyContent="center" alignItems="center" flexDirection={["column", "row"]}>
                 <Box px={2} mb={[2, 0]} width="100%" as={FormGroup} label="Nama Lengkap"
-                  labelFor="reqister-full_name">
+                  labelFor="bottom-reqister-full_name">
                   <InputGroup type="text"
                     name="full-name"
-                    id="reqister-full_name" />
+                    id="bottom-reqister-full_name" />
                 </Box>
                 <Box px={2} mb={[2, 0]} width="100%" as={FormGroup} label="Email"
-                  labelFor="reqister-email">
+                  labelFor="bottom-reqister-email">
                   <InputGroup type="email"
                     name="email"
-                    id="reqister-email" />
+                    id="bottom-reqister-email" />
                 </Box>
                 <Box px={2} mb={[2, 0]} width="100%" as={FormGroup} label="Password"
-                  labelFor="reqister-password">
+                  labelFor="bottom-reqister-password">
                   <InputGroup type="password"
                     name="password"
-                    id="reqister-password" />
+                    id="bottom-reqister-password" />
                 </Box>
                 <Box px={2} mb={[1, 0]} width="100%" as={FormGroup}>
                   <Button fill large intent="success" text="Dapatkan Akses" />
