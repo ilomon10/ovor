@@ -18,7 +18,8 @@ export const buttonOptions = {
 
 export const buttonConfig = {
   maxSeries: 3,
-  acceptedType: ['boolean']
+  acceptedType: ['boolean'],
+  seriesEnabled: true
 }
 
 const defaultOptions = {

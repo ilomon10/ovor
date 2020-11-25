@@ -4,7 +4,11 @@ import BaseBarChart from './baseBarChart';
 import _uniqBy from 'lodash.uniqby';
 import moment from 'moment';
 
-// [x, y]
+export const barChartConfig = {
+  acceptedType: ["number"],
+  minSeries: 1,
+  seriesEnabled: true
+}
 
 const BarChart = ({ ...props }) => {
   const feathers = useContext(FeathersContext);

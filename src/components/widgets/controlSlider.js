@@ -14,7 +14,8 @@ export const sliderOptions = {
 
 export const sliderConfig = {
   maxSeries: 1,
-  acceptedType: ['number']
+  acceptedType: ['number'],
+  seriesEnabled: true
 }
 
 const defaultOptions = {

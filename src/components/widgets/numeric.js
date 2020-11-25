@@ -13,7 +13,8 @@ export const numericOptions = {
 
 export const numericConfig = {
   minSeries: 1,
-  acceptedType: ["number"]
+  acceptedType: ["number"],
+  seriesEnabled: true
 }
 
 const Numeric = ({ ...props }) => {

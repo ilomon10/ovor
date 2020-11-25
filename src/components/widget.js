@@ -17,6 +17,7 @@ import Settings from './widgets/settings';
 import WidgetContext from './widgets/hocs';
 import { GRAPH_TYPE } from './widgets/constants';
 import DashboardContext from './hocs/dashboard';
+import IFrame from './widgets/iframe';
 
 const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
   const { removeWidget } = useContext(DashboardContext);
@@ -62,6 +63,9 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
       break;
     case GRAPH_TYPE["Table"]:
       Ret = (<Table {...propsForChart} />);
+      break;
+    case GRAPH_TYPE["IFrame"]:
+      Ret = (<IFrame {...propsForChart} />);
       break;
     default:
       Ret = (<Empty path={path} />);

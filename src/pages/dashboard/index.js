@@ -122,7 +122,7 @@ const Dashboard = () => {
         <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
           <Navbar className="flex flex-shrink-0">
             <Navbar.Group className="flex-grow" style={{ width: 0 }}>
-              <Button icon="chevron-left" onClick={() => { history.goBack() }} />
+              <Button icon="chevron-left" title="Go Back" onClick={() => { history.goBack() }} />
               <Navbar.Divider />
               <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
                 <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
@@ -133,9 +133,11 @@ const Dashboard = () => {
             <Navbar.Group className="flex-shrink-0">
               <Button
                 minimal
+                title={isSaving ? "Saving" : "Saved"}
+                onClick={() => updateCurrentNode(currentNode)}
                 icon="tick"
+                aria-readonly="true"
                 loading={isSaving}
-                style={{ pointerEvents: "none" }}
               />
               <Navbar.Divider />
               <ControlGroup className="flex--i-center">

@@ -19,7 +19,8 @@ export const timeseriesOptions = {
 
 export const timeseriesConfig = {
   acceptedType: ["number"],
-  minSeries: 1
+  minSeries: 1,
+  seriesEnabled: true
 }
 
 const Timeseries = ({ onError, ...props }) => {

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import moment from "moment";
-import { Colors, ResizeSensor } from "@blueprintjs/core";
+import { ResizeSensor } from "@blueprintjs/core";
 import { LineChart, Line, XAxis, Tooltip } from "recharts";
 
 export default ({ style, data }) => {

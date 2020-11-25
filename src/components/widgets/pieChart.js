@@ -12,7 +12,8 @@ export const pieChartOptions = {
 
 export const pieChartConfig = {
   minSeries: 2,
-  acceptedType: ["number"]
+  acceptedType: ["number"],
+  seriesEnabled: true
 }
 
 export default ({ onError, ...props }) => {

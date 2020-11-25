@@ -5,7 +5,9 @@ import { FeathersContext } from 'components/feathers';
 import BaseTable from './baseTable';
 
 export const tableConfig = {
-  acceptedType: ["number", "boolean", "date"]
+  minseries: 1,
+  acceptedType: ["number", "boolean", "date"],
+  seriesEnabled: true
 }
 
 const Table = ({ series, ...props }) => {

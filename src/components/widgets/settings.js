@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState, useEffect } from 'react';
+import React, { useCallback, useContext, useState, useEffect, useMemo } from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import _get from 'lodash.get';
@@ -11,7 +11,6 @@ import { Box, Flex } from 'components/utility/grid';
 import { GRAPH_TYPE, GRAPH_OPTIONS, GRAPH_CONFIG } from './constants';
 import WidgetContext from './hocs';
 import SettingsOptions from './settings.options';
-
 const Schema = Yup.object().shape({
   widgetTitle: Yup.string()
     .min(3, "Too Short!")
@@ -21,18 +20,23 @@ const Schema = Yup.object().shape({
     .notOneOf(['empty'], 'Cant be empty'),
   widgetOption: Yup.mixed(),
   widgetSeries: Yup.array()
-    .min(2, "Min have 1 series")
-    .test('test', 'Please leave no one empty (except last one)', function (value) {
-      const scheme = Yup.object().shape({
-        device: Yup.string().required('Req'),
-        field: Yup.string().required('Req'),
-      })
-      for (let i = 0; i < value.length - 1; i++) {
-        if (!scheme.isValidSync(value[i])) {
-          return false;
-        }
-      }
-      return true
+    .when("widgetType", {
+      is: (value) => (GRAPH_CONFIG[value] && GRAPH_CONFIG[value]["seriesEnabled"]),
+      otherwise: Yup.array(),
+      then: Yup.array()
+        .min(2, "Min have 1 series")
+        .test('test', 'Please leave no one empty (except last one)', function (value) {
+          const scheme = Yup.object().shape({
+            device: Yup.string().required('Req'),
+            field: Yup.string().required('Req'),
+          })
+          for (let i = 0; i < value.length - 1; i++) {
+            if (!scheme.isValidSync(value[i])) {
+              return false;
+            }
+          }
+          return true
+        })
     })
 })
 
@@ -41,6 +45,7 @@ const Settings = ({ onClose }) => {
   const feathers = useContext(FeathersContext);
   const widget = useContext(WidgetContext);
   const [devices, setDevices] = useState([]);
+
   useEffect(() => {
     feathers.devices.find({
       query: { $select: ['name', 'fields'] }
@@ -51,6 +56,7 @@ const Settings = ({ onClose }) => {
   const cancel = useCallback(() => {
     onClose();
   }, [onClose]);
+
   return (
     <Formik
       initialValues={{
@@ -78,6 +84,7 @@ const Settings = ({ onClose }) => {
           }, { query: { "widgets._id": widget.id } });
           onClose();
         } catch (e) {
+          console.error(e);
           setErrors({ submit: e.message });
           setSubmitting(false);
         }
@@ -111,62 +118,63 @@ const Settings = ({ onClose }) => {
                   intent={errors.widgetType ? "danger" : "none"}
                   options={[{ label: "Choose widget type", value: "empty", disabled: true }, ...Object.keys(GRAPH_TYPE)
                     .map((v) => ({ label: v, value: GRAPH_TYPE[v] }))]}
-                  onChange={e => {
-                    handleChange(e);
-                    handleBlur(e);
-                    setFieldValue(`widgetOptions`, {});
+                  onChange={async e => {
+                    await handleChange(e);
+                    await handleBlur(e);
+                    await setFieldValue(`widgetOptions`, {});
                   }} />
               </FormGroup>
-              <FieldArray
-                name="widgetSeries"
-                render={
-                  arr => (<FormGroup
-                    label="Series"
-                    labelInfo={`(${values.widgetSeries.length})`}
-                    intent={errors.widgetSeries ? "danger" : "none"}
-                    helperText={errors.widgetSeries}>
-                    {values.widgetSeries.map((v, i) => (
-                      <div key={i} className="flex" style={{ marginBottom: i !== values.widgetSeries.length - 1 ? 12 : 0 }} >
-                        <ControlGroup fill className="flex-grow">
-                          <HTMLSelect
-                            name={`widgetSeries[${i}].device`}
-                            options={[{ label: "Choose device", value: "" }, ...devices.map((device) => ({ label: device.name, value: device._id }))]}
-                            value={v.device}
-                            onBlur={handleBlur}
-                            onChange={e => {
-                              setFieldValue(`widgetSeries[${i}].field`, '');
-                              handleChange(e);
-                              handleBlur(e);
-                              if (i === values.widgetSeries.length - 1) arr.push({ device: '', field: '' });
-                            }} />
-                          <HTMLSelect
-                            name={`widgetSeries[${i}].field`}
-                            options={[
-                              { label: "Choose field", value: "", disabled: true },
-                              ...(() => {
-                                const deviceSelected = devices.find(device => device._id === values['widgetSeries'][i].device);
-                                if (typeof deviceSelected === 'undefined') return [];
-                                const fields = deviceSelected.fields;
-                                return [...fields.map(field => {
-                                  let disabled = false;
-                                  if (GRAPH_CONFIG[values["widgetType"]]["acceptedType"].indexOf(field.type) === -1) {
-                                    disabled = true;
-                                  }
-                                  return ({ label: field.name, value: field._id, disabled })
-                                })];
-                              })()]}
-                            value={v.field}
-                            disabled={v.device === ''}
-                            onBlur={handleBlur}
-                            onChange={handleChange} />
-                        </ControlGroup>
-                        <Button minimal icon="trash" intent={i === values.widgetSeries.length - 1 ? null : 'danger'}
-                          onClick={() => arr.remove(i)}
-                          disabled={i === values.widgetSeries.length - 1} />
-                      </div>
-                    ))}
-                  </FormGroup>)
-                } />
+              {(GRAPH_CONFIG[values["widgetType"]] && GRAPH_CONFIG[values["widgetType"]]["seriesEnabled"]) &&
+                <FieldArray
+                  name="widgetSeries"
+                  render={
+                    arr => (<FormGroup
+                      label="Series"
+                      labelInfo={`(${values.widgetSeries.length})`}
+                      intent={errors.widgetSeries ? "danger" : "none"}
+                      helperText={errors.widgetSeries}>
+                      {values.widgetSeries.map((v, i) => (
+                        <div key={i} className="flex" style={{ marginBottom: i !== values.widgetSeries.length - 1 ? 12 : 0 }} >
+                          <ControlGroup fill className="flex-grow">
+                            <HTMLSelect
+                              name={`widgetSeries[${i}].device`}
+                              options={[{ label: "Choose device", value: "" }, ...devices.map((device) => ({ label: device.name, value: device._id }))]}
+                              value={v.device}
+                              onBlur={handleBlur}
+                              onChange={e => {
+                                setFieldValue(`widgetSeries[${i}].field`, '');
+                                handleChange(e);
+                                handleBlur(e);
+                                if (i === values.widgetSeries.length - 1) arr.push({ device: '', field: '' });
+                              }} />
+                            <HTMLSelect
+                              name={`widgetSeries[${i}].field`}
+                              options={[
+                                { label: "Choose field", value: "", disabled: true },
+                                ...(() => {
+                                  const deviceSelected = devices.find(device => device._id === values['widgetSeries'][i].device);
+                                  if (typeof deviceSelected === 'undefined') return [];
+                                  const fields = deviceSelected.fields;
+                                  return [...fields.map(field => {
+                                    let disabled = false;
+                                    if (GRAPH_CONFIG[values["widgetType"]]["acceptedType"].indexOf(field.type) === -1) {
+                                      disabled = true;
+                                    }
+                                    return ({ label: field.name, value: field._id, disabled })
+                                  })];
+                                })()]}
+                              value={v.field}
+                              disabled={v.device === ''}
+                              onBlur={handleBlur}
+                              onChange={handleChange} />
+                          </ControlGroup>
+                          <Button minimal icon="trash" intent={i === values.widgetSeries.length - 1 ? null : 'danger'}
+                            onClick={() => arr.remove(i)}
+                            disabled={i === values.widgetSeries.length - 1} />
+                        </div>
+                      ))}
+                    </FormGroup>)
+                  } />}
               {typeof GRAPH_OPTIONS[values['widgetType']] !== 'undefined' &&
                 <h6 className={Classes.HEADING}>
                   <span>Option (experiment) </span>

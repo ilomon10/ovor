@@ -19,13 +19,14 @@ import ComparisonComponent from 'components/rete/nodes/comparison';
 import RoundingComponent from 'components/rete/nodes/rounding';
 import LoggerComponent from 'components/rete/nodes/logger';
 import ConversionComponent from 'components/rete/nodes/conversion';
+import TimeGetterComponent from 'components/rete/nodes/timeGetter';
+import SwitchComponent from 'components/rete/nodes/switch';
+import IsEmptyComponent from 'components/rete/nodes/isEmpty';
+import PIDComponent from 'components/rete/nodes/pid';
 
 import Canvas from './canvas';
 import Toolbar from './toolbar';
 import Dock from './dock';
-import SwitchComponent from 'components/rete/nodes/switch';
-import IsEmptyComponent from 'components/rete/nodes/isEmpty';
-import PIDComponent from 'components/rete/nodes/pid';
 
 const removeListener = (obj, names, handler) => {
   if (typeof handler !== "function") return obj;
@@ -69,6 +70,7 @@ const Component = ({ className }) => {
     new PIDComponent(),
     new RoundingComponent(),
     new SwitchComponent(),
+    new TimeGetterComponent(),
     new TrigonometricComponent(),
     new ViewerComponent(),
   ]);

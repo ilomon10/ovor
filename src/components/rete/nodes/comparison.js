@@ -31,7 +31,7 @@ class ComparisonComponent extends Rete.Component {
       .addInput(input)
       .addInput(comp)
       .addControl(new SelectControl(this.editor, "type", node, {
-        options: ['Minimum', 'Maximum', 'Less Than', 'Greater Than']
+        options: ["Minimum", "Maximum", "Less Than", "Equal", "Greater Than",]
       }))
       .addOutput(output)
   }
@@ -50,6 +50,9 @@ class ComparisonComponent extends Rete.Component {
         break;
       case 'Greater Than':
         result = input > comp ? 1 : 0;
+        break;
+      case 'Equal':
+        result = input === comp ? 1 : 0;
         break;
       case 'Less Than':
         result = input < comp ? 1 : 0;
