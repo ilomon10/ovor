@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
-import { Navbar, Colors, ButtonGroup, Button, Classes, Card, FormGroup, InputGroup } from '@blueprintjs/core';
+import { Navbar, Colors, ButtonGroup, Button, Classes, Card, FormGroup, InputGroup, Drawer, Menu, Divider } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Box } from 'components/utility/grid';
 import { container } from 'components/utility/constants';
 import LinkButton from 'components/linkButton';
 import AspectRatio from 'components/aspectratio';
+import { useMedia } from 'components/helper';
 
 import featureone from '../assets/feature-1.png';
 import featuretwo from '../assets/feature-2.png';
@@ -14,6 +15,11 @@ import sponsorhasbi from '../assets/sponsor-1.png';
 import sponsorcec from '../assets/sponsor-2.png';
 
 const Component = ({ className }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const columnCount = useMedia(
+    container.map((v) => `(min-width: ${v})`).reverse(),
+    [5, 4, 3, 2], 1
+  );
   return (
     <>
       <Helmet>
@@ -32,18 +38,50 @@ const Component = ({ className }) => {
               </Navbar.Heading>
               <Navbar.Heading>OVoRD</Navbar.Heading>
             </Navbar.Group>
-            <Navbar.Group className={"bp3-align-center"}>
-              <ButtonGroup minimal>
-                <Button text="Analytics" />
-                <Button text="Image Processing" />
-                <Button text="Rule Engine" />
-              </ButtonGroup>
-            </Navbar.Group>
-            <Navbar.Group align="right">
-              <LinkButton to="/login" text="Masuk" minimal />
-              <Navbar.Divider />
-              <Button text="Daftar" outlined />
-            </Navbar.Group>
+            {columnCount > 1 &&
+              <>
+                <Navbar.Group className={"bp3-align-center"}>
+                  <ButtonGroup minimal>
+                    <Button text="Analytics" />
+                    <Button text="Image Processing" />
+                    <Button text="Rule Engine" />
+                  </ButtonGroup>
+                </Navbar.Group>
+                <Navbar.Group align="right">
+                  <LinkButton to="/login" text="Masuk" minimal />
+                  <Navbar.Divider />
+                  <Button text="Daftar" outlined />
+                </Navbar.Group>
+              </>}
+            {columnCount <= 1 &&
+              <>
+                <Drawer
+                  isOpen={isOpen}
+                  size={Drawer.SIZE_SMALL}
+                  title="Menu"
+                  onClose={() => setIsOpen(false)}
+                >
+                  <div className={Classes.DRAWER_BODY}>
+                    <Menu large>
+                      <Menu.Item text="Analytics" large />
+                      <Menu.Item text="Image Precessing" />
+                      <Menu.Item text="Rule Engine" />
+                    </Menu>
+                    <Divider />
+                    <Flex justifyContent="center">
+                      <LinkButton to="/login" text="Masuk" minimal />
+                      <LinkButton to="/register" text="Daftar" outlined />
+                    </Flex>
+                  </div>
+                </Drawer>
+                <Navbar.Group align="right">
+                  <LinkButton to="/login" text="Masuk" outlined />
+                  <Navbar.Divider />
+                  <Button icon="menu" minimal
+                    onClick={() => setIsOpen(true)} />
+                </Navbar.Group>
+              </>}
+
           </Box>
         </Navbar>
         <Box bg={Colors.DARK_GRAY2}>
@@ -53,7 +91,7 @@ const Component = ({ className }) => {
               <Box px={3} className={Classes.DARK}
                 width={[1, 1 / 2, 1 / 9 * 5]} textAlign={['center', 'left']}>
                 <h1 className={Classes.HEADING}>Menghemat waktu kerja Anda</h1>
-                <Box as="p" fontSize={3} opacity={0.5}>OVoRD adalah platform yang terinspirasi dari cara Anda mengerjakan sistem khususnya IoT. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu.</Box>
+                <Box as="p" fontSize={3} opacity={0.5} pb={[3, 0]}>OVoRD adalah platform yang terinspirasi dari cara Anda mengerjakan sistem khususnya IoT. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu.</Box>
               </Box>
               <Box px={3}
                 width={[1, 1 / 2, 1 / 9 * 4]}>
@@ -89,7 +127,7 @@ const Component = ({ className }) => {
         <Box mx="auto" py={5}
           maxWidth={[container.sm, container.md, container.lg]}>
           <Flex mb={5} px={3} mx={-3} alignItems="center" flexDirection={['column', 'row']}>
-            <Box px={3} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
+            <Box px={3} pb={[3, 0]} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
               <AspectRatio ratio="1:1">
                 <Box height={"100%"} width={"100%"} bg={Colors.GRAY5}>
                   <img height="100%" width="100%" style={{ objectFit: "cover" }} src={featuretwo} alt={"Rule Engine"} />
@@ -105,7 +143,7 @@ const Component = ({ className }) => {
             </Box>
           </Flex>
           <Flex px={3} mx={-3} alignItems="center" flexDirection={["column", "row-reverse"]}>
-            <Box px={3} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
+            <Box px={3} pb={[3, 0]} width={[1 / 3 * 2, 1 / 2, 1 / 9 * 4]}>
               <AspectRatio ratio="1:1">
                 <Box height={"100%"} width={"100%"} bg={Colors.GRAY5} overflow="hidden">
                   <img height="100%" width="100%" style={{ objectFit: "cover" }} src={featureone} alt={"Dashboard Builder"} />
@@ -191,7 +229,7 @@ const Component = ({ className }) => {
               <Box width={[1 / 2, 1 / 3, 1 / 4]}>
                 <Box as="h3" className={Classes.HEADING}>OVoRD</Box>
               </Box>
-              <Box width={[1 / 2, 1 / 3, 1 / 4]}>
+              <Box width={[1 / 2, 1 / 3, 1 / 4]} pb={[3, 0]}>
                 <Box as="h3" className={Classes.HEADING}>Product</Box>
                 <Box>
                   <Box as="a" href="#" mr={2}>Analytics</Box>

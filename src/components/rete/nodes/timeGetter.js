@@ -59,9 +59,9 @@ class TimeGetterComponent extends Rete.Component {
   }
 
   worker(node, inputs, outputs) {
-    var inp = this.getInputValue("inp", node, inputs);
+    // var inp = this.getInputValue("inp", node, inputs);
     
-    const nodeClass = this.editor.nodes.find(n => n.id === node.id);
+    // const nodeClass = this.editor.nodes.find(n => n.id === node.id);
 
     outputs["out"] = 0;
   }

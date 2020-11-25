@@ -1,6 +1,5 @@
 import Rete from "rete";
 import { Colors } from "@blueprintjs/core";
-import _get from 'lodash.get';
 
 import { Node } from "../node";
 import { DateSocket, NumberSocket } from '../sockets';
