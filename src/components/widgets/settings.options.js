@@ -12,6 +12,7 @@ const Form = ({ label, name, type, value, onChange }) => {
         type="text" />);
     case 'number':
       return (<InputGroup
+        step="any"
         onChange={onChange}
         id={`option-${name}`}
         name={name}
