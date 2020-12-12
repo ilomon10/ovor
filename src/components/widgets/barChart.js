@@ -15,7 +15,6 @@ const BarChart = ({ ...props }) => {
   const [series, setSeries] = useState([]);
 
   // Component Did Mount
-
   useEffect(() => {
     const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)]
     const fetch = async () => {
