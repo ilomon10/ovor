@@ -108,7 +108,7 @@ const Dashboards = () => {
                                     title="Make dashboard go Private" />
                                   <Menu.Item
                                     icon="duplicate"
-                                    text="Dublicate"
+                                    text="Duplicate"
                                     title="Duplicate dashboard" />
                                   <Menu.Item
                                     intent="danger"

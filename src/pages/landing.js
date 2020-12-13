@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Helmet from 'react-helmet';
+import css from '@styled-system/css';
 import styled from 'styled-components';
 import { Navbar, Colors, ButtonGroup, Button, Classes, Card, FormGroup, InputGroup, Drawer, Menu, Divider } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,7 +27,7 @@ const Component = ({ className }) => {
         <title>OVoRD | Online Value of Realtime Data</title>
         <meta name="description" content="OVoRD IoT platform" />
       </Helmet>
-      <div className={className}>
+      <Box className={className} overflow="hidden">
         <Navbar>
           <Box px={3}
             mx="auto"
@@ -223,8 +224,8 @@ const Component = ({ className }) => {
             </Box>
           </Box>
         </Box>
-        <Box px={3}>
-          <Box mx="auto" py={4} maxWidth={[...container]}>
+        <Box as="footer">
+          <Box mx="auto" px={3} py={4} maxWidth={[...container]}>
             <Flex flexWrap="wrap">
               <Box width={[1 / 2, 1 / 3, 1 / 4]}>
                 <Box as="h3" className={Classes.HEADING}>OVoRD</Box>
@@ -232,17 +233,17 @@ const Component = ({ className }) => {
               <Box width={[1 / 2, 1 / 3, 1 / 4]} pb={[3, 0]}>
                 <Box as="h3" className={Classes.HEADING}>Product</Box>
                 <Box>
-                  <Box as="a" href="#" mr={2}>Analytics</Box>
-                  <Box as="a" href="#" mr={2}>Image Processing</Box>
-                  <Box as="a" href="#" mr={2}>Rule Engine</Box>
+                  <Box as="a" href="#" mr={2} display={["block", "inline-block"]}>Analytics</Box>
+                  <Box as="a" href="#" mr={2} display={["block", "inline-block"]}>Image Processing</Box>
+                  <Box as="a" href="#" mr={2} display={["block", "inline-block"]}>Rule Engine</Box>
                 </Box>
               </Box>
               <Box width={[1 / 2, 1 / 3, 1 / 4]}>
                 <Box as="h3" className={Classes.HEADING}>Learn</Box>
                 <Box>
-                  <Box as="a" href="#" mr={2}>Documentation</Box>
-                  <Box as="a" href="#" mr={2}>Guides</Box>
-                  <Box as="a" href="#" mr={2}>Blog</Box>
+                  <Box as="a" href="#" mr={2} display={["block", "inline-block"]}>Documentation</Box>
+                  <Box as="a" href="#" mr={2} display={["block", "inline-block"]}>Guides</Box>
+                  <Box as="a" href="#" mr={2} display={["block", "inline-block"]}>Blog</Box>
                 </Box>
               </Box>
               <Box width={[1 / 2, 1 / 3, 1 / 4]}>
@@ -256,11 +257,11 @@ const Component = ({ className }) => {
               </Box>
             </Flex>
           </Box>
-          <Box bg={Colors.LIGHT_GRAY5} py={3}>
+          <Box bg={Colors.LIGHT_GRAY5} px={3} py={3}>
             <Box as="p" textAlign="center" m={0} opacity={0.5}>© {new Date().getFullYear()} tagConn, All rights reserved. — <a href="https://www.github.com">GitHub</a> design inspired.</Box>
           </Box>
         </Box>
-      </div>
+      </Box>
     </>
   )
 }
@@ -273,6 +274,9 @@ const Landing = styled(Component)`
       left: 50%;
       transform: translateX(-50%);
     }
+  }
+  footer > ${Box} > ${Flex} > ${Box} a${Box} {
+    ${css({ display: ["block", "inline-block"] })}
   }
 `
 
