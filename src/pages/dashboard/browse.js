@@ -121,7 +121,7 @@ const Dashboards = () => {
                                     }} />
                                 </Menu>
                               }>
-                              <Button minimal icon="more" />
+                              <Button minimal icon="more" title="More" />
                             </Popover>
                           </Flex>
                         </Flex>
