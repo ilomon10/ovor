@@ -16,7 +16,7 @@ const Form = ({ label, name, type, value, onChange }) => {
         onChange={onChange}
         id={`option-${name}`}
         name={name}
-        value={value}
+        value={Number(value)}
         type="number" />);
     case 'boolean':
       return (<Switch label={`${label} (${type.type})`} name={name} default checked={value}

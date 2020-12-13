@@ -122,15 +122,20 @@ const Control = ({ ...props }) => {
           <Box width={options.vertical ? "60px" : "75px"}>
             <InputGroup
               small
+              min={options.min || defaultOptions.min}
+              max={options.max || defaultOptions.max}
               title={`${s.deviceName}-${s.fieldName}`}
               type="number"
               onChange={(v) => onInputChange(s, i, v)}
               value={s.data}
-              step={options.stepSize} />
+              step={options.stepSize || defaultOptions.stepSize} />
           </Box>
           <Box flexGrow="1" pl={options.vertical ? 0 : 3} pt={options.vertical ? 2 : 0}>
             <Slider
               {...options}
+              min={options.min || defaultOptions.min}
+              max={options.max || defaultOptions.max}
+              stepSize={options.stepSize || defaultOptions.stepSize}
               disabled={isLoading}
               value={s.data}
               onChange={(v) => setSeries(sr => {
