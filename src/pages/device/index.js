@@ -86,7 +86,7 @@ const Device = () => {
           query: {
             $limit: 2000,
             deviceId: params.id,
-            $select: ['data', 'createdAt', 'collectedAt'],
+            $select: ['data', 'hostname', 'createdAt', 'collectedAt'],
             $sort: {
               createdAt: -1
             },
@@ -112,9 +112,14 @@ const Device = () => {
       }
       setData(d => [...d, result]);
     }
+    const onDevicePatched = (e) => {
+      setDevice(e);
+    }
     feathers.dataLake.on('created', onDataCreated);
+    feathers.devices.on('patched', onDevicePatched);
     return () => {
       feathers.dataLake.removeListener('created', onDataCreated);
+      feathers.devices.removeListener('patched', onDevicePatched);
     }
   }, [params.id, timeRange]) // eslint-disable-line react-hooks/exhaustive-deps
   return (
@@ -136,11 +141,12 @@ const Device = () => {
               </h4>
             </Navbar.Group>
             <Navbar.Group align="right">
-              <div style={{ marginLeft: 16 }}>
-                <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>IP ADDRESS</div>
-                <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                  style={{ margin: 0 }}>192.168.43.{Math.floor(Math.random() * 255)}</div>
-              </div>
+              {device.hostname &&
+                <div style={{ marginLeft: 16 }}>
+                  <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>ADDRESS</div>
+                  <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                    style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</div>
+                </div>}
               <div style={{ marginLeft: 16 }}>
                 <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
                 <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}

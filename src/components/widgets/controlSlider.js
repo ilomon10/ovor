@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { InputGroup, Slider as BPSlider } from '@blueprintjs/core';
+import { InputGroup, Slider as BPSlider, NonIdealState } from '@blueprintjs/core';
 import styled from 'styled-components';
 import _merge from 'lodash.merge';
 import _uniqBy from 'lodash.uniqby';
@@ -34,29 +34,52 @@ const Slider = styled(BPSlider)`
   }
 `
 
-const Control = ({ ...props }) => {
+const Control = ({ onError, ...props }) => {
   const options = _merge(defaultOptions, props.options);
   const feathers = useContext(FeathersContext);
   const [series, setSeries] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
+  const onErr = useCallback((e) => {
+    if (typeof onError === 'function') onError(e);
+    setError(e);
+  }, [onError]);
 
   useEffect(() => {
     const fetch = async () => {
       const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
-      const devices = await feathers.devices.find({
-        query: {
-          _id: { $in: deviceIds },
-          $select: ['fields', 'name']
-        }
-      })
+
+      let devices = [];
+      try {
+        let { data } = await feathers.devices.find({
+          query: {
+            _id: { $in: deviceIds },
+            $select: ['fields', 'name']
+          }
+        })
+        devices = data;
+      } catch (e) {
+        onErr(e);
+        return;
+      }
+
       const query = {
         $aggregate: 'deviceId',
         deviceId: { $in: deviceIds },
         $select: ['data', 'deviceId']
       }
-      let dataLake = await feathers.dataLake.find({ query });
+
+      let dataLake = [];
+      try {
+        let { data } = await feathers.dataLake.find({ query });
+        dataLake = data;
+      } catch (e) {
+        onErr(e);
+        return;
+      }
       let Series = props.series.map(s => {
-        const device = devices.data.find(d => d._id === s.device);
+        const device = devices.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
         let data = dataLake.data.filter(dl => (dl.deviceId === device._id));
         if (typeof data[0] !== 'undefined')
@@ -110,6 +133,18 @@ const Control = ({ ...props }) => {
     })
     pushData(s, series);
   }, [pushData, series]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (error) {
+    return (
+      <NonIdealState
+        icon="graph-remove"
+        title="Error"
+        description={<>
+          <p>{error.message}</p>
+        </>} />
+    )
+  }
+
   return (
     <div style={{
       width: '100%', height: '100%',

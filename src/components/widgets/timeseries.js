@@ -1,9 +1,9 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import moment from 'moment';
 import _uniqBy from 'lodash.uniqby';
+import { NonIdealState } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import BaseTimeseries from './baseTimeseries';
-import { NonIdealState } from '@blueprintjs/core';
 
 export const timeseriesOptions = {
   "stroke.width": { type: "number" },
@@ -28,6 +28,11 @@ const Timeseries = ({ onError, ...props }) => {
   const [series, setSeries] = useState([]);
   const [error, setError] = useState();
 
+  const onErr = useCallback((e)=> {
+    if (typeof onError === 'function') onError(e);
+    setError(e);
+  }, [onError]);
+
   // Component Did Mount
   useEffect(() => {
     const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
@@ -42,8 +47,7 @@ const Timeseries = ({ onError, ...props }) => {
         });
         devices = data;
       } catch (e) {
-        if (typeof onError === 'function') onError(e);
-        setError(e);
+        onErr(e);
         return;
       }
 
@@ -51,8 +55,7 @@ const Timeseries = ({ onError, ...props }) => {
         props.series.forEach((v, i) => {
           if (!devices.find((d) => d._id === v.device)) {
             let error = new Error(`Device "${v.device}" at series ${i + 1} not found`);
-            if (typeof onError === 'function') onError(error);
-            setError(error);
+            onErr(error);
             return;
           }
         });
@@ -75,13 +78,13 @@ const Timeseries = ({ onError, ...props }) => {
           },
         }
       }
+
       let dataLake = [];
       try {
         let { data } = await feathers.dataLake.find({ query });
         dataLake = data;
       } catch (e) {
-        if (typeof onError === 'function') onError(e);
-        setError(e);
+        onErr(e);
         return;
       }
       let Series = props.series.map(s => {

@@ -17,20 +17,27 @@ const Devices = () => {
   useEffect(() => {
     const onDeviceCreated = (e) => {
       setList([
-        { _id: e._id, name: e.name },
+        { _id: e._id, name: e.name, hostname: e.hostname },
         ...list
       ])
     }
+    const onDevicePatched = (e) => {
+      setList((ls) => {
+        return ls.map((l) => l._id === e._id ? e : l);
+      })
+    }
     feathers.devices.on('created', onDeviceCreated);
+    feathers.devices.on('patched', onDevicePatched);
     return () => {
       feathers.devices.removeListener('created', onDeviceCreated);
+      feathers.devices.removeListener('patched', onDevicePatched);
     }
   }, [list, feathers]);
   useEffect(() => {
     feathers.devices.find({
       query: {
         $sort: { createdAt: -1 },
-        $select: ['name']
+        $select: ['name', 'hostname']
       }
     }).then((e) => {
       setList(e.data);
@@ -62,36 +69,39 @@ const Devices = () => {
                   </Card>
                 </Box>
                 {list.map((v) =>
-                  (<Box key={v._id}
-                    width={[1, 1 / 2, 1 / 3, 1 / 4]}
-                    px={2} mb={3}>
-                    <Card interactive onClick={() => history.push(`/devices/${v._id}`)}>
-                      <AspectRatio ratio="4:3">
-                        <div className="flex flex--col" style={{ height: "100%" }}>
-                          <div className="flex-shrink-0 flex">
-                            <div className="flex-grow">
-                              <Tooltip content={<div className={Classes.TEXT_SMALL}>Offline</div>} position={Position.RIGHT}>
-                                <Switch style={{ pointerEvents: "none", margin: 0 }}
-                                  innerLabelChecked="on" innerLabel="off" />
-                              </Tooltip>
-                            </div>
-                            <div className="flex-shrink-0">
-                              <Tooltip content={<div className={Classes.TEXT_SMALL}>{v._id}</div>} position={Position.BOTTOM_RIGHT}>
-                                <Tag minimal className={Classes.MONOSPACE_TEXT}>{v._id.slice(0, 3)}..{v._id.slice(v._id.length - 3, v._id.length)}</Tag>
-                              </Tooltip>
-                            </div>
+                (<Box key={v._id}
+                  width={[1, 1 / 2, 1 / 3, 1 / 4]}
+                  px={2} mb={3}>
+                  <Card interactive onClick={() => history.push(`/devices/${v._id}`)}>
+                    <AspectRatio ratio="4:3">
+                      <div className="flex flex--col" style={{ height: "100%" }}>
+                        <div className="flex-shrink-0 flex">
+                          <div className="flex-grow">
+                            <Tooltip content={<div className={Classes.TEXT_SMALL}>{v.hostname ? "Online" : "Offline"}</div>} position={Position.RIGHT}>
+                              <Switch style={{ pointerEvents: "none", margin: 0 }}
+                                readOnly
+                                checked={v.hostname ? true : false}
+                                innerLabelChecked="on" innerLabel="off" />
+                            </Tooltip>
                           </div>
-                          <div className={`flex-grow flex flex--col flex--j-center`} style={{ textAlign: "center" }}>
-                            <h4 className={Classes.HEADING}>{v.name}</h4>
-                            <p className={`${Classes.TEXT_SMALL}`}>
-                              <Icon iconSize={11} icon="map-marker" /><span> Indonesia</span>
-                            </p>
-                            <div style={{ color: Colors.GRAY1 }}>IP: 192.168.43.{Math.floor(Math.random() * 255)}</div>
+                          <div className="flex-shrink-0">
+                            <Tooltip content={<div className={Classes.TEXT_SMALL}>{v._id}</div>} position={Position.BOTTOM_RIGHT}>
+                              <Tag minimal className={Classes.MONOSPACE_TEXT}>{v._id.slice(0, 3)}..{v._id.slice(v._id.length - 3, v._id.length)}</Tag>
+                            </Tooltip>
                           </div>
                         </div>
-                      </AspectRatio>
-                    </Card>
-                  </Box>))}
+                        <div className={`flex-grow flex flex--col flex--j-center`} style={{ textAlign: "center" }}>
+                          <h4 className={Classes.HEADING}>{v.name}</h4>
+                          <p className={`${Classes.TEXT_SMALL}`}>
+                            <Icon iconSize={11} icon="map-marker" /><span> Indonesia</span>
+                          </p>
+                          {v.hostname &&
+                            <div style={{ color: Colors.GRAY1 }}>ADDR: {v.hostname}</div>}
+                        </div>
+                      </div>
+                    </AspectRatio>
+                  </Card>
+                </Box>))}
               </div>}
             {list.length === 0 &&
               <NonIdealState
