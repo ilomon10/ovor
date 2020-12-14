@@ -73,9 +73,16 @@ const Overview = () => {
       setData({
         total: data.total,
         data: await Promise.all(data.data.map(async v => {
-          const d = await feathers.devices.get(v.deviceId, {
-            query: { $select: ['name'] }
-          });
+          let d = {
+            name: "Unkown"
+          };
+          try {
+            d = await feathers.devices.get(v.deviceId, {
+              query: { $select: ['name'] }
+            });
+          } catch (e) {
+            console.error(e);
+          }
           return {
             title: `${moment(v.updatedAt).calendar()} on ${d.name}`,
             path: d._id
