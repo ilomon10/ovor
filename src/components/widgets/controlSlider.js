@@ -81,7 +81,7 @@ const Control = ({ onError, ...props }) => {
       let Series = props.series.map(s => {
         const device = devices.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
-        let data = dataLake.data.filter(dl => (dl.deviceId === device._id));
+        let data = dataLake.filter(dl => (dl.deviceId === device._id));
         if (typeof data[0] !== 'undefined')
           data = data[0].data[field.name];
         else
