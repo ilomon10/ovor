@@ -110,7 +110,7 @@ const Device = () => {
         createdAt: e.createdAt,
         collectedAt: e.collectedAt
       }
-      setData(d => [...d, result]);
+      setData(d => [result, ...d]);
     }
     const onDevicePatched = (e) => {
       setDevice(e);

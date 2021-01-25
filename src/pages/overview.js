@@ -26,21 +26,21 @@ const Overview = () => {
       let dashboards = await feathers.dashboards.find({
         query: {
           $limit: 5,
-          $select: ['title'],
+          $select: ["_id", 'title'],
           $sort: { updatedAt: -1 }
         }
       });
       let devices = await feathers.devices.find({
         query: {
           $limit: 3,
-          $select: ['name'],
+          $select: ["_id", 'name'],
           $sort: { updatedAt: -1 }
         }
       });
       let data = await feathers.dataLake.find({
         query: {
           $limit: 3,
-          $select: ['deviceId', 'updatedAt'],
+          $select: ["_id", 'deviceId', 'updatedAt'],
           createdAt: 'all',
           $sort: { createdAt: -1 }
         }
@@ -48,7 +48,7 @@ const Overview = () => {
       let tokens = await feathers.tokens.find({
         query: {
           $limit: 3,
-          $select: ['name', 'key', 'updatedAt'],
+          $select: ["_id", 'name', 'key', 'updatedAt'],
           $sort: { updatedAt: -1 }
         }
       });
