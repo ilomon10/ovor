@@ -67,7 +67,16 @@ const Dashboard = () => {
   const createNode = useCallback(async () => {
     const _id = UUIDV4();
     await feathers.dashboards.patch(params.id, {
-      widgets: [...widgets, { _id, title: 'New Widget', type: 'empty' }]
+      widgets: [
+        ...widgets,
+        {
+          _id,
+          title: 'New Widget',
+          type: 'empty',
+          options: {},
+          series: []
+        }
+      ]
     });
     return _id;
   }, [feathers, params.id, widgets]);
