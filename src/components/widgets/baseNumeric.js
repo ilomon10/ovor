@@ -3,7 +3,7 @@ import { Tab, Tabs, Classes, Colors, ResizeSensor } from '@blueprintjs/core';
 import styled from 'styled-components';
 import { Text } from '@visx/text';
 
-import { Box } from 'components/utility/grid';
+import { Flex } from 'components/utility/grid';
 import { abbreviateNumber } from "components/helper";
 
 const Comp = ({ options, className, ...props }) => {
@@ -24,12 +24,17 @@ const Comp = ({ options, className, ...props }) => {
     }
     return (<Tab
       id={i} title={v.label} key={i} panel={(
-        <Box style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
+        <Flex
+          flexDirection="column"
+          style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}>
           <svg xmlns='http://www.w3.org/2000/svg'
             width={"100%"}
             height={"100%"}>
+            {options.image &&
+              <image xlinkHref={options.image} height="25%" width="100%" />}
             <Text
               scaleToFit={options.scaleToFit}
+              // y={12}
               dx={"50%"}
               dy={"50%"}
               width={contentSize.width}
@@ -38,7 +43,7 @@ const Comp = ({ options, className, ...props }) => {
               verticalAnchor="middle"
             >{text}</Text>
           </svg>
-        </Box>
+        </Flex>
       )} />)
   });
   return (

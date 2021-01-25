@@ -3,13 +3,10 @@ import { Text } from "@blueprintjs/core";
 import { Box } from "./utility/grid";
 
 class ErrorBoundary extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      hasError: false,
-      message: ""
-    };
-  }
+  state = {
+    hasError: false,
+    message: ""
+  };
   componentDidCatch(err, info) {
     this.setState({
       hasError: true,

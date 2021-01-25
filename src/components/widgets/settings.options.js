@@ -1,5 +1,6 @@
 import React from 'react';
 import { FormGroup, InputGroup, Switch, HTMLSelect } from '@blueprintjs/core';
+import FileInput from "./settings.options.file";
 
 const Form = ({ label, name, type, value, onChange }) => {
   switch (type.type) {
@@ -16,7 +17,7 @@ const Form = ({ label, name, type, value, onChange }) => {
         onChange={onChange}
         id={`option-${name}`}
         name={name}
-        value={Number(value)}
+        value={Number(value) || undefined}
         type="number" />);
     case 'boolean':
       return (<Switch label={`${label} (${type.type})`} name={name} default checked={value}
@@ -30,6 +31,11 @@ const Form = ({ label, name, type, value, onChange }) => {
         value={value}
         onChange={onChange}
         options={type.options} />);
+    case 'file':
+      return (<FileInput
+        name={name}
+        value={value}
+      />)
     default: return type;
   }
 }

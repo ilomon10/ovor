@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import _uniqBy from 'lodash.uniqby';
+import { NonIdealState } from '@blueprintjs/core';
 import BasePieChart from 'components/widgets/basePieChart';
 import { FeathersContext } from 'components/feathers';
 
@@ -103,6 +104,17 @@ export default ({ onError, ...props }) => {
     }
     fetch();
   }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (error) {
+    return (
+      <NonIdealState
+        icon="graph-remove"
+        title="Error"
+        description={<>
+          <p>{error.message}</p>
+        </>} />
+    )
+  }
 
   return (
     <BasePieChart type="pie" height="100%" width="100%"

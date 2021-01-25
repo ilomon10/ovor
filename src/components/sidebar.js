@@ -23,8 +23,17 @@ const Comp = ({ className, items }) => {
     getUserData();
   }, [feathers]);
   useEffect(() => {
-    const onLoggerCreated = () => {
+    const onLoggerCreated = (log) => {
       setIsNotificationTouched(false);
+      new Promise((resolve) => {
+        window.Notification.requestPermission((state) => {
+          if (state !== "default")
+            resolve();
+        })
+      }).then(() => {
+        console.log(log);
+        new window.Notification("baru");
+      })
     }
     feathers.logger.on('created', onLoggerCreated);
     return () => {

@@ -9,6 +9,7 @@ export const numericOptions = {
   precision: { type: "number" },
   unit: { type: "string" },
   scaleToFit: { type: "boolean" },
+  image: { type: "file" }
 }
 
 export const numericConfig = {
