@@ -19,7 +19,7 @@ const Notification = () => {
   useEffect(() => {
     const fetch = async () => {
       let log = (await feathers.logger.find({
-        query: { $select: ['intent', 'message', 'createdAt'], $sort: { createdAt: -1 } }
+        query: { $select: ["_id", "intent", "message", "createdAt"], $sort: { createdAt: -1 } }
       })).data;
       setLog(log);
     }

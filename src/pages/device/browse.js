@@ -37,7 +37,7 @@ const Devices = () => {
     feathers.devices.find({
       query: {
         $sort: { createdAt: -1 },
-        $select: ['name', 'hostname']
+        $select: ["_id", 'name', 'hostname']
       }
     }).then((e) => {
       setList(e.data);

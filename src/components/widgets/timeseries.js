@@ -28,7 +28,7 @@ const Timeseries = ({ onError, ...props }) => {
   const [series, setSeries] = useState([]);
   const [error, setError] = useState();
 
-  const onErr = useCallback((e)=> {
+  const onErr = useCallback((e) => {
     if (typeof onError === 'function') onError(e);
     setError(e);
   }, [onError]);
@@ -42,7 +42,7 @@ const Timeseries = ({ onError, ...props }) => {
         let { data } = await feathers.devices.find({
           query: {
             _id: { $in: deviceIds },
-            $select: ['fields', 'name']
+            $select: ["_id", 'fields', 'name']
           }
         });
         devices = data;
@@ -67,7 +67,7 @@ const Timeseries = ({ onError, ...props }) => {
         $sort: {
           createdAt: 1
         },
-        $select: ['data', 'deviceId', 'createdAt']
+        $select: ["_id", 'data', 'deviceId', 'createdAt']
       }
       if (props.timeRange) {
         query = {

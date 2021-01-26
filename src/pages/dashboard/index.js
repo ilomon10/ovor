@@ -19,7 +19,7 @@ import _debounce from "lodash.debounce";
 import { dropRight } from 'components/helper';
 import Widget from 'components/widget';
 import { FeathersContext } from 'components/feathers';
-import BSON from 'bson-objectid';
+import { v4 as UUIDV4 } from "uuid";
 import DashboardContext from 'components/hocs/dashboard';
 import { Helmet } from 'react-helmet';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -65,12 +65,21 @@ const Dashboard = () => {
     updateCurrentNode(createBalancedTreeFromLeaves(leaves));
   }, [updateCurrentNodeToDB]); // eslint-disable-line react-hooks/exhaustive-deps
   const createNode = useCallback(async () => {
-    const _id = BSON.generate();
+    const _id = UUIDV4();
     await feathers.dashboards.patch(params.id, {
-      $push: { widgets: { _id, title: 'New Widget', type: 'empty' } }
+      widgets: [
+        ...widgets,
+        {
+          _id,
+          title: 'New Widget',
+          type: 'empty',
+          options: {},
+          series: []
+        }
+      ]
     });
-    return _id.toString();
-  }, [feathers, params.id]);
+    return _id;
+  }, [feathers, params.id, widgets]);
   const addNewWindow = useCallback(async () => {
     let curNode = currentNode;
     if (currentNode !== null && typeof curNode === 'object') curNode = { ...currentNode };

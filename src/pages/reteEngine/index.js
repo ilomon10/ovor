@@ -112,10 +112,13 @@ const Component = ({ className }) => {
       const device = await feathers.devices.get(deviceId, {
         query: { $select: ["reteId", "fields"] }
       });
-      const { _id, ...rete } = await feathers.retes.get(params.id, {
-        query: { $select: ['id', 'nodes'] }
+      const { version, nodes } = await feathers.retes.get(params.id, {
+        query: { $select: ["version", 'nodes'] }
       });
-      await setRete(rete);
+      await setRete({
+        id: version,
+        nodes,
+      });
       await setDevice(device);
     }
     fetch();
@@ -132,7 +135,7 @@ const Component = ({ className }) => {
       }
     });
 
-    if (_get(rete, 'id')) {
+    if (_get(rete, "id")) {
       await editor.fromJSON(rete);
       AreaPlugin.zoomAt(editor, editor.nodes);
     }
@@ -154,7 +157,7 @@ const Component = ({ className }) => {
 
   const onDeploy = useCallback(async (json) => {
     await feathers.retes.patch(device.reteId, {
-      id: json.id,
+      version: json.id,
       nodes: json.nodes,
     })
   }, [feathers, rete, device.reteId]); // eslint-disable-line react-hooks/exhaustive-deps

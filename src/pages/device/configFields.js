@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useContext } from 'react';
 import * as Yup from 'yup';
 import { Formik, FieldArray } from 'formik';
-import BSON from 'bson-objectid';
+import { v4 as UUIDV4 } from 'uuid';
 import { Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect, Button, Callout } from '@blueprintjs/core';
 
 import { FeathersContext } from 'components/feathers';
@@ -55,7 +55,7 @@ const ConfigFields = ({ data, onClose }) => {
         onSubmit={async (v, { setSubmitting, setErrors }) => {
           const fields = [...v['fields']]
             .map(({ name, type, _id }) => ({
-              name, type, _id: _id || BSON.generate()
+              name, type, _id: _id || UUIDV4()
             }));
           fields.pop();
           try {
