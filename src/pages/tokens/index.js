@@ -24,7 +24,7 @@ const Tokens = () => {
     const fetch = async () => {
       const tokens = await feathers.tokens.find({
         query: {
-          $select: ['_id', 'updatedAt', 'key', 'name'],
+          $select: ["_id", "updatedAt", "key", "name"],
           $sort: { updatedAt: -1 }
         }
       });
