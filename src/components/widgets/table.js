@@ -25,7 +25,7 @@ const Table = ({ series, ...props }) => {
       devices = await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
-          $select: ['fields', 'name']
+          $select: ["_id", 'fields', 'name']
         }
       });
       devices = devices.data;

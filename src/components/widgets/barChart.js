@@ -21,13 +21,13 @@ const BarChart = ({ ...props }) => {
       let devices = (await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
-          $select: ['fields', 'name']
+          $select: ["_id", 'fields', 'name']
         }
       })).data;
       let query = {
         $limit: 100,
         deviceId: { $in: deviceIds },
-        $select: ['data', 'deviceId', 'createdAt']
+        $select: ["_id", 'data', 'deviceId', 'createdAt']
       }
       if (props.timeRange) {
         query = {
