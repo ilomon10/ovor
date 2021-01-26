@@ -80,13 +80,18 @@ const Device = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const device = await feathers.devices.get(params.id);
+        const device = await feathers.devices.get(params.id, {
+          query: {
+            $select: ["_id", "name", "hostname", "reteId", "fields", "key"]
+          }
+        });
+        console.log(device);
         await setDevice({ ...device });
         const data = await feathers.dataLake.find({
           query: {
             $limit: 2000,
             deviceId: params.id,
-            $select: ['data', 'hostname', 'createdAt', 'collectedAt'],
+            $select: ["_id", 'data', 'createdAt', 'collectedAt'],
             $sort: {
               createdAt: -1
             },
@@ -110,7 +115,7 @@ const Device = () => {
         createdAt: e.createdAt,
         collectedAt: e.collectedAt
       }
-      setData(d => [...d, result]);
+      setData(d => [result, ...d]);
     }
     const onDevicePatched = (e) => {
       setDevice(e);

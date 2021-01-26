@@ -32,7 +32,9 @@ const Comp = ({ className, items }) => {
         })
       }).then(() => {
         console.log(log);
-        new window.Notification("baru");
+        new window.Notification("OVoRD", {
+          body: log.message
+        });
       })
     }
     feathers.logger.on('created', onLoggerCreated);

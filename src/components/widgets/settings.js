@@ -48,7 +48,7 @@ const Settings = ({ onClose }) => {
 
   useEffect(() => {
     feathers.devices.find({
-      query: { $select: ['name', 'fields'] }
+      query: { $select: ["_id", "name", "fields"] }
     }).then(e => {
       setDevices([...e.data]);
     });
@@ -71,17 +71,24 @@ const Settings = ({ onClose }) => {
       validationSchema={Schema}
       onSubmit={async (values, { setSubmitting, setErrors }) => {
         let options = values['widgetOptions'];
-
         let series = values['widgetSeries'].slice(0, values['widgetSeries'].length - 1);
+
         try {
-          await feathers.dashboards.patch(dashboard.getId(), {
-            $set: {
-              "widgets.$.options": { ...options },
-              "widgets.$.series": [...series],
-              "widgets.$.title": values['widgetTitle'],
-              "widgets.$.type": values['widgetType']
-            }
-          }, { query: { "widgets._id": widget.id } });
+          let { widgets } = await feathers.dashboards.get(dashboard.getId(), {
+            query: { $select: ["widgets"] }
+          })
+          widgets = widgets.map((value) => {
+            if (value._id !== widget.id) return value;
+            return {
+              ...value,
+              title: values["widgetTitle"],
+              type: values["widgetType"],
+              options,
+              series,
+            };
+          })
+          console.log(widgets, widget);
+          await feathers.dashboards.patch(dashboard.getId(), { "widgets": widgets });
           onClose();
         } catch (e) {
           console.error(e);

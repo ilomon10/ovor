@@ -55,7 +55,7 @@ const Control = ({ onError, ...props }) => {
         let { data } = await feathers.devices.find({
           query: {
             _id: { $in: deviceIds },
-            $select: ['fields', 'name']
+            $select: ["_id", 'fields', 'name']
           }
         })
         devices = data;
@@ -65,9 +65,8 @@ const Control = ({ onError, ...props }) => {
       }
 
       const query = {
-        $aggregate: 'deviceId',
         deviceId: { $in: deviceIds },
-        $select: ['data', 'deviceId']
+        $select: ["_id", 'data', 'deviceId']
       }
 
       let dataLake = [];

@@ -39,7 +39,7 @@ const Dashboards = () => {
   }, [list, feathers])
   useEffect(() => {
     feathers.dashboards.find({
-      query: { $select: ['title', 'updatedAt'] }
+      query: { $select: ["_id", 'title', 'updatedAt'] }
     }).then((e) => {
       setList([...e.data])
     })

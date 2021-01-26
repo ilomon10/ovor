@@ -23,7 +23,7 @@ const Users = () => {
         const users = await feathers.users.find({
           query: {
             $sort: { createdAt: -1 },
-            $select: ['email', 'permissions']
+            $select: ["_id", "email", "permissions"]
           }
         })
         setList({
