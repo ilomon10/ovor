@@ -1,14 +1,17 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Colors, Card, Classes, Elevation, H4, Button, NonIdealState } from '@blueprintjs/core';
-import Wrapper from 'components/wrapper';
-import Container from 'components/container';
+import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import InputCopy from 'components/inputCopy';
+import { Colors, Card, Classes, Elevation, H4, Button, NonIdealState } from '@blueprintjs/core';
 import moment from 'moment';
+
+import Container from 'components/container';
+import InputCopy from 'components/inputCopy';
 import { FeathersContext } from 'components/feathers';
 import LinkButton from 'components/linkButton';
-import { Helmet } from 'react-helmet';
-import { abbreviateNumber } from 'components/helper';
+import Wrapper from 'components/wrapper';
+import { container } from 'components/utility/constants';
+import { abbreviateNumber, useMedia } from 'components/helper';
+import { Box, Flex } from 'components/utility/grid';
 
 const stateOption = {
   data: [],
@@ -21,6 +24,13 @@ const Overview = () => {
   const [data, setData] = useState(stateOption);
   const [tokens, setTokens] = useState(stateOption);
   const feathers = useContext(FeathersContext);
+  const columnCount = useMedia(
+    container.map((v) => `(min-width: ${v})`).reverse(),
+    [5, 4, 3, 2], 1
+  )
+  useEffect(() => {
+    console.log(columnCount);
+  }, [columnCount]);
   useEffect(() => {
     const fetch = async () => {
       let dashboards = await feathers.dashboards.find({
@@ -111,15 +121,25 @@ const Overview = () => {
       <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
         <Wrapper style={{ overflowY: 'auto' }}>
           <Container style={{ paddingTop: 12 }}>
-            <div style={{ margin: '0 -8px', marginBottom: 16 }} className="flex flex--wrap">
-              <div style={{ width: `${100 / 3}%`, padding: '0 8px' }}>
-                <Card elevation={Elevation.TWO}>
-                  <div className="flex">
-                    <div style={{ width: `${100 / 2}%` }}>
+            <Flex
+              mx={columnCount >= 2 ? -2 : 0}
+              my={columnCount < 2 ? -2 : 0}
+              pb={2}
+              flexWrap={"wrap"}
+              flexDirection={columnCount < 2 ? "column" : "row"}
+            >
+              <Box
+                px={columnCount >= 2 ? 2 : 0}
+                py={columnCount < 2 ? 2 : 0}
+                width={columnCount < 2 ? "auto" : `${100 / 3}%`}
+              >
+                <Card elevation={Elevation.TWO} style={{ height: "100%" }}>
+                  <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
+                    <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
                       <h1 className={Classes.HEADING}>{dashboards.total}</h1>
                       <h5 className={Classes.HEADING}>Dashboards</h5>
-                    </div>
-                    <div style={{ width: `${100 / 2}%` }}>
+                    </Box>
+                    <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
                       {[...dashboards.data].splice(0, 3).map((v) => (
                         <h6 key={v.path} className={`${Classes.HEADING}`}>
                           <Link to={`/dashboards/${v.path}`}
@@ -129,18 +149,22 @@ const Overview = () => {
                           </Link>
                         </h6>
                       ))}
-                    </div>
-                  </div>
+                    </Box>
+                  </Flex>
                 </Card>
-              </div>
-              <div style={{ width: `${100 / 3}%`, padding: '0 8px' }}>
-                <Card elevation={Elevation.ONE}>
-                  <div className="flex">
-                    <div style={{ width: `${100 / 2}%` }}>
+              </Box>
+              <Box
+                px={columnCount >= 2 ? 2 : 0}
+                py={columnCount < 2 ? 2 : 0}
+                width={columnCount < 2 ? "auto" : `${100 / 3}%`}
+              >
+                <Card elevation={Elevation.ONE} style={{ height: "100%" }}>
+                  <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
+                    <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
                       <h1 className={Classes.HEADING}>{devices.total}</h1>
                       <h5 className={Classes.HEADING}>Devices</h5>
-                    </div>
-                    <div style={{ width: `${100 / 2}%` }}>
+                    </Box>
+                    <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
                       {devices.data.map((v) => (
                         <h6 key={v.path} className={`${Classes.HEADING}`}>
                           <Link to={`/devices/${v.path}`}
@@ -150,18 +174,22 @@ const Overview = () => {
                           </Link>
                         </h6>
                       ))}
-                    </div>
-                  </div>
+                    </Box>
+                  </Flex>
                 </Card>
-              </div>
-              <div style={{ width: `${100 / 3}%`, padding: '0 8px' }}>
-                <Card elevation={Elevation.ZERO}>
-                  <div className="flex">
-                    <div style={{ width: `${100 / 3}%` }}>
+              </Box>
+              <Box
+                px={columnCount >= 2 ? 2 : 0}
+                py={columnCount < 2 ? 2 : 0}
+                width={columnCount < 2 ? "auto" : `${100 / 3}%`}
+              >
+                <Card elevation={Elevation.ZERO} style={{ height: "100%" }}>
+                  <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
+                    <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
                       <h1 className={Classes.HEADING}>{abbreviateNumber(data.total)}</h1>
                       <h5 className={Classes.HEADING}>Data</h5>
-                    </div>
-                    <div style={{ width: `${100 / 3 * 2}%` }}>
+                    </Box>
+                    <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
                       {data.data.map((v, i) => (
                         <h6 key={i} className={`${Classes.HEADING} ${Classes.TEXT_OVERFLOW_ELLIPSIS}`}>
                           <Link to={`/devices/${v.path}`}>
@@ -169,13 +197,13 @@ const Overview = () => {
                           </Link>
                         </h6>
                       ))}
-                    </div>
-                  </div>
+                    </Box>
+                  </Flex>
                 </Card>
-              </div>
-            </div>
-            <div style={{ margin: '0 -8px', marginBottom: 16 }} className='flex'>
-              <div style={{ width: `${100 / 2}%`, margin: '0 16px' }}>
+              </Box>
+            </Flex>
+            <Flex mx={-2} mb={2} pt={2} flexDirection={columnCount < 2 ? "column" : "row"}>
+              <Box mx={2} px={2} width={columnCount < 2 ? "auto" : `${100 / 2}%`}>
                 <h2 className={Classes.HEADING}>Welcome to OVOR</h2>
                 <p style={{ marginBottom: 16 }}>Start something new or continue your work</p>
                 <h5 className={Classes.HEADING}>Create something</h5>
@@ -218,8 +246,8 @@ const Overview = () => {
                     </div>
                   </div>
                 </>}
-              </div>
-              <div style={{ width: `${100 / 2}%`, margin: '0 8px' }}>
+              </Box>
+              <Box mx={2} width={columnCount < 2 ? "auto" : `${100 / 2}%`}>
                 <Card style={{ marginBottom: 16 }}>
                   <div className="flex">
                     <div className="flex-grow">
@@ -270,8 +298,8 @@ const Overview = () => {
                       <span>Please come back again later.</span>
                     </>)} />
                 </Card>
-              </div>
-            </div>
+              </Box>
+            </Flex>
           </Container>
         </Wrapper>
       </div >

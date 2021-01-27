@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import Helmet from 'react-helmet';
 import css from '@styled-system/css';
 import styled from 'styled-components';
-import { Navbar, Colors, ButtonGroup, Button, Classes, Card, FormGroup, InputGroup, Drawer, Menu, Divider } from '@blueprintjs/core';
+import {
+  Navbar, Colors, ButtonGroup, Button, Classes,
+  Card, FormGroup, InputGroup, Drawer, Menu, Divider
+} from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Box } from 'components/utility/grid';
 import { container } from 'components/utility/constants';
