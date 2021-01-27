@@ -134,7 +134,7 @@ const Comp = ({ className, items }) => {
         <Divider />
         <Button minimal fill alignText="left"
           icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
-        <div className={Classes.TEXT_MUTED} style={{ textAlign: 'center' }}><small>v0.0.1 {!isToggled ? '' : '(alpha)'}</small></div>
+        <div className={Classes.TEXT_MUTED} style={{ textAlign: 'center' }}><small>v0.2.0 {!isToggled ? '' : '(alpha)'}</small></div>
       </div>
     </div >
   )
