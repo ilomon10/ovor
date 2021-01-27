@@ -1,13 +1,18 @@
 import moment from 'moment';
 import React, { useEffect, useContext, useState, useCallback } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5, Button, ResizeSensor, NavbarDivider, Dialog, Text, NonIdealState, Checkbox, Divider } from '@blueprintjs/core';
+import { useParams, useHistory, Link } from 'react-router-dom';
+import {
+  Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5,
+  Button, ResizeSensor, Dialog, Text, NonIdealState, Checkbox, Divider,
+  AnchorButton
+} from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 
 import Timeseries from 'components/widgets/timeseries';
 import Wrapper from 'components/wrapper';
 import { FeathersContext } from 'components/feathers';
 import InputCopy from 'components/inputCopy';
+import { useMedia } from 'components/helper';
 import { Flex, Box } from 'components/utility/grid';
 import { container } from 'components/utility/constants';
 
@@ -46,6 +51,10 @@ const Device = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
   const history = useHistory();
+  const columnCount = useMedia(
+    container.map((v) => `(min-width: ${v})`).reverse(),
+    [5, 4, 3, 2], 1
+  )
   const [isDialogOpen, setIsDialogOpen] = useState({
     delete_data: false,
     delete: false,
@@ -137,37 +146,38 @@ const Device = () => {
         <Navbar className="flex-shrink-0">
           <Box maxWidth={[container.sm, container.sm, container.md, container.xl]} mx="auto">
             <Navbar.Group>
-              <Button icon="chevron-left" onClick={() => { history.goBack() }} />
+              <Link
+                to="/devices"
+                icon="chevron-left"
+                component={React.forwardRef(({ navigate, ...props }, ref) => (
+                  <AnchorButton ref={ref} {...props} />
+                ))}
+              />
               <Navbar.Divider />
-              <h4 className={`${Classes.HEADING} flex flex--i-center`}
-                style={{ margin: 0 }}>
-                <EditableText selectAllOnFocus value={device.name}
-                  onChange={v => setDevice({ ...device, name: v })} />
+              <h4
+                className={`${Classes.HEADING} flex flex--i-center`}
+                style={{ margin: 0, maxWidth: columnCount < 2 ? 130 : "initial" }}
+              >
+                <EditableText
+                  selectAllOnFocus
+                  value={device.name}
+                  onChange={v => setDevice({ ...device, name: v })}
+                />
               </h4>
             </Navbar.Group>
             <Navbar.Group align="right">
-              {device.hostname &&
-                <div style={{ marginLeft: 16 }}>
-                  <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>ADDRESS</div>
-                  <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                    style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</div>
-                </div>}
-              <div style={{ marginLeft: 16 }}>
-                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
-                <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                  style={{ margin: 0 }}>{device._id}</div>
-              </div>
-              <div style={{ marginLeft: 16 }}>
-                <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>KEY</div>
-              </div>
-              <div style={{ marginLeft: 8 }}>
-                <InputCopy size="24" value={`${device.key}`} />
-              </div>
-              <NavbarDivider />
-              <Button icon="data-lineage" onClick={() => history.push({
-                pathname: `/rete/${device.reteId}`,
-                search: `?deviceId=${device._id}`
-              })} />
+              <Link
+                to={{
+                  pathname: `/rete/${device.reteId}`,
+                  search: `?deviceId=${device._id}`
+                }}
+                outlined
+                text="Rule"
+                icon="data-lineage"
+                component={React.forwardRef(({ navigate, ...props }, ref) => (
+                  <AnchorButton ref={ref} {...props} />
+                ))}
+              />
             </Navbar.Group>
           </Box>
         </Navbar>
@@ -177,6 +187,32 @@ const Device = () => {
           }}>
             <Wrapper style={{ overflowY: 'auto' }}>
               <Box py={3} maxWidth={[container.sm, container.sm, container.md, container.lg]} mx="auto">
+                <Flex px={3} mb={3} flexDirection={columnCount < 2 ? "column" : "row"}>
+                  <Box width={columnCount < 2 ? `100%` : `50%`}>
+                    <Box mb={2}>
+                      <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
+                      <InputCopy fill value={`${device._id}`} />
+                    </Box>
+                    <Box mb={2}>
+                      <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>KEY</div>
+                      <InputCopy fill value={`${device.key}`} />
+                    </Box>
+                  </Box>
+                  <Box width={columnCount < 2 ? `100%` : `50%`}>
+                    <Box mb={2}>
+                      <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>ADDRESS</div>
+                      <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                        style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</div>
+                    </Box>
+                    <Box mb={2}>
+                      <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>LOCATION</div>
+                      <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                        style={{ margin: 0 }}>
+                        <span>...</span>
+                      </div>
+                    </Box>
+                  </Box>
+                </Flex>
                 <Box px={3} mb={3}>
                   <Card style={{ padding: 0 }}>
                     <div className="flex" style={{ padding: "16px 16px 0 16px" }}>
