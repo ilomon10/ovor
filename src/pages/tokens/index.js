@@ -1,18 +1,29 @@
 import React, { useEffect, useContext, useState, useCallback } from 'react';
+import { Helmet } from 'react-helmet';
 import { Button, Colors, H2, HTMLTable, Dialog } from '@blueprintjs/core';
 import moment from 'moment';
+
 import Container from 'components/container';
 import Wrapper from 'components/wrapper';
 import InputCopy from 'components/inputCopy';
 import { FeathersContext } from 'components/feathers';
+import { useMedia } from "components/helper";
+import { container } from 'components/utility/constants';
+import { Flex, Box } from 'components/utility/grid';
+
 import GenerateNewToken from './generateNewToken';
 import DeleteToken from './deleteToken';
-import { Helmet } from 'react-helmet';
 
 const Tokens = () => {
   const feathers = useContext(FeathersContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedToken, setSelectedToken] = useState(undefined);
+
+  const columnCount = useMedia(
+    container.map((v) => `(min-width: ${v})`).reverse(),
+    [5, 4, 3, 2], 1
+  )
+
   const [tokens, setTokens] = useState({
     data: [],
     total: 0
@@ -65,18 +76,18 @@ const Tokens = () => {
       <div style={{ backgroundColor: Colors.LIGHT_GRAY5, height: '100%', position: "relative" }}>
         <Wrapper style={{ overflowY: 'auto' }}>
           <Container style={{ paddingTop: 16 }}>
-            <div className="flex">
-              <div className="flex-grow">
+            <Flex>
+              <Box flexGrow={1}>
                 <H2>Access Token</H2>
-              </div>
-              <div className="flex-shrink-0">
+              </Box>
+              <Box flexShrink={0}>
                 <Button icon="plus"
-                  text="Generate new token"
+                  text={columnCount < 2 ? "Token" : "Generate new token"}
                   onClick={() => {
                     setIsDialogOpen(true);
                   }} />
-              </div>
-            </div>
+              </Box>
+            </Flex>
             <p>You need API access token to configure on device.</p>
             <HTMLTable style={{ width: '100%' }}>
               <thead>

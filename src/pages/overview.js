@@ -9,8 +9,8 @@ import InputCopy from 'components/inputCopy';
 import { FeathersContext } from 'components/feathers';
 import LinkButton from 'components/linkButton';
 import Wrapper from 'components/wrapper';
-import { container } from 'components/utility/constants';
 import { abbreviateNumber, useMedia } from 'components/helper';
+import { container } from 'components/utility/constants';
 import { Box, Flex } from 'components/utility/grid';
 
 const stateOption = {
