@@ -16,7 +16,8 @@ const InputCopy = ({ defaultValue, value, size, fill, small }) => {
   }, [selectAll]);
   return (
     <ControlGroup>
-      <InputGroup readOnly
+      <InputGroup 
+        readOnly
         small={small}
         fill={fill}
         inputRef={eventRef}
