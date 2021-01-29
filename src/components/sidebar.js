@@ -13,9 +13,7 @@ const Comp = ({ className, items }) => {
   const feathers = useContext(FeathersContext);
   const history = useHistory();
   const navList = items.filter((v) => !v.hide) || [];
-  const version = useMemo(() => {
-    return pjson.version.split('-');
-  }, []);
+  const version = useMemo(() => pjson.version.split('-'), []);
   const [isToggled, setIsToggled] = useState(false);
   const [isNotificationTouched, setIsNotificationTouched] = useState(true);
   const [email, setEmail] = useState(null);

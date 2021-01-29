@@ -63,7 +63,7 @@ const Dashboard = () => {
   const autoArrange = useCallback(() => {
     const leaves = getLeaves(currentNode);
     updateCurrentNode(createBalancedTreeFromLeaves(leaves));
-  }, [updateCurrentNodeToDB]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [updateCurrentNodeToDB, currentNode]); // eslint-disable-line react-hooks/exhaustive-deps
   const createNode = useCallback(async () => {
     const _id = UUIDV4();
     await feathers.dashboards.patch(params.id, {
