@@ -1,10 +1,7 @@
 import React from "react";
 import { Box } from "components/utility/grid";
 import { Responsive, WidthProvider } from "react-grid-layout";
-import { Button, Colors, ResizeSensor } from "@blueprintjs/core";
-import Window from "./Window";
-import BSON from "bson-objectid";
-import Empty from "./Widget/Empty";
+import { Colors, ResizeSensor } from "@blueprintjs/core";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -31,7 +28,7 @@ class GridLayout extends React.Component {
         <Box
           bg={Colors.GRAY4}
           style={{
-            position: "fixed",
+            position: "absolute",
             overflow: "auto",
             top: 0,
             right: 0,

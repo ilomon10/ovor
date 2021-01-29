@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Flex } from "components/utility/grid";
 import styled from "styled-components";
-import { ButtonGroup, Colors, Text } from "@blueprintjs/core";
+import { ButtonGroup, Button, Colors, Text, Popover } from "@blueprintjs/core";
 
 const Component = ({
   children,
-  title, toolbarControls,
-  ...props }) => {
+  title,
+  toolbarMinimal,
+  toolbarControls,
+  ...props
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <Flex
       {...props}
@@ -19,15 +23,24 @@ const Component = ({
         </Flex>
         {toolbarControls &&
           <Box className="controls" flexShrink={0}>
-            <ButtonGroup>
-              {toolbarControls}
-            </ButtonGroup>
+            {toolbarMinimal &&
+              <Popover isOpen={isOpen}>
+                <Button minimal icon="more" onClick={() => setIsOpen(isOpen => !isOpen)} />
+                <ButtonGroup>
+                  {toolbarControls}
+                </ButtonGroup>
+              </Popover>
+            }
+            {!toolbarMinimal &&
+              <ButtonGroup>
+                {toolbarControls}
+              </ButtonGroup>}
           </Box>}
       </Flex>
       <Box className="body" flexGrow={1} bg={Colors.LIGHT_GRAY4}>
         {children}
       </Box>
-    </Flex>
+    </Flex >
   )
 }
 

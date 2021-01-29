@@ -9,6 +9,7 @@ import App from './App';
 import Login from 'pages/login';
 import Register from 'pages/register';
 import PrivateRoute from './components/privateRoute';
+import Embed from 'pages/embed';
 
 const Router = () => {
   return (
@@ -17,6 +18,7 @@ const Router = () => {
         <Switch>
           <Route path="/login" component={Login} />
           <Route path="/register" component={Register} />
+          <Route path="/embed" component={Embed} />
           <PrivateRoute path="/" component={App} />
         </Switch>
       </HashRouter>

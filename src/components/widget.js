@@ -1,8 +1,4 @@
 import React, { useState, useContext, useCallback } from 'react';
-import {
-  MosaicWindow,
-  MosaicContext,
-} from 'react-mosaic-component';
 import { Button, Dialog } from '@blueprintjs/core';
 import _merge from 'lodash.merge';
 import Timeseries from './widgets/timeseries';
@@ -18,8 +14,13 @@ import WidgetContext from './widgets/hocs';
 import { GRAPH_TYPE } from './widgets/constants';
 import DashboardContext from './hocs/dashboard';
 import IFrame from './widgets/iframe';
+import Window from "../pages/embed/dashboard/Window";
 
-const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
+const Widget = ({
+  type, tileId, title = "Empty Window", path,
+  style, className, children,
+  ...props
+}) => {
   const { removeWidget } = useContext(DashboardContext);
   let Ret = null;
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -71,6 +72,7 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
       Ret = (<Empty path={path} />);
       break;
   }
+  
   return (
     <WidgetContext.Provider value={{
       setIsDialogOpen,
@@ -80,36 +82,37 @@ const Widget = ({ type, tileId, title = "Empty Window", path, ...props }) => {
       series: props.series,
       options: props.options
     }}>
-      <MosaicContext.Consumer>
-        {({ mosaicActions }) => {
-          return (<MosaicWindow
-            title={title}
-            path={path}
-            toolbarControls={([
-              <Button key={"refresh"} className="mosaic-default-control"
-                loading={rerender}
-                minimal icon='refresh'
-                onClick={() => forceRerender()} />,
-              <Button key={"cog"} className="mosaic-default-control"
-                minimal icon='cog'
-                onClick={() => setIsDialogOpen(true)} />,
-              <Button key={"cross"} className="mosaic-default-control" minimal icon='cross' onClick={() => {
-                removeWidget(mosaicActions.remove.bind(this, path), tileId);
-              }} />,
-            ])}>
-            {!rerender && Ret}
-            <Dialog
-              title={"Configure Widget"}
-              canEscapeKeyClose
-              canOutsideClickClose={false}
-              onClose={() => setIsDialogOpen(false)}
-              isOpen={isDialogOpen}
-              usePortal>
-              <Settings path={path} onClose={() => setIsDialogOpen(false)} />
-            </Dialog>
-          </MosaicWindow>)
-        }}
-      </MosaicContext.Consumer>
+      <Window
+        title={title}
+        path={path}
+        toolbarControls={([
+          <Button key={"refresh"} className="mosaic-default-control"
+            loading={rerender}
+            minimal icon='refresh'
+            onClick={() => forceRerender()} />,
+          <Button key={"cog"} className="mosaic-default-control"
+            minimal icon='cog'
+            onClick={() => setIsDialogOpen(true)} />,
+          <Button key={"cross"} className="mosaic-default-control" minimal icon='cross' onClick={() => {
+            removeWidget(tileId);
+          }} />,
+        ])}
+        style={style}
+        className={className}
+        {...props}
+      >
+        {!rerender && Ret}
+        {children}
+        <Dialog
+          title={"Configure Widget"}
+          canEscapeKeyClose
+          canOutsideClickClose={false}
+          onClose={() => setIsDialogOpen(false)}
+          isOpen={isDialogOpen}
+          usePortal>
+          <Settings path={path} onClose={() => setIsDialogOpen(false)} />
+        </Dialog>
+      </Window>
     </WidgetContext.Provider>
   )
 }
