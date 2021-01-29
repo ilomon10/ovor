@@ -163,6 +163,7 @@ const Dashboard = () => {
               layouts={layouts}
               style={{ height: "100%" }}
               onLayoutChange={(_, all) => {
+                if (JSON.stringify(all) === JSON.stringify(layouts)) return;
                 if (isLoaded) updateCurrentNode(all);
                 setLayouts(state => ({
                   ...state.layouts,
