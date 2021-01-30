@@ -33,7 +33,6 @@ const Comp = ({ className, items }) => {
             resolve();
         })
       }).then(() => {
-        console.log(log);
         new window.Notification("OVoRD", {
           body: log.message
         });

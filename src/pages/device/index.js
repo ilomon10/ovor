@@ -94,7 +94,6 @@ const Device = () => {
             $select: ["_id", "name", "hostname", "reteId", "fields", "key"]
           }
         });
-        console.log(device);
         await setDevice({ ...device });
         const data = await feathers.dataLake.find({
           query: {

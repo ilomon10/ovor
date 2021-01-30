@@ -29,9 +29,6 @@ const Overview = () => {
     [5, 4, 3, 2], 1
   )
   useEffect(() => {
-    console.log(columnCount);
-  }, [columnCount]);
-  useEffect(() => {
     const fetch = async () => {
       let dashboards = await feathers.dashboards.find({
         query: {

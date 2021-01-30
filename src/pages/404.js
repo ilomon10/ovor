@@ -1,18 +1,9 @@
-import React, { useState, useContext } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Colors, H1, Card, FormGroup, InputGroup, Button, Classes, Callout, NonIdealState } from '@blueprintjs/core';
-import { Link, useHistory } from 'react-router-dom';
-import { Formik } from 'formik';
-import { FeathersContext } from 'components/feathers';
-import * as Yup from 'yup';
+import React from 'react';
+import { Colors, NonIdealState } from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 import { Box } from 'components/utility/grid';
 
 const FourOFour = () => {
-  const history = useHistory();
-  const feathers = useContext(FeathersContext);
-  const [isPasswordShow, setIsPasswordShow] = useState(false);
-  const lockButton = (<Button minimal icon={isPasswordShow ? "eye-open" : "eye-off"} onClick={() => setIsPasswordShow(!isPasswordShow)} />)
   return (
     <>
       <Helmet>

@@ -29,7 +29,7 @@ class LoggerComponent extends Rete.Component {
   }
 
   worker(node, inputs, outputs) {
-    // console.log(inputs['msg'][0]);
+    // no-op
   }
 }
 

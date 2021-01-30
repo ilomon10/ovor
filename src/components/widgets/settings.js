@@ -87,7 +87,6 @@ const Settings = ({ onClose }) => {
               series,
             };
           })
-          console.log(widgets, widget);
           await feathers.dashboards.patch(dashboard.getId(), { "widgets": widgets });
           onClose();
         } catch (e) {
