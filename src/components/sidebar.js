@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
 import styled from 'styled-components';
 import { NavLink, useHistory } from 'react-router-dom';
-
 import { Colors, Classes, Divider, Navbar, Button, AnchorButton, Icon, H5, Menu, Popover, Tooltip } from '@blueprintjs/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import pjson from "../../package.json";
+
 import { FeathersContext } from './feathers';
 import Notification from '../pages/notification';
 import { Box } from './utility/grid';
@@ -12,6 +13,7 @@ const Comp = ({ className, items }) => {
   const feathers = useContext(FeathersContext);
   const history = useHistory();
   const navList = items.filter((v) => !v.hide) || [];
+  const version = useMemo(() => pjson.version.split('-'), []);
   const [isToggled, setIsToggled] = useState(false);
   const [isNotificationTouched, setIsNotificationTouched] = useState(true);
   const [email, setEmail] = useState(null);
@@ -134,7 +136,9 @@ const Comp = ({ className, items }) => {
         <Divider />
         <Button minimal fill alignText="left"
           icon={isToggled ? "menu-closed" : "menu-open"} onClick={() => setIsToggled(!isToggled)} />
-        <div className={Classes.TEXT_MUTED} style={{ textAlign: 'center' }}><small>v0.2.0 {!isToggled ? '' : '(alpha)'}</small></div>
+        <div className={Classes.TEXT_MUTED} style={{ textAlign: 'center' }}>
+          <small>v{version[0]} {version[1] && (!isToggled ? '' : `(${version[1]})`)}</small>
+        </div>
       </div>
     </div >
   )
