@@ -52,12 +52,14 @@ const Dashboard = () => {
     }).then(() => {
       setIsSaving(false);
     });
-  }, 2000), [params.id, isLoaded, widgets]);
+  }, 2000), [params.id, isLoaded, widgets]);  
 
   const updateCurrentNode = useCallback((widgets, layouts) => {
     setIsSaving(true);
     updateToDB({ widgets, layouts });
   }, [updateToDB]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  }, 1000), [updateCurrentNode]);
 
   const addNewWindow = useCallback(async () => {
     const _id = UUIDV4();
