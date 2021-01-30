@@ -37,7 +37,7 @@ const Component = ({
               </ButtonGroup>}
           </Box>}
       </Flex>
-      <Box className="body" flexGrow={1} bg={Colors.LIGHT_GRAY4}>
+      <Box className="body" height="1px" flexGrow={1} bg={Colors.LIGHT_GRAY4}>
         {children}
       </Box>
     </Flex >

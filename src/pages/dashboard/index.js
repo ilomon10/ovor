@@ -30,9 +30,9 @@ const Dashboard = () => {
   useEffect(() => {
     feathers.dashboards.get(params.id).then(e => {
       setDashboardTitle(e.title);
-      setIsLoaded(true);
       setWidgets([...e.widgets]);
-      if (e.nodes) setLayouts(e.nodes);
+      setLayouts(e.nodes);
+      setIsLoaded(true);
     }).catch(e => {
       console.error(e);
     });
@@ -41,15 +41,24 @@ const Dashboard = () => {
       // feathers.dashboards.removeListener('patched', onDashboardPatched);
     }
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const updateCurrentNode = useCallback((currentNode) => {
-    setIsSaving(true);
-    updateCurrentNodeToDB(currentNode);
-  }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
-  const updateCurrentNodeToDB = useCallback(_debounce((curNode) => {
-    feathers.dashboards.patch(params.id, { nodes: curNode }).then((res) => {
+
+  const updateToDB = useCallback(_debounce(({ widgets: newWidgets, layouts }) => {
+    if (!isLoaded) {
+      setIsSaving(false);
+      return;
+    }
+    feathers.dashboards.patch(params.id, {
+      widgets,
+      nodes: layouts
+    }).then(() => {
       setIsSaving(false);
     });
-  }, 1000), [updateCurrentNode]);
+  }, 2000), [params.id, isLoaded, widgets]);
+
+  const updateCurrentNode = useCallback((widgets, layouts) => {
+    setIsSaving(true);
+    updateToDB({ widgets, layouts });
+  }, [updateToDB]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addNewWindow = useCallback(async () => {
     const _id = UUIDV4();
@@ -65,21 +74,14 @@ const Dashboard = () => {
     ];
     setWidgets(submit);
     setIsSaving(true);
-    await feathers.dashboards.patch(params.id, {
-      widgets: submit
-    });
-    setIsSaving(false);
-  }, [widgets]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [widgets, updateToDB]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const removeWidget = useCallback(async (_id) => {
     const submit = widgets.filter(widget => widget._id !== _id);
     setWidgets(submit);
     setIsSaving(true);
-    await feathers.dashboards.patch(params.id, {
-      widgets: submit
-    });
-    setIsSaving(false);
-  }, [params.id, widgets]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [updateToDB, widgets]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const getWidget = useCallback((id) => {
     return widgets.find(v => v._id === id);
   }, [widgets]);
@@ -164,7 +166,7 @@ const Dashboard = () => {
               style={{ height: "100%" }}
               onLayoutChange={(_, all) => {
                 if (JSON.stringify(all) === JSON.stringify(layouts)) return;
-                if (isLoaded) updateCurrentNode(all);
+                updateCurrentNode(widgets, all);
                 setLayouts(state => ({
                   ...state.layouts,
                   ...all
