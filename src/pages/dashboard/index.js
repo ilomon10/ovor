@@ -59,8 +59,6 @@ const Dashboard = () => {
     updateToDB({ widgets, layouts });
   }, [updateToDB]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  }, 1000), [updateCurrentNode]);
-
   const addNewWindow = useCallback(async () => {
     const _id = UUIDV4();
     const submit = [
