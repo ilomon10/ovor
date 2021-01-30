@@ -10,7 +10,6 @@ import { FeathersContext } from 'components/feathers';
 import { v4 as UUIDV4 } from "uuid";
 import DashboardContext from 'components/hocs/dashboard';
 import { Helmet } from 'react-helmet';
-import ErrorBoundary from 'components/ErrorBoundary';
 import GridLayout from 'pages/embed/dashboard/GridLayout';
 import { Box } from 'components/utility/grid';
 

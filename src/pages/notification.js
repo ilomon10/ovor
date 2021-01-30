@@ -9,7 +9,7 @@ const Notification = () => {
   const [log, setLog] = useState([]);
   useEffect(() => {
     const onLoggerCreated = (log) => {
-      console.log(log);
+      console.info(log);
     }
     feathers.logger.on('created', onLoggerCreated);
     return () => {

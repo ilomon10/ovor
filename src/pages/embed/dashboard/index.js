@@ -31,7 +31,6 @@ class EmbedDashboard extends React.Component {
                   ...state.items.filter(item => item !== v)
                 ]
               }))
-              console.log("remove");
             }}
           />
         ))}

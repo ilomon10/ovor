@@ -23,7 +23,6 @@ const DeleteDashboard = ({ onClose, onDeleted, data }) => {
           onClose();
           onDeleted();
         } catch (e) {
-          console.log(e);
           setErrors({ submit: e.message });
           setSubmitting(false);
         }
