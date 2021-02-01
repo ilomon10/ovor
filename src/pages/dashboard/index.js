@@ -30,7 +30,7 @@ const Dashboard = () => {
     feathers.dashboards.get(params.id).then(e => {
       setDashboardTitle(e.title);
       setWidgets([...e.widgets]);
-      setLayouts(e.nodes);
+      if (e.nodes) setLayouts(e.nodes);
       setIsLoaded(true);
     }).catch(e => {
       console.error(e);
@@ -52,7 +52,7 @@ const Dashboard = () => {
     }).then(() => {
       setIsSaving(false);
     });
-  }, 2000), [params.id, isLoaded, widgets]);  
+  }, 2000), [params.id, isLoaded, widgets]);
 
   const updateCurrentNode = useCallback((widgets, layouts) => {
     setIsSaving(true);
@@ -138,28 +138,6 @@ const Dashboard = () => {
             </Navbar.Group>
           </Navbar>
           <Box flexGrow={1} style={{ position: "relative" }}>
-            {/* <Mosaic
-              renderTile={(id, path) => {
-                const widget = widgets.find(v => v._id === id);
-                if (typeof widget === 'undefined') return;
-                return (
-                  <ErrorBoundary>
-                    <Widget
-                      path={path}
-                      tileId={widget._id}
-                      title={widget.title}
-                      type={widget.type}
-                      series={widget.series}
-                      options={widget.options}
-                      timeRange={watchMode === 'Live' ? null : timeRange} />
-                  </ErrorBoundary>
-                )
-              }}
-              zeroStateView={<MosaicZeroState createNode={createNode} />}
-              onChange={currentNode => {
-                updateCurrentNode(currentNode);
-              }}
-              value={currentNode} /> */}
             <GridLayout
               layouts={layouts}
               style={{ height: "100%" }}
