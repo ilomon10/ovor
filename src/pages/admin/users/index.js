@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Helmet } from "react-helmet";
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, Colors, H2, H3, Navbar, Classes, FormGroup, InputGroup, Dialog } from "@blueprintjs/core";
+import { Button, Colors, H2, H3, Navbar, Classes, FormGroup, InputGroup, Dialog, AnchorButton } from "@blueprintjs/core";
 
 import { Flex, Box } from "components/utility/grid";
 import { container } from 'components/utility/constants';
@@ -79,7 +79,13 @@ const Users = () => {
         <Box mx="auto" px={3}
           maxWidth={[container.sm]}>
           <Navbar.Group align="left">
-            <Button icon="chevron-left" onClick={() => { history.goBack() }} />
+            <Link
+              to="/users"
+              title="Go Back"
+              icon="chevron-left"
+              component={React.forwardRef(({ navigate, ...props }, ref) => (
+                <AnchorButton ref={ref} {...props} />
+              ))} />
             <Navbar.Divider />
             <h4 className={`${Classes.HEADING} flex flex--i-center`}
               style={{ margin: 0 }}>{params.id}</h4>

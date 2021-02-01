@@ -186,32 +186,34 @@ const Device = () => {
           }}>
             <Wrapper style={{ overflowY: 'auto' }}>
               <Box py={3} maxWidth={[container.sm, container.sm, container.md, container.lg]} mx="auto">
-                <Flex px={3} mb={3} flexDirection={columnCount < 2 ? "column" : "row"}>
-                  <Box width={columnCount < 2 ? `100%` : `50%`}>
-                    <Box mb={2}>
-                      <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
-                      <InputCopy fill value={`${device._id}`} />
+                <Box mx={-3}>
+                  <Flex px={3} mb={3} flexDirection={columnCount < 2 ? "column" : "row"}>
+                    <Box px={3} width={columnCount < 2 ? `100%` : `50%`}>
+                      <Box mb={2}>
+                        <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>DEVICE ID</div>
+                        <InputCopy fill value={`${device._id}`} />
+                      </Box>
+                      <Box mb={2}>
+                        <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>KEY</div>
+                        <InputCopy fill value={`${device.key}`} />
+                      </Box>
                     </Box>
-                    <Box mb={2}>
-                      <div className={Classes.TEXT_SMALL} style={{ color: Colors.GRAY3 }}>KEY</div>
-                      <InputCopy fill value={`${device.key}`} />
+                    <Box px={3} width={columnCount < 2 ? `100%` : `50%`}>
+                      <Box mb={2}>
+                        <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>LAST ADDRESS</div>
+                        <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                          style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</div>
+                      </Box>
+                      <Box mb={2}>
+                        <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>LAST LOCATION</div>
+                        <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                          style={{ margin: 0 }}>
+                          <span>...</span>
+                        </div>
+                      </Box>
                     </Box>
-                  </Box>
-                  <Box width={columnCount < 2 ? `100%` : `50%`}>
-                    <Box mb={2}>
-                      <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>ADDRESS</div>
-                      <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                        style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</div>
-                    </Box>
-                    <Box mb={2}>
-                      <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>LOCATION</div>
-                      <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                        style={{ margin: 0 }}>
-                        <span>...</span>
-                      </div>
-                    </Box>
-                  </Box>
-                </Flex>
+                  </Flex>
+                </Box>
                 <Box px={3} mb={3}>
                   <Card style={{ padding: 0 }}>
                     <div className="flex" style={{ padding: "16px 16px 0 16px" }}>
@@ -227,7 +229,7 @@ const Device = () => {
                 <Box px={3}>
                   <Flex alignItems="center" mb={2}>
                     <Box flexGrow={1}>
-                      <h5 style={{ margin: 0 }} className={Classes.HEADING}>Pinned fields</h5>
+                      <h5 style={{ margin: 0 }} className={Classes.HEADING}>Fields</h5>
                     </Box>
                     <Box flexShrink={0}>
                       <Button small minimal text="Configure fields"

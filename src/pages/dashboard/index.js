@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import { Navbar, Classes, Button, EditableText, ControlGroup, HTMLSelect } from '@blueprintjs/core';
+import { useParams, Link } from 'react-router-dom';
+import { Navbar, Classes, Button, EditableText, ControlGroup, HTMLSelect, AnchorButton } from '@blueprintjs/core';
 import { DateInput } from '@blueprintjs/datetime';
 import _debounce from "lodash.debounce";
 
@@ -16,7 +16,6 @@ import { Box } from 'components/utility/grid';
 const Dashboard = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
-  const history = useHistory();
   const [isLoaded, setIsLoaded] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [watchMode, setWatchMode] = useState('Live');
@@ -97,7 +96,14 @@ const Dashboard = () => {
         <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
           <Navbar className="flex flex-shrink-0">
             <Navbar.Group className="flex-grow" style={{ width: 0 }}>
-              <Button icon="chevron-left" title="Go Back" onClick={() => { history.goBack() }} />
+              <Link
+                to="/dashboards"
+                title="Go Back"
+                icon="chevron-left"
+                component={React.forwardRef(({ navigate, ...props }, ref) => (
+                  <AnchorButton ref={ref} {...props} />
+                ))}
+              />
               <Navbar.Divider />
               <Navbar.Heading style={{ width: '100%', paddingRight: 15 }}>
                 <h4 className={`${Classes.HEADING} flex flex--i-center`} style={{ margin: 0 }}>
