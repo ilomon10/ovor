@@ -38,11 +38,10 @@ const ControlButton = ({ ...props }) => {
       let devices = await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
-          $select: ['fields', 'name']
+          $select: ["_id", 'fields', 'name']
         }
       });
       const query = {
-        $aggregate: 'deviceId',
         deviceId: { $in: deviceIds },
         $select: ['data', 'deviceId']
       }
