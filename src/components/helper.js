@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export const dropRight = (arr, n = 1) => (n && arr.slice(0, -n)) || arr;
 
@@ -17,6 +17,14 @@ export const toBase64 = file => new Promise((resolve, reject) => {
   reader.onload = () => resolve(reader.result);
   reader.onerror = error => reject(error);
 });
+
+export const usePrevious = (value) => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
 
 export const getRandomData = (l = 10, type) => {
   let result = [];
@@ -77,6 +85,6 @@ export function useMedia(queries, values, defaultValue) {
 
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
   // Empty array ensures effect is only run on mount and unmount 
-  
+
   return value;
 }

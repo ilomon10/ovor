@@ -12,6 +12,7 @@ import DashboardContext from 'components/hocs/dashboard';
 import { Helmet } from 'react-helmet';
 import GridLayout from 'pages/embed/dashboard/GridLayout';
 import { Box } from 'components/utility/grid';
+import { usePrevious } from 'components/helper';
 
 const Dashboard = () => {
   const feathers = useContext(FeathersContext);
@@ -20,7 +21,10 @@ const Dashboard = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [watchMode, setWatchMode] = useState('Live');
   const [dashboardTitle, setDashboardTitle] = useState("");
+
   const [widgets, setWidgets] = useState([]);
+  const prevWidgets = usePrevious(widgets);
+
   const [timeRange, setTimeRange] = useState([moment().startOf('day').toDate(), moment().endOf('day').toDate()]);
 
   const [layouts, setLayouts] = useState({});
@@ -40,18 +44,23 @@ const Dashboard = () => {
     }
   }, [params.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const updateToDB = useCallback(_debounce(({ widgets: newWidgets, layouts }) => {
+  const updateToDB = useCallback(_debounce(({ widgets, layouts }) => {
     if (!isLoaded) {
       setIsSaving(false);
       return;
     }
-    feathers.dashboards.patch(params.id, {
-      widgets,
-      nodes: layouts
-    }).then(() => {
+
+    const patch = {
+      node: layouts
+    }
+
+    if (widgets !== prevWidgets)
+      patch.widgets = widgets;
+
+    feathers.dashboards.patch(params.id, patch).then(() => {
       setIsSaving(false);
     });
-  }, 2000), [params.id, isLoaded, widgets]);
+  }, 2000), [params.id, isLoaded]);
 
   const updateCurrentNode = useCallback((widgets, layouts) => {
     setIsSaving(true);
@@ -86,13 +95,25 @@ const Dashboard = () => {
   const getDashboardId = useCallback(() => {
     return params.id;
   }, [params.id]);
+  const patchWidget = useCallback((id, props) => {
+    let widget = widgets.find(w => w._id === id);
+    if (typeof props === "function")
+      widget = props(widget);
+    setWidgets(
+      widgets.map((w) => {
+        if (w._id !== widget._id) return w;
+        return widget;
+      })
+    )
+    return widget;
+  }, [widgets]);
   return (
     <>
       <Helmet>
         <title>{dashboardTitle} - Dashboard | Ovor</title>
         <meta name="description" content="Dashboard view" />
       </Helmet>
-      <DashboardContext.Provider value={{ removeWidget, getWidget, getId: getDashboardId }}>
+      <DashboardContext.Provider value={{ removeWidget, getWidget, getId: getDashboardId, patchWidget }}>
         <div className="flex flex--col" style={{ height: '100%', width: '100%' }}>
           <Navbar className="flex flex-shrink-0">
             <Navbar.Group className="flex-grow" style={{ width: 0 }}>

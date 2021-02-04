@@ -88,6 +88,15 @@ const Settings = ({ onClose }) => {
             };
           })
           await feathers.dashboards.patch(dashboard.getId(), { "widgets": widgets });
+          dashboard.patchWidget(widget.id, (value) => {
+            return {
+              ...value,
+              title: values["widgetTitle"],
+              type: values["widgetType"],
+              options,
+              series
+            }
+          });
           onClose();
         } catch (e) {
           console.error(e);
