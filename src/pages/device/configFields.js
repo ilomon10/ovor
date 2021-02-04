@@ -60,7 +60,7 @@ const ConfigFields = ({ data, onClose }) => {
           fields.pop();
           try {
             await feathers.devices.patch(data['_id'], {
-              $set: { fields }
+              fields
             });
             onClose();
           } catch (e) {
