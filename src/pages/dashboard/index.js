@@ -51,7 +51,7 @@ const Dashboard = () => {
     }
 
     const patch = {
-      node: layouts
+      nodes: layouts
     }
 
     if (widgets !== prevWidgets)
