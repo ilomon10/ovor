@@ -4,7 +4,8 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import {
   Colors, Classes, Navbar, EditableText, Card, H4, HTMLSelect, H5,
   Button, ResizeSensor, Dialog, Text, NonIdealState, Checkbox, Divider,
-  AnchorButton
+  AnchorButton,
+  Tag
 } from '@blueprintjs/core';
 import { Helmet } from 'react-helmet';
 
@@ -201,15 +202,15 @@ const Device = () => {
                     <Box px={3} width={columnCount < 2 ? `100%` : `50%`}>
                       <Box mb={2}>
                         <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>LAST ADDRESS</div>
-                        <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
-                          style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</div>
+                        <Box lineHeight="30px" className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                          style={{ margin: 0 }}>{device.hostname || "-.-.-.-"}</Box>
                       </Box>
                       <Box mb={2}>
                         <div className={`${Classes.TEXT_SMALL}`} style={{ color: Colors.GRAY3 }}>LAST LOCATION</div>
-                        <div className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
+                        <Box lineHeight="30px" className={`${Classes.HEADING} ${Classes.MONOSPACE_TEXT}`}
                           style={{ margin: 0 }}>
                           <span>...</span>
-                        </div>
+                        </Box>
                       </Box>
                     </Box>
                   </Flex>
@@ -271,8 +272,13 @@ const Device = () => {
                 </Box>
                 <Box px={3} mb={3}>
                   <Card className="flex flex--col" style={{ height: contentHeight - 36 }}>
-                    <div className="flex-shrink-0 flex">
-                      <H4 className="flex-grow" style={{ margin: 0 }}>Recent Incoming Data</H4>
+                    <Flex flexShrink={0}>
+                      <Flex flexGrow={1} alignItems="center">
+                        <H4 style={{ margin: 0 }}>Recent Incoming Data</H4>
+                        <Box ml={2}>
+                          <Tag round={true} minimal={true}>{data.length}</Tag>
+                        </Box>
+                      </Flex>
                       {selectedDataIds.length > 0 &&
                         (<>
                           <Box>
@@ -290,7 +296,7 @@ const Device = () => {
                         <HTMLSelect options={Object.keys(dateRange)}
                           onChange={changeTimeRange} />
                       </Box>
-                    </div>
+                    </Flex>
                     <div className="flex-grow" style={{ position: "relative" }}>
                       <Wrapper>
                         {data.length > 0 &&
