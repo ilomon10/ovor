@@ -118,6 +118,8 @@ const Device = () => {
     fetch();
 
     const onDataCreated = (e) => {
+      if(e.deviceId !== params.id) return;
+      
       const result = {
         _id: e._id,
         data: e.data,
