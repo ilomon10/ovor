@@ -28,13 +28,14 @@ const Numeric = ({ ...props }) => {
       const devices = await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
-          $select: ['fields', 'name']
+          $select: ['fields', 'name', "_id"]
         }
       })
       let query = {
-        $aggregate: 'deviceId',
         deviceId: { $in: deviceIds },
-        $select: ['data', 'deviceId'],
+        $limit: 2,
+        $sort: { createdAt: -1 },
+        $select: ["_id", 'data', 'deviceId'],
       }
       if (props.timeRange) {
         query = {
@@ -46,6 +47,7 @@ const Numeric = ({ ...props }) => {
         }
       }
       const dataLake = await feathers.dataLake.find({ query });
+
       const Series = props.series.map(s => {
         const device = devices.data.find(d => d._id === s.device);
         const field = device.fields.find(f => f._id === s.field);
