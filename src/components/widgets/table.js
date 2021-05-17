@@ -6,7 +6,7 @@ import BaseTable from './baseTable';
 
 export const tableConfig = {
   minseries: 1,
-  acceptedType: ["number", "boolean", "date"],
+  acceptedType: ["number", "boolean", "date", "string"],
   seriesEnabled: true
 }
 
