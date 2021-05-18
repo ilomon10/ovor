@@ -23,10 +23,12 @@ import TimeGetterComponent from 'components/rete/nodes/timeGetter';
 import SwitchComponent from 'components/rete/nodes/switch';
 import IsEmptyComponent from 'components/rete/nodes/isEmpty';
 import PIDComponent from 'components/rete/nodes/pid';
+import WebhookComponent from 'components/rete/nodes/webhook';
 
 import Canvas from './canvas';
 import Toolbar from './toolbar';
 import Dock from './dock';
+import ReplaceComponent from 'components/rete/nodes/replace';
 
 const removeListener = (obj, names, handler) => {
   if (typeof handler !== "function") return obj;
@@ -68,11 +70,13 @@ const Component = ({ className }) => {
     new LoggerComponent(),
     new OperationComponent(),
     new PIDComponent(),
+    new ReplaceComponent(),
     new RoundingComponent(),
     new SwitchComponent(),
     new TimeGetterComponent(),
     new TrigonometricComponent(),
     new ViewerComponent(),
+    new WebhookComponent(),
   ]);
 
   useEffect(() => {
