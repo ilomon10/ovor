@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import moment from 'moment';
 import _uniqBy from 'lodash.uniqby';
+import _sortBy from 'lodash.sortby';
 import { FeathersContext } from 'components/feathers';
 import BaseTable from './baseTable';
 
@@ -43,6 +44,7 @@ const Table = ({ series, ...props }) => {
       let query = {
         $limit: 100,
         deviceId: { $in: deviceIds },
+        $sort: { createdAt: -1 },
         $select: ['data', 'deviceId', 'createdAt']
       };
 
@@ -57,7 +59,7 @@ const Table = ({ series, ...props }) => {
       }
 
       dataLake = await feathers.dataLake.find({ query });
-      dataLake = dataLake.data;
+      dataLake = _sortBy(dataLake.data, (d)=> d.createdAt);
       setData(() => [
         ...dataLake.map(dl => {
           return Labels.map((v, i) => {

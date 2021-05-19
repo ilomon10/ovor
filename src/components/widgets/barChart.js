@@ -33,7 +33,7 @@ const BarChart = ({ ...props }) => {
       if (props.timeRange) {
         query = {
           ...query,
-          createAt: {
+          createdAt: {
             $gte: moment(props.timeRange[0]).toISOString(),
             $lte: moment(props.timeRange[1]).toISOString()
           }
