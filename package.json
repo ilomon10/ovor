@@ -1,6 +1,6 @@
 {
   "name": "ovor",
-  "version": "0.3.2",
+  "version": "0.5.1",
   "private": true,
   "dependencies": {
     "@blueprintjs/core": "^3.22.3",
@@ -24,6 +24,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.get": "^4.4.2",
     "lodash.merge": "^4.6.2",
+    "lodash.sortby": "^4.7.0",
     "lodash.uniqby": "^4.7.0",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",

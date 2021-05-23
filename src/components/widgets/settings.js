@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { Formik, FieldArray } from 'formik';
 import * as Yup from 'yup';
 import _get from 'lodash.get';
-import { Classes, Callout, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button, Icon } from '@blueprintjs/core';
+import { Classes, Callout, FormGroup, ControlGroup, InputGroup, HTMLSelect, Button, Icon, Collapse } from '@blueprintjs/core';
 
 import DashboardContext from 'components/hocs/dashboard';
 import { FeathersContext } from 'components/feathers';
@@ -45,6 +45,7 @@ const Settings = ({ onClose }) => {
   const feathers = useContext(FeathersContext);
   const widget = useContext(WidgetContext);
   const [devices, setDevices] = useState([]);
+  const [optionsIsOpen, setOptionsIsOpen] = useState(false);
 
   useEffect(() => {
     feathers.devices.find({
@@ -191,63 +192,77 @@ const Settings = ({ onClose }) => {
                     </FormGroup>)
                   } />}
               {typeof GRAPH_OPTIONS[values['widgetType']] !== 'undefined' &&
-                <h6 className={Classes.HEADING}>
-                  <span>Option (experiment) </span>
-                  <Icon icon="lab-test" />
-                </h6>}
-              {typeof GRAPH_OPTIONS[values['widgetType']] !== 'undefined' &&
-                Object.keys(GRAPH_OPTIONS[values['widgetType']]).map(optionName => {
-                  const type = GRAPH_OPTIONS[values['widgetType']][optionName];
-                  let value = _get(values["widgetOptions"], optionName);
-                  if (Array.isArray(type)) {
-                    if (!Array.isArray(value)) {
-                      value = [""];
-                      setFieldValue(`widgetOptions[${optionName}]`, value);
+                <Flex alignItems="center" mb={2}>
+                  <Box>
+                    <Box as="h6" mb={0} className={Classes.HEADING}>
+                      <span>Option (experiment) </span>
+                      <Icon icon="lab-test" />
+                    </Box>
+                  </Box>
+                  <Box>
+                    <Button
+                      small={true}
+                      minimal={true}
+                      icon={optionsIsOpen ? "caret-up" : "caret-down"}
+                      onClick={() => setOptionsIsOpen(isOpen => !isOpen)}
+                      />
+                  </Box>
+                </Flex>}
+              <Collapse isOpen={optionsIsOpen}>
+                {typeof GRAPH_OPTIONS[values['widgetType']] !== 'undefined' &&
+                  Object.keys(GRAPH_OPTIONS[values['widgetType']]).map(optionName => {
+                    const type = GRAPH_OPTIONS[values['widgetType']][optionName];
+                    let value = _get(values["widgetOptions"], optionName);
+                    if (Array.isArray(type)) {
+                      if (!Array.isArray(value)) {
+                        value = [""];
+                        setFieldValue(`widgetOptions[${optionName}]`, value);
+                      }
+                      return (<FieldArray
+                        key={optionName}
+                        name={`widgetOptions[${optionName}]`}
+                        render={arr => (<FormGroup
+                          label={optionName}
+                          labelInfo={`(${value.length})`}>
+                          <Box mb={2}>
+                            <Button small fill text="Add" icon="plus"
+                              onClick={() => arr.push("")} />
+                          </Box>
+                          {value.map((v, i) => {
+                            const name = `widgetOptions[${optionName}][${i}]`;
+                            return (<Flex key={i} mb={i !== value.length - 1 ? 2 : 0}>
+                              <Box flexGrow={1}>
+                                <ControlGroup fill>
+                                  <SettingsOptions key={name}
+                                    noFormGroup={true}
+                                    onChange={(e) => {
+                                      handleChange(e);
+                                      handleBlur(e);
+                                    }}
+                                    value={v}
+                                    name={name}
+                                    label={name} type={type[0]} />
+                                </ControlGroup>
+                              </Box>
+                              <Button minimal icon="trash" intent={i >= value.length ? null : 'danger'}
+                                onClick={() => arr.remove(i)}
+                                disabled={i >= value.length} />
+                            </Flex>)
+                          })}
+                        </FormGroup>
+                        )} />)
+                    } else {
+                      return (<SettingsOptions key={optionName}
+                        onChange={(e) => {
+                          handleChange(e);
+                          handleBlur(e);
+                        }}
+                        value={value}
+                        name={`widgetOptions[${optionName}]`}
+                        label={optionName} type={type} />)
                     }
-                    return (<FieldArray
-                      key={optionName}
-                      name={`widgetOptions[${optionName}]`}
-                      render={arr => (<FormGroup
-                        label={optionName}
-                        labelInfo={`(${value.length})`}>
-                        <Box mb={2}>
-                          <Button small fill text="Add" icon="plus"
-                            onClick={() => arr.push("")} />
-                        </Box>
-                        {value.map((v, i) => {
-                          const name = `widgetOptions[${optionName}][${i}]`;
-                          return (<Flex key={i} mb={i !== value.length - 1 ? 2 : 0}>
-                            <Box flexGrow={1}>
-                              <ControlGroup fill>
-                                <SettingsOptions key={name}
-                                  noFormGroup={true}
-                                  onChange={(e) => {
-                                    handleChange(e);
-                                    handleBlur(e);
-                                  }}
-                                  value={v}
-                                  name={name}
-                                  label={name} type={type[0]} />
-                              </ControlGroup>
-                            </Box>
-                            <Button minimal icon="trash" intent={i >= value.length ? null : 'danger'}
-                              onClick={() => arr.remove(i)}
-                              disabled={i >= value.length} />
-                          </Flex>)
-                        })}
-                      </FormGroup>
-                      )} />)
-                  } else {
-                    return (<SettingsOptions key={optionName}
-                      onChange={(e) => {
-                        handleChange(e);
-                        handleBlur(e);
-                      }}
-                      value={value}
-                      name={`widgetOptions[${optionName}]`}
-                      label={optionName} type={type} />)
-                  }
-                })}
+                  })}
+              </Collapse>
             </div>
             <div className={Classes.DIALOG_FOOTER}>
               <div className={Classes.DIALOG_FOOTER_ACTIONS}>

@@ -12,9 +12,11 @@ class GridLayout extends React.Component {
   }
   onResize(entries) {
     let height = 1;
-    entries.forEach(e => height = e.contentRect.height);
+    entries.forEach(e => {
+      height = e.contentRect.height;
+    });
     const rowHeight = Math.abs(height / this.props.rows) - this.props.margin[1] * 1.3;
-    this.setState(() => ({ rowHeight }))
+    this.setState(() => ({ rowHeight }));
   }
   onBreakpointChange(bp) {
     this.setState(() => ({
@@ -29,7 +31,8 @@ class GridLayout extends React.Component {
           bg={Colors.GRAY4}
           style={{
             position: "absolute",
-            overflow: "auto",
+            overflowY: "scroll",
+            overflowX: "hidden",
             top: 0,
             right: 0,
             bottom: 0,

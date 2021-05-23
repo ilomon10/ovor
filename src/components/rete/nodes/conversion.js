@@ -12,7 +12,7 @@ class ConversionComponent extends Rete.Component {
     this.data.component = Node; // optional
     this.config = {
       ...config,
-      color: Colors.DARK_GRAY1
+      color: Colors.ORANGE1
     }
   }
 

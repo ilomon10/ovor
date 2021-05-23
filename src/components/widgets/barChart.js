@@ -25,14 +25,15 @@ const BarChart = ({ ...props }) => {
         }
       })).data;
       let query = {
-        $limit: 100,
+        $limit: 1000,
         deviceId: { $in: deviceIds },
+        $sort: { createdAt: -1 },
         $select: ["_id", 'data', 'deviceId', 'createdAt']
       }
       if (props.timeRange) {
         query = {
           ...query,
-          createAt: {
+          createdAt: {
             $gte: moment(props.timeRange[0]).toISOString(),
             $lte: moment(props.timeRange[1]).toISOString()
           }

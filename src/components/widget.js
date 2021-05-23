@@ -15,6 +15,7 @@ import { GRAPH_TYPE } from './widgets/constants';
 import DashboardContext from './hocs/dashboard';
 import IFrame from './widgets/iframe';
 import Window from "../pages/embed/dashboard/Window";
+import Values from './widgets/values';
 
 const Widget = ({
   type, tileId, title = "Empty Window", path,
@@ -52,6 +53,9 @@ const Widget = ({
       break;
     case GRAPH_TYPE["Numeric"]:
       Ret = (<Numeric {...propsForChart} />);
+      break;
+    case GRAPH_TYPE["Values"]:
+      Ret = (<Values {...propsForChart} />);
       break;
     case GRAPH_TYPE["Bar Chart"]:
       Ret = (<BarChart {...propsForChart} />);

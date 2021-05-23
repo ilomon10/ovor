@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import moment from 'moment';
 import _uniqBy from 'lodash.uniqby';
+import _sortBy from 'lodash.sortby';
 import { NonIdealState } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import BaseTimeseries from './baseTimeseries';
@@ -62,11 +63,9 @@ const Timeseries = ({ onError, ...props }) => {
       }
 
       let query = {
-        $limit: 2000,
+        $limit: 1000,
         deviceId: { $in: deviceIds },
-        $sort: {
-          createdAt: 1
-        },
+        $sort: { createdAt: -1 },
         $select: ["_id", 'data', 'deviceId', 'createdAt']
       }
       if (props.timeRange) {
@@ -82,7 +81,7 @@ const Timeseries = ({ onError, ...props }) => {
       let dataLake = [];
       try {
         let { data } = await feathers.dataLake.find({ query });
-        dataLake = data;
+        dataLake = _sortBy(data, (d) => d.createdAt);
       } catch (e) {
         onErr(e);
         return;

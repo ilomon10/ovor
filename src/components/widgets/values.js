@@ -1,36 +1,34 @@
 import React, { useContext, useEffect, useState } from 'react';
 import _uniqBy from 'lodash.uniqby';
 import { FeathersContext } from 'components/feathers';
-import BaseNumeric from './baseNumeric';
 import moment from 'moment';
+import BaseValues from './baseValues';
 
-export const numericOptions = {
+export const valuesOptions = {
   fontSize: { type: "number" },
-  precision: { type: "number" },
-  unit: { type: "string" },
   scaleToFit: { type: "boolean" },
-  image: { type: "file" }
 }
 
-export const numericConfig = {
+export const valuesConfig = {
   minSeries: 1,
-  acceptedType: ["number"],
+  acceptedType: ["number", "boolean", "string"],
   seriesEnabled: true
 }
 
-const Numeric = ({ ...props }) => {
+const Values = ({ ...props }) => {
   const feathers = useContext(FeathersContext);
   const [labels, setLabels] = useState([]);
   const [series, setSeries] = useState([]);
+
   useEffect(() => {
     const fetch = async () => {
-      const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
+      const deviceIds = [..._uniqBy(props.series, "device").map(v => v.device)];
       const devices = await feathers.devices.find({
         query: {
           _id: { $in: deviceIds },
           $select: ['fields', 'name', "_id"]
         }
-      })
+      });
       let query = {
         deviceId: { $in: deviceIds },
         $limit: 2,
@@ -88,14 +86,14 @@ const Numeric = ({ ...props }) => {
     }
   }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
-    <BaseNumeric
+    <BaseValues
       options={{
         ...props.options,
         labels
       }}
-      series={series.map(s => Number(s.data))}
+      series={series.map(s => s.data)}
     />
   )
 }
 
-export default Numeric;
+export default Values;
