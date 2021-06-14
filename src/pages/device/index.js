@@ -118,8 +118,8 @@ const Device = () => {
     fetch();
 
     const onDataCreated = (e) => {
-      if(e.deviceId !== params.id) return;
-      
+      if (e.deviceId !== params.id) return;
+
       const result = {
         _id: e._id,
         data: e.data,
@@ -221,10 +221,13 @@ const Device = () => {
                   <Card style={{ padding: 0 }}>
                     <div className="flex" style={{ padding: "16px 16px 0 16px" }}>
                       <H4 className="flex-grow" style={{ margin: 0 }}>Recent Latency</H4>
-                      <div>
+                      {/* <div>
                         <span>last </span>
-                        <HTMLSelect options={Object.keys(dateRange)} />
-                      </div>
+                        <HTMLSelect
+                          options={Object.keys(dateRange)}
+                          value={ }
+                        />
+                      </div> */}
                     </div>
                     <IncomingChart style={{ height: 127 }} data={data} />
                   </Card>
@@ -255,6 +258,7 @@ const Device = () => {
                           </H5>
                           <div style={{ height: 64 }}>
                             <Timeseries
+                              timeRange={timeRange}
                               options={{
                                 ...dummy.mini.options,
                                 stroke: {
@@ -295,8 +299,10 @@ const Device = () => {
                         </>)}
                       <Box pl={2}>
                         <span>last </span>
-                        <HTMLSelect options={Object.keys(dateRange)}
-                          onChange={changeTimeRange} />
+                        <HTMLSelect
+                          options={Object.keys(dateRange)}
+                          onChange={changeTimeRange}
+                        />
                       </Box>
                     </Flex>
                     <div className="flex-grow" style={{ position: "relative" }}>
