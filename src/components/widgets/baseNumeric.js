@@ -16,7 +16,12 @@ const Comp = ({ options, className, ...props }) => {
     data: props.series[i]
   }));
   const series = data.map((v, i) => {
-    let num = Number(v.data).toFixed(options.precision || 2);
+    let num = 0;
+    try {
+      num = Number(v.data).toFixed(options.precision || 2);
+    } catch(err) {
+      console.error(err);
+    }
     let text = "No Data";
     if (!isNaN(num)) {
       text = abbreviateNumber(num);
