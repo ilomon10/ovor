@@ -16,6 +16,7 @@ import 'react-mosaic-component/react-mosaic-component.css';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import './flexbox.css';
+import './index.css';
 
 import ovorLogo from './components/icons/ovor';
 import Router from './Router';

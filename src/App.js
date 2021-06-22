@@ -13,9 +13,12 @@ import Dashboards from 'pages/dashboard/browse';
 import Dashboard from 'pages/dashboard/';
 import Devices from 'pages/device/browse';
 import Device from 'pages/device/';
+import DataSources from 'pages/dataSources/browse';
+import DataSource from 'pages/dataSources/';
+import Testa from 'pages/testa/browse';
+import SarafTesta from 'pages/testa/';
 import Settings from 'pages/settings';
 import Tokens from 'pages/tokens';
-import ReteEngine from 'pages/reteEngine';
 import Users from 'pages/admin/users/browse';
 import User from 'pages/admin/users/';
 
@@ -44,16 +47,24 @@ const nav = [{
   permission: 'public'
 }, {
   hide: true,
-  title: 'Device',
-  path: '/devices/:id',
-  component: Device,
+  title: 'Ember',
+  path: '/ember/:id',
+  component: DataSource,
   exact: true,
   permission: 'public'
 }, {
   hide: true,
-  title: 'Rete Engine',
-  path: '/rete/:id',
-  component: ReteEngine,
+  title: 'Saraf Testa',
+  path: '/testa/saraf/:id',
+  component: SarafTesta,
+  exact: true,
+  permission: 'public'
+}, {
+  hide: true,
+  title: 'Device',
+  path: '/devices/:id',
+  component: Device,
+  exact: true,
   permission: 'public'
 }, {
   title: 'Dashboards',
@@ -63,10 +74,24 @@ const nav = [{
   exact: true,
   permission: 'public'
 }, {
+  title: 'Ember',
+  icon: 'full-stacked-chart',
+  path: '/ember',
+  component: DataSources,
+  exact: true,
+  permission: 'public'
+}, {
   title: 'Devices',
   icon: 'helper-management',
   path: '/devices',
   component: Devices,
+  exact: true,
+  permission: 'public'
+}, {
+  title: 'Testa',
+  icon: 'predictive-analysis',
+  path: '/testa',
+  component: Testa,
   exact: true,
   permission: 'public'
 }, {

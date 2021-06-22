@@ -36,26 +36,26 @@ const Timeseries = ({ onError, ...props }) => {
 
   // Component Did Mount
   useEffect(() => {
-    const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
+    const dataSourceIds = [..._uniqBy(props.series, 'dataSource').map(v => v.dataSource)];
     const fetch = async () => {
-      let devices = [];
+      let dataSources = [];
       try {
-        let { data } = await feathers.devices.find({
+        let { data } = await feathers.dataSources.find({
           query: {
-            _id: { $in: deviceIds },
+            _id: { $in: dataSourceIds },
             $select: ["_id", 'fields', 'name']
           }
         });
-        devices = data;
+        dataSources = data;
       } catch (e) {
         onErr(e);
         return;
       }
 
-      if (devices) {
+      if (dataSources) {
         props.series.forEach((v, i) => {
-          if (!devices.find((d) => d._id === v.device)) {
-            let error = new Error(`Device "${v.device}" at series ${i + 1} not found`);
+          if (!dataSources.find((d) => d._id === v.dataSource)) {
+            let error = new Error(`Data Source "${v.dataSource}" at series ${i + 1} not found`);
             onErr(error);
             return;
           }
@@ -64,9 +64,9 @@ const Timeseries = ({ onError, ...props }) => {
 
       let query = {
         $limit: 1000,
-        deviceId: { $in: deviceIds },
+        dataSourceId: { $in: dataSourceIds },
         $sort: { createdAt: -1 },
-        $select: ["_id", 'data', 'deviceId', 'createdAt']
+        $select: ["_id", 'data', 'dataSourceId', 'createdAt']
       }
       if (props.timeRange) {
         query = {
@@ -87,10 +87,10 @@ const Timeseries = ({ onError, ...props }) => {
         return;
       }
       let Series = props.series.map(s => {
-        const device = devices.find(d => d._id === s.device);
-        const field = device.fields.find(f => f._id === s.field);
+        const dataSource = dataSources.find(d => d._id === s.dataSource);
+        const field = dataSource.fields.find(f => f._id === s.field);
         const data = dataLake
-          .filter(dl => dl.deviceId === device._id)
+          .filter(dl => dl.dataSourceId === dataSource._id)
           .map(dl => {
             let val = dl.data[field.name];
             if (val === true) val = 1;
@@ -101,7 +101,7 @@ const Timeseries = ({ onError, ...props }) => {
 
         return {
           ...s, fieldName: field.name, data,
-          name: `${field.name} (${device.name})`
+          name: `${field.name} (${dataSource.name})`
         }
       })
       setSeries([...Series]);
@@ -114,7 +114,7 @@ const Timeseries = ({ onError, ...props }) => {
     const onDataCreated = (e) => {
       setSeries(d => [
         ...series.map(s => {
-          if (s.device !== e.deviceId) return s;
+          if (s.dataSource !== e.dataSourceId) return s;
 
           let val = e.data[s.fieldName];
           if (val === true) val = 1;

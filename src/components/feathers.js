@@ -39,6 +39,8 @@ class Feathers {
   get retes() { return this.client.service('rete'); }
   get users() { return this.client.service('users'); }
   get logger() { return this.client.service('logger'); }
+  get dataSources() { return this.client.service('data-sources'); }
+  get testa() { return this.client.service('testa'); }
 
 }
 

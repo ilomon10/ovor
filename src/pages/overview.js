@@ -21,6 +21,8 @@ const stateOption = {
 const Overview = () => {
   const [dashboards, setDashboards] = useState(stateOption);
   const [devices, setDevices] = useState(stateOption);
+  const [sarafTesta, setSarafTesta] = useState(stateOption);
+  const [dataSources, setDataSources] = useState(stateOption);
   const [data, setData] = useState(stateOption);
   const [tokens, setTokens] = useState(stateOption);
   const feathers = useContext(FeathersContext);
@@ -44,12 +46,31 @@ const Overview = () => {
           $sort: { updatedAt: -1 }
         }
       });
+      let dataSources = await feathers.dataSources.find({
+        query: {
+          $limit: 3,
+          $select: ["_id", "name"],
+          $sort: { updatedAt: -1 }
+        }
+      })
+      let sarafTesta = await feathers.testa.find({
+        query: {
+          $limit: 3,
+          $select: ["_id", "name"],
+          $sort: { updatedAt: -1 }
+        }
+      })
       let data = await feathers.dataLake.find({
         query: {
           $limit: 3,
-          $select: ["_id", 'deviceId', 'updatedAt'],
+          $select: ["_id", 'dataSourceId', 'updatedAt'],
           createdAt: 'all',
-          $sort: { createdAt: -1 }
+          $sort: { createdAt: -1 },
+          $include: [{
+            model: "data-sources",
+            as: "dataSource",
+            attributes: ["_id", "name"]
+          }]
         }
       });
       let tokens = await feathers.tokens.find({
@@ -59,6 +80,24 @@ const Overview = () => {
           $sort: { updatedAt: -1 }
         }
       });
+      setSarafTesta({
+        total: sarafTesta.total,
+        data: sarafTesta.data.map(v => {
+          return {
+            title: v.name,
+            path: v._id
+          }
+        })
+      })
+      setDataSources({
+        total: dataSources.total,
+        data: dataSources.data.map(v => {
+          return {
+            title: v.name,
+            path: v._id
+          }
+        })
+      })
       setDashboards({
         total: dashboards.total,
         data: dashboards.data.map(v => {
@@ -79,22 +118,12 @@ const Overview = () => {
       })
       setData({
         total: data.total,
-        data: await Promise.all(data.data.map(async v => {
-          let d = {
-            name: "Unkown"
-          };
-          try {
-            d = await feathers.devices.get(v.deviceId, {
-              query: { $select: ['name'] }
-            });
-          } catch (e) {
-            console.error(e);
-          }
+        data: data.data.map(({ updatedAt, dataSource }) => {
           return {
-            title: `${moment(v.updatedAt).calendar()} on ${d.name}`,
-            path: d._id
+            title: `${moment(updatedAt).calendar()} on ${dataSource.name}`,
+            path: dataSource._id
           }
-        }))
+        })
       })
       setTokens({
         total: tokens.total,
@@ -125,79 +154,58 @@ const Overview = () => {
               flexWrap={"wrap"}
               flexDirection={columnCount < 2 ? "column" : "row"}
             >
-              <Box
-                px={columnCount >= 2 ? 2 : 0}
-                py={columnCount < 2 ? 2 : 0}
-                width={columnCount < 2 ? "auto" : `${100 / 3}%`}
-              >
-                <Card elevation={Elevation.TWO} style={{ height: "100%" }}>
-                  <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
-                    <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
-                      <h1 className={Classes.HEADING}>{dashboards.total}</h1>
-                      <h5 className={Classes.HEADING}>Dashboards</h5>
-                    </Box>
-                    <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
-                      {[...dashboards.data].splice(0, 3).map((v) => (
-                        <h6 key={v.path} className={`${Classes.HEADING}`}>
-                          <Link to={`/dashboards/${v.path}`}
-                            className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
-                            style={{ display: 'block' }}>
-                            <small>{v.title}</small>
-                          </Link>
-                        </h6>
-                      ))}
-                    </Box>
-                  </Flex>
-                </Card>
-              </Box>
-              <Box
-                px={columnCount >= 2 ? 2 : 0}
-                py={columnCount < 2 ? 2 : 0}
-                width={columnCount < 2 ? "auto" : `${100 / 3}%`}
-              >
-                <Card elevation={Elevation.ONE} style={{ height: "100%" }}>
-                  <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
-                    <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
-                      <h1 className={Classes.HEADING}>{devices.total}</h1>
-                      <h5 className={Classes.HEADING}>Devices</h5>
-                    </Box>
-                    <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
-                      {devices.data.map((v) => (
-                        <h6 key={v.path} className={`${Classes.HEADING}`}>
-                          <Link to={`/devices/${v.path}`}
-                            className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
-                            style={{ display: 'block' }}>
-                            <small>{v.title}</small>
-                          </Link>
-                        </h6>
-                      ))}
-                    </Box>
-                  </Flex>
-                </Card>
-              </Box>
-              <Box
-                px={columnCount >= 2 ? 2 : 0}
-                py={columnCount < 2 ? 2 : 0}
-                width={columnCount < 2 ? "auto" : `${100 / 3}%`}
-              >
-                <Card elevation={Elevation.ZERO} style={{ height: "100%" }}>
-                  <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
-                    <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
-                      <h1 className={Classes.HEADING}>{abbreviateNumber(data.total)}</h1>
-                      <h5 className={Classes.HEADING}>Data</h5>
-                    </Box>
-                    <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
-                      {data.data.map((v, i) => (
-                        <h6 key={i} className={`${Classes.HEADING} ${Classes.TEXT_OVERFLOW_ELLIPSIS}`}>
-                          <Link to={`/devices/${v.path}`}>
-                            <small>{v.title}</small>
-                          </Link>
-                        </h6>
-                      ))}
-                    </Box>
-                  </Flex>
-                </Card>
-              </Box>
+              {[{
+                title: "Dashboard",
+                list: [...dashboards.data].splice(0, 3),
+                total: dashboards.total,
+                linkTo: "/dashboard/{path}"
+              }, {
+                title: "Devices",
+                list: [...devices.data].splice(0, 3),
+                total: devices.total,
+                linkTo: "/devices/{path}"
+              }, {
+                title: "Ember",
+                list: [...dataSources.data].splice(0, 3),
+                total: dataSources.total,
+                linkTo: "/ember/{path}"
+              }, {
+                title: "Saraf",
+                list: [...sarafTesta.data].splice(0, 3),
+                total: sarafTesta.total,
+                linkTo: "/testa/saraf/{path}"
+              }, {
+                title: "Data",
+                list: [...data.data].splice(0, 3),
+                total: data.total,
+                linkTo: "/data-sources/{path}"
+              }].map(({ title, total, list, linkTo }) => (
+                <Box
+                  key={title}
+                  px={columnCount >= 2 ? 2 : 0}
+                  py={columnCount < 2 ? 2 : 2}
+                  width={columnCount < 2 ? "auto" : `${100 / 3}%`}
+                >
+                  <Card elevation={Elevation.ONE} style={{ height: "100%" }}>
+                    <Flex flexDirection={columnCount < 3 ? columnCount < 2 ? "row" : "column" : "row"}>
+                      <Box flexShrink={0} width={columnCount < 3 ? columnCount < 2 ? `${100 / 3}%` : "100%" : `${100 / 2}%`}>
+                        <h1 className={Classes.HEADING}>{abbreviateNumber(total)}</h1>
+                        <h5 className={Classes.HEADING}>{title}</h5>
+                      </Box>
+                      <Box flexGrow={1} width={columnCount < 3 ? columnCount < 2 ? `1px` : "100%" : `${100 / 2}%`}>
+                        {list.map((v, idx) => (
+                          <h6 key={`${idx}-${v.path}`} className={`${Classes.HEADING}`}>
+                            <Link to={linkTo.replace("{path}", v.path)}
+                              className={`${Classes.TEXT_OVERFLOW_ELLIPSIS}`}
+                              style={{ display: 'block' }}>
+                              <small>{v.title}</small>
+                            </Link>
+                          </h6>
+                        ))}
+                      </Box>
+                    </Flex>
+                  </Card>
+                </Box>))}
             </Flex>
             <Flex mx={-2} mb={2} pt={2} flexDirection={columnCount < 2 ? "column" : "row"}>
               <Box mx={2} px={2} width={columnCount < 2 ? "auto" : `${100 / 2}%`}>
