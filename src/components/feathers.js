@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import feathers from '@feathersjs/feathers';
 import feathersAuth from '@feathersjs/authentication-client';
 import feathersSocket from '@feathersjs/socketio-client';
@@ -52,4 +52,9 @@ export const FeathersProvider = ({ children }) => {
       {children}
     </FeathersContext.Provider>
   )
+}
+
+export const useFeathers = () => {
+  const feathers = useContext(FeathersContext);
+  return feathers;
 }

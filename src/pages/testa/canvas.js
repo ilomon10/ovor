@@ -1,11 +1,20 @@
 import "fungsi-maju/build/index.css";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useFungsiMaju } from "components/hocs/fungsiMaju";
-import { ResizeSensor } from "@blueprintjs/core";
+import { ContextMenu, Menu, MenuItem, MenuDivider, Dialog } from "@blueprintjs/core";
+import ConfigNode from "./configNode";
+import { useFeathers } from "components/feathers";
+import { useParams } from "react-router-dom";
 
 const Canvas = ({ onCreated = () => { } }) => {
-  let { createEditor, components, editor } = useFungsiMaju();
+  const params = useParams();
+  const feathers = useFeathers();
+  let { createEditor, editor } = useFungsiMaju();
+  let [selectedNode, setSelectedNode] = useState(null);
+  let [isDialogOpen, setIsDialogOpen] = useState(null);
   const ref = useRef(null);
+
+
 
   useEffect(() => {
     if (!ref.current) return;
@@ -15,16 +24,80 @@ const Canvas = ({ onCreated = () => { } }) => {
       onCreated(ed);
       return;
     }
+    async function fetch() {
+      const { id } = params;
+      let saraf = null;
+      try {
+        saraf = await feathers.testa.get(id, {
+          query: {
+            $select: ["_id", "nodes", "version", "name"]
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+      if (!saraf) return;
+      console.log(saraf);
+      let { version, nodes } = saraf;
+      editor.fromJSON({ version, nodes })
+    }
+    fetch();
+
+  }, [ref, editor]);
+
+  useEffect(() => {
+    if (!editor) return;
     editor.on("contextmenu", ({ e, node }) => {
       e.preventDefault();
       e.stopPropagation();
       console.log("klik kanan", node);
+
+      let menuList = [];
+      let items = [];
+
+      if (node) {
+        items = [{
+          text: "Duplicate",
+          icon: "duplicate",
+          onClick: () => console.log("duplicate")
+        }, {
+          text: "Configure",
+          icon: "cog",
+          onClick: async () => {
+            console.log("config")
+            await setSelectedNode(node);
+            await setIsDialogOpen("node");
+          }
+        }, {
+          text: "Delete",
+          icon: "trash",
+          intent: "danger",
+          onClick: () => console.log("delete")
+        }]
+      } else {
+        items = [{
+          text: "Add",
+          icon: "plus",
+          onClick: () => console.log("add")
+        }]
+      }
+
+      items.forEach((item) => menuList.push(item));
+
+      const menu = (
+        <Menu>
+          <MenuDivider title="Action" />
+          {menuList.map((n, i) => (<MenuItem key={i} icon="blank" {...n} />))}
+        </Menu>
+      )
+
+      ContextMenu.show(menu, { left: e.clientX, top: e.clientY }, () => { });
+
     })
-    console.log(editor);
-  }, [ref, editor, components]);
+  }, [editor])
 
   return (
-    <ResizeSensor>
+    <>
       <div
         ref={ref}
         style={{
@@ -35,7 +108,27 @@ const Canvas = ({ onCreated = () => { } }) => {
           bottom: 0
         }}
       />
-    </ResizeSensor>
+      <Dialog
+        isOpen={isDialogOpen === "node"}
+        title="Node Configuration"
+        onClose={() => {
+          setIsDialogOpen(null);
+          setSelectedNode(null);
+        }}
+      >
+        <ConfigNode
+          node={selectedNode}
+          onClose={() => {
+            setIsDialogOpen(null);
+            setSelectedNode(null);
+          }}
+          onSubmit={() => {
+            setIsDialogOpen(null);
+            setSelectedNode(null);
+          }}
+        />
+      </Dialog>
+    </>
   )
 }
 

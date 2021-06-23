@@ -5,30 +5,20 @@ import { Button, Classes, FormGroup, InputGroup } from "@blueprintjs/core";
 import Select from "components/Select";
 import { Formik } from "formik";
 import { useFungsiMaju } from "components/hocs/fungsiMaju";
+import { render } from "./device";
 
-export function render() {
-  // console.log(node);
-  const el = this.element.content;
-  const node = this.node;
-  let ret = node.metadata["label"];
-  return new Promise((res) => {
-    ReactDOM.render((
-      <div>{ret}</div>
-    ), el, res);
-  })
-}
-
-export class DeviceIn extends Component {
+export class Join extends Component {
   config = {
-    color: "black"
+    color: "orange"
   }
 
   constructor() {
-    super("Device In");
+    super("Join");
   }
 
   async builder(nodeView) {
     const { node } = nodeView;
+    nodeView.addSocket("input", 0, "Value");
     nodeView.addSocket("output", 0, "Value");
 
     node.metadata.label = node.metadata.label || this.name;
@@ -51,39 +41,11 @@ export class DeviceIn extends Component {
   ConfigView = ConfigView.bind(this)
 }
 
-export class DeviceOut extends Component {
-  config = {
-    color: "black"
-  }
-
-  constructor() {
-    super("Device Out");
-  }
-
-  async builder(nodeView) {
-    const { node } = nodeView;
-    nodeView.addSocket("input", 0, "Value");
-
-    node.metadata.label = node.metadata.label || this.name;
-    node.metadata.deviceId = null;
-
-    nodeView.render = render.bind(nodeView);
-    nodeView.render();
-  }
-
-  worker(node, input) {
-    return null;
-  }
-
-  ConfigView = ConfigView.bind(this)
-}
-
 export function ConfigView({ node: nodeView, onClose, onSubmit }) {
   const feathers = useFungsiMaju();
   const defaultValue = useMemo(() => {
     return {
-      label: nodeView.node.metadata["label"],
-      deviceId: nodeView.node.metadata["deviceId"]
+      label: nodeView.node.metadata["label"]
     }
   }, [nodeView]);
   useEffect(() => {
@@ -111,22 +73,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
                 name="label"
                 value={values["label"]}
                 onChange={handleChange}
-              />
-            </FormGroup>
-            <FormGroup
-              label="Device"
-            >
-              <Select
-                name="deviceId"
-                placeholder="Select device"
-                value={values["deviceId"]}
-                options={[
-                  { label: "Coba 1", value: 1 },
-                  { label: "Coba 2", value: 2 }
-                ]}
-                onChange={(option) => {
-                  setFieldValue("deviceId", option.value);
-                }}
               />
             </FormGroup>
           </div>

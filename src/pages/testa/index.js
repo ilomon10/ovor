@@ -5,15 +5,18 @@ import { FungsiMajuProvider } from "components/hocs/fungsiMaju";
 import {
   DeviceInComponent,
   DeviceOutComponent,
+  JoinComponent,
 } from "components/fungsiMajuNodes";
 import Canvas from "./canvas";
 import Toolbar from "./toolbar";
 import Dock from "./dock";
+import { Colors } from "@blueprintjs/core";
 
 const Saraf = ({ className }) => {
-  const [components, setComponents] = useState([
+  const [components] = useState([
     new DeviceInComponent(),
     new DeviceOutComponent(),
+    new JoinComponent(),
   ]);
   const onEditorCreated = (editor) => {
     components.forEach(c => {
@@ -39,7 +42,7 @@ const Saraf = ({ className }) => {
         >
           <Toolbar />
           <Flex flexGrow={1}>
-            <Box flexShrink={0} width={200}>
+            <Box flexShrink={0} width={200} style={{ borderRight: `1px solid ${Colors.GRAY5}` }}>
               <Dock />
             </Box>
             <Box flexGrow={1} style={{ position: "relative" }}>

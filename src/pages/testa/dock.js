@@ -8,8 +8,9 @@ const Dock = () => {
   const { editor, components } = useFungsiMaju();
   const componentList = useMemo(() => {
     console.log(components);
-    return components.map(({ name }) => ({
-      name
+    return components.map(({ name, config }) => ({
+      name,
+      color: config.color
     }));
   }, [components]);
 
@@ -26,7 +27,6 @@ const Dock = () => {
         const name = e.dataTransfer.getData("componentName");
         const component = editor.components[name];
         if (!component) throw new Error(`Component ${name} not found`);
-        console.log(name, component);
         editor.view.area.pointermove(e);
         const node = new Node(Editor.generateId(), name);
         const point = editor.view.area.mouse;
@@ -48,7 +48,7 @@ const Dock = () => {
   }, []);
   return (
     <Menu>
-      {componentList.map(({ name }, idx) => (
+      {componentList.map(({ name, color }, idx) => (
         <Draggable key={idx}>
           {({
             isDrag,
@@ -65,7 +65,7 @@ const Dock = () => {
               onMouseDown={onMouseDownHandler}
               onMouseUp={onMouseUpHandler}
               labelElement={<Icon icon="drag-handle-vertical" />}
-              icon={<Icon icon="symbol-square" color={"red"} />}
+              icon={<Icon icon="symbol-square" color={color} />}
             />
           )}
         </Draggable>
