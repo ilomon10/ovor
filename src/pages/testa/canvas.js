@@ -1,5 +1,5 @@
 import "fungsi-maju/build/index.css";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import { useFungsiMaju } from "components/hocs/fungsiMaju";
 import { ContextMenu, Menu, MenuItem, MenuDivider, Dialog } from "@blueprintjs/core";
 import ConfigNode from "./configNode";
@@ -14,7 +14,12 @@ const Canvas = ({ onCreated = () => { } }) => {
   let [isDialogOpen, setIsDialogOpen] = useState(null);
   const ref = useRef(null);
 
-
+  const onConfigSaved = useCallback(() => {
+    if(editor === null) return;
+    const json = editor.toJSON(true);
+    console.log(json.nodes);
+    editor.fromJSON(json);
+  }, [editor]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -50,29 +55,30 @@ const Canvas = ({ onCreated = () => { } }) => {
     editor.on("contextmenu", ({ e, node }) => {
       e.preventDefault();
       e.stopPropagation();
-      console.log("klik kanan", node);
 
       let menuList = [];
       let items = [];
 
       if (node) {
         items = [{
-          text: "Duplicate",
-          icon: "duplicate",
-          onClick: () => console.log("duplicate")
-        }, {
           text: "Configure",
           icon: "cog",
           onClick: async () => {
-            console.log("config")
             await setSelectedNode(node);
             await setIsDialogOpen("node");
           }
         }, {
+          text: "Duplicate",
+          icon: "duplicate",
+          onClick: () => console.log("duplicate")
+        }, {
           text: "Delete",
           icon: "trash",
           intent: "danger",
-          onClick: () => console.log("delete")
+          onClick: () => {
+            console.log("delete");
+            editor.removeNode(node);
+          }
         }]
       } else {
         items = [{
@@ -123,6 +129,7 @@ const Canvas = ({ onCreated = () => { } }) => {
             setSelectedNode(null);
           }}
           onSubmit={() => {
+            onConfigSaved();
             setIsDialogOpen(null);
             setSelectedNode(null);
           }}

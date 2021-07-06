@@ -8,3 +8,9 @@
   padding-left: 4px !important;
   /* white-space: nowrap; */
 }
+.node-editor-container .connection .main-path {
+  stroke-width: 1px;
+}
+.node-editor-container .connection .main-path:hover {
+  stroke-width: 4px;
+}

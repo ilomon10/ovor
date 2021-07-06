@@ -5,7 +5,11 @@ import { FungsiMajuProvider } from "components/hocs/fungsiMaju";
 import {
   DeviceInComponent,
   DeviceOutComponent,
+  DataSourceInComponent,
+  DataSourceOutComponent,
   JoinComponent,
+  SwitchComponent,
+  ChangeComponent
 } from "components/fungsiMajuNodes";
 import Canvas from "./canvas";
 import Toolbar from "./toolbar";
@@ -16,7 +20,11 @@ const Saraf = ({ className }) => {
   const [components] = useState([
     new DeviceInComponent(),
     new DeviceOutComponent(),
+    new DataSourceInComponent(),
+    new DataSourceOutComponent(),
     new JoinComponent(),
+    new SwitchComponent(),
+    new ChangeComponent(),
   ]);
   const onEditorCreated = (editor) => {
     components.forEach(c => {

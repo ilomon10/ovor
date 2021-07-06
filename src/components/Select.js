@@ -5,6 +5,8 @@ import { Select as BPSelect } from "@blueprintjs/select";
 const Select = ({
   id,
   intent,
+  fill,
+  filterable = true,
 
   allowCreateItem,
   options,
@@ -59,7 +61,7 @@ const Select = ({
 
   return (
     <BPSelect
-      filterable={true}
+      filterable={filterable}
       items={items}
       activeItem={activeItem}
       itemRenderer={optionRenderer || itemRenderer}
@@ -78,6 +80,7 @@ const Select = ({
       }}
 
       popoverProps={{
+        fill: fill,
         onOpening: onOpening,
         minimal: true
       }}
@@ -87,6 +90,8 @@ const Select = ({
     >
       <Button
         id={id}
+        fill={fill}
+        alignText="left"
         intent={intent}
         loading={loading}
         text={activeItem ? activeItem.label : "Select"}

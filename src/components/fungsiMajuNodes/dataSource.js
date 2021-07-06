@@ -10,13 +10,13 @@ import { Box } from "components/utility/grid";
 import { useFeathers } from "components/feathers";
 
 const Element = ({ node }) => {
-  const label = node.metadata["label"];
-  const device = node.metadata["device"];
-  const deviceName = !device ? "unset" : device["name"];
+  const label = node.getData("label");
+  const dataSource = node.getData("dataSource");
+  const dataSourceName = !dataSource ? "unset" : dataSource["name"];
   return (
     <div>
       <div>{label}</div>
-      <div>{deviceName}</div>
+      <div>{dataSourceName}</div>
     </div>
   )
 }
@@ -30,22 +30,22 @@ export function render() {
   ), el, res))
 }
 
-export class DeviceIn extends Component {
+export class DataSourceIn extends Component {
   config = {
     color: "black"
   }
 
   constructor() {
-    super("Device In");
+    super("Ember In");
   }
 
   async builder(nodeView) {
     const { node } = nodeView;
     nodeView.addSocket("output", 0, "Value");
 
-    node.metadata.label = node.metadata.label || this.name;
-    node.metadata.deviceId = node.metadata["deviceId"] || null;
-    node.metadata.device = node.metadata["device"] || null;
+    node.setData("label", node.getData("label") || this.name);
+    node.setData("dataSourceId", node.getData("dataSourceId") || null);
+    node.setData("dataSource", node.getData("dataSource") || null);
 
     const oldRender = nodeView.render;
 
@@ -64,22 +64,22 @@ export class DeviceIn extends Component {
   ConfigView = ConfigView.bind(this)
 }
 
-export class DeviceOut extends Component {
+export class DataSourceOut extends Component {
   config = {
     color: "black"
   }
 
   constructor() {
-    super("Device Out");
+    super("Ember Out");
   }
 
   async builder(nodeView) {
     const { node } = nodeView;
     nodeView.addSocket("input", 0, "Value");
 
-    node.metadata.label = node.metadata.label || this.name;
-    node.metadata.deviceId = node.metadata["deviceId"] || null;
-    node.metadata.device = node.metadata["device"] || null;
+    node.setData("label", node.getData("label") || this.name);
+    node.setData("dataSourceId", node.getData("dataSourceId") || null);
+    node.setData("dataSource", node.getData("dataSource") || null);
 
     const oldRender = nodeView.render;
 
@@ -100,11 +100,12 @@ export class DeviceOut extends Component {
 
 export function ConfigView({ node: nodeView, onClose, onSubmit }) {
   const feathers = useFeathers();
-  const [deviceList, setDeviceList] = useState([]);
+  const [dataSourceList, setDataSourceList] = useState([]);
   const defaultValue = useMemo(() => {
+    const { node } = nodeView;
     return {
-      label: nodeView.node.metadata["label"],
-      deviceId: nodeView.node.metadata["deviceId"]
+      label: node.getData("label"),
+      dataSourceId: node.getData("dataSourceId")
     }
   }, [nodeView]);
   const {
@@ -114,33 +115,38 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
   } = useFormik({
     initialValues: defaultValue,
     onSubmit: (values) => {
-      let device = deviceList.find(d => d["_id"] === values["deviceId"]);
-      nodeView.node.metadata['label'] = values["label"];
-      nodeView.node.metadata['deviceId'] = values["deviceId"];
-      nodeView.node.metadata['device'] = device;
+      const { node } = nodeView;
+      let dataSource = dataSourceList.find(d => d["_id"] === values["dataSourceId"]);
+
+      node.setData('label', values["label"]);
+      node.setData('dataSourceId', values["dataSourceId"]);
+      node.setData('dataSource', dataSource);
+
+      console.log(dataSource, dataSourceList);
+
       onSubmit();
     }
   });
 
   const fields = useMemo(() => {
     let ret = [];
-    let device = deviceList.find(dev => values["deviceId"] === dev["_id"]);
-    if (device) {
-      ret = device.fields;
+    let dataSource = dataSourceList.find(val => values["dataSourceId"] === val["_id"]);
+    if (dataSource) {
+      ret = dataSource.fields;
     }
     return ret;
-  }, [values["deviceId"], deviceList]);
+  }, [values["dataSourceId"], dataSourceList]);
 
   useEffect(() => {
     console.log(feathers);
     const fetch = async () => {
       try {
-        const devices = await feathers.devices.find({
+        const dataSources = await feathers.dataSources.find({
           query: {
             $select: ["_id", "name", "fields"]
           }
         });
-        setDeviceList(devices.data);
+        setDataSourceList(dataSources.data);
       } catch (err) {
         console.error(err);
       }
@@ -161,28 +167,28 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
           />
         </FormGroup>
         <FormGroup
-          label="Device"
+          label="Ember"
         >
           <Select
             fill={true}
-            name="deviceId"
-            placeholder="Select device"
-            value={values["deviceId"]}
-            options={deviceList.map(({ name, _id }) => ({
+            name="dataSourceId"
+            placeholder="Select ember"
+            value={values["dataSourceId"]}
+            options={dataSourceList.map(({ name, _id }) => ({
               label: name,
               value: _id
             }))}
             onChange={(option) => {
-              setFieldValue("deviceId", option.value);
+              setFieldValue("dataSourceId", option.value);
             }}
           />
         </FormGroup>
-        {values["deviceId"] &&
+        {values["dataSourceId"] &&
           <>
             <FormGroup
-              label="Device ID"
+              label="Data Source ID"
             >
-              <InputCopy fill={true} value={values["deviceId"]} />
+              <InputCopy fill={true} value={values["dataSourceId"]} />
             </FormGroup>
             <FormGroup
               label="Available Fields"
