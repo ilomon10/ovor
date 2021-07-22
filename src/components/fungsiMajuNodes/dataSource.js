@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import { Component } from "fungsi-maju";
 import { Button, Classes, Colors, FormGroup, InputGroup, Tag } from "@blueprintjs/core";
 import Select from "components/Select";
 import { useFormik } from "formik";
-import { useFungsiMaju } from "components/hocs/fungsiMaju";
 import InputCopy from 'components/inputCopy';
 import { Box } from "components/utility/grid";
 import { useFeathers } from "components/feathers";

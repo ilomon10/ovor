@@ -1,7 +1,7 @@
 import React from "react";
 import { ResizeSensor, Text } from "@blueprintjs/core";
 import { Table as RVTable, Column } from "react-virtualized";
-import _get from "lodash.get";
+import _get from "lodash/get";
 
 import { Box, Flex } from "components/utility/grid";
 
@@ -49,7 +49,9 @@ class Table extends React.PureComponent {
             rowRenderer={this._RowRenderer}
             rowHeight={36}
             rowCount={this.props.data.length}
-            rowGetter={({ index }) => this.props.data[index]}
+            rowGetter={({ index }) => {
+              return this.props.data[index];
+            }}
           >
             {this.props.columns.length > 0 && this.props.columns.map(({ dataKey, label, cellRenderer, width }) => {
               if (typeof cellRenderer !== "function") {

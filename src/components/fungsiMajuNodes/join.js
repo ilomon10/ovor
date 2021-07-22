@@ -1,10 +1,7 @@
-import React, { useEffect, useMemo } from "react";
-import ReactDOM from "react-dom";
+import React, { useMemo } from "react";
 import { Component } from "fungsi-maju";
 import { Button, Classes, FormGroup, InputGroup } from "@blueprintjs/core";
-import Select from "components/Select";
 import { Formik } from "formik";
-import { useFungsiMaju } from "components/hocs/fungsiMaju";
 import { Box } from "components/utility/grid";
 
 export class Join extends Component {
@@ -36,7 +33,6 @@ export class Join extends Component {
 }
 
 export function ConfigView({ node: nodeView, onClose, onSubmit }) {
-  const feathers = useFungsiMaju();
   const defaultValue = useMemo(() => {
     const { node } = nodeView;
     return {
@@ -46,11 +42,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
       count: node.getData("count"),
     }
   }, [nodeView]);
-  useEffect(() => {
-    console.log(feathers);
-    // console.log(this.name);
-    // console.log(nodeView, this);
-  }, []);
   return (
     <Formik
       initialValues={defaultValue}

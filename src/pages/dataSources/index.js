@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import Helmet from "react-helmet";
 import moment from "moment";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import {
   AnchorButton, Navbar, Classes, Colors,
   ResizeSensor, Button, Dialog,
   Card, H5, H4, Text, Checkbox, HTMLSelect,
-  Tag
+  Tag, Divider, NonIdealState
 } from "@blueprintjs/core";
 import { useMedia } from "components/helper";
 import { Flex, Box } from "components/utility/grid";
@@ -15,6 +15,7 @@ import { FeathersContext } from "components/feathers";
 import Wrapper from 'components/wrapper';
 import Timeseries from 'components/widgets/timeseries';
 
+import DeleteData from "./deleteData";
 import ConfigFields from "./configFields";
 import Table from "./Table";
 
@@ -46,6 +47,7 @@ const dateRange = {
 const DataSource = () => {
   const feathers = useContext(FeathersContext);
   const params = useParams();
+  const history = useHistory();
   const columnCount = useMedia(
     container.map((v) => `(min-width: ${v})`).reverse(),
     [5, 4, 3, 2], 1
@@ -203,6 +205,18 @@ const DataSource = () => {
                           <Tag round={true} minimal={true}>{data.length}</Tag>
                         </Box>
                       </Flex>
+                      {selectedDataIds.length > 0 &&
+                        (<>
+                          <Box>
+                            <Button
+                              minimal
+                              intent="danger"
+                              text={(<Text>Delete {selectedDataIds.length} selected data</Text>)}
+                              onClick={() => setIsDialogOpen("delete_data")}
+                            />
+                          </Box>
+                          <Divider />
+                        </>)}
                       <Box pl={2}>
                         <span>last </span>
                         <HTMLSelect
@@ -245,9 +259,9 @@ const DataSource = () => {
                                   </Box>
                                 )
                               },
-                              ...dataSource.fields.map(({ name, type }) => {
+                              ...dataSource.fields.map(({ _id, name, type }) => {
                                 let result = {
-                                  dataKey: `data.${name}`,
+                                  dataKey: `data.${_id}`,
                                   label: name,
                                   width: 100
                                 }
@@ -266,11 +280,27 @@ const DataSource = () => {
                             style={{ position: "absolute", top: 0, right: 0, bottom: 0, left: 0 }}
                           />
                         }
+                        {data.length === 0 &&
+                          <NonIdealState
+                            icon="array"
+                            title="Empty"
+                            description={<>
+                              <p>Currently there is no data to show</p>
+                            </>} />}
                       </Wrapper>
                     </div>
                   </Card>
                 </Box>
               </Box>
+              <Dialog usePortal={true}
+                title="Delete data"
+                isOpen={isDialogOpen === "delete_data"}
+                onClose={() => { setIsDialogOpen(null); }}>
+                <DeleteData
+                  data={selectedDataIds}
+                  onClose={() => { setIsDialogOpen(null); }}
+                  onDeleted={() => { history.go(0) }} />
+              </Dialog>
             </Wrapper>
           </ResizeSensor>
         </div>

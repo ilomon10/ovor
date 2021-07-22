@@ -1,9 +1,7 @@
-import React, { useEffect, useMemo } from "react";
-import ReactDOM from "react-dom";
+import React, { useMemo } from "react";
 import { Component } from "fungsi-maju";
-import { Button, Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect, Text } from "@blueprintjs/core";
+import { Button, Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect } from "@blueprintjs/core";
 import { Formik, FieldArray } from "formik";
-import { useFungsiMaju } from "components/hocs/fungsiMaju";
 import { Box } from "components/utility/grid";
 
 const RuleType = {
@@ -47,7 +45,6 @@ export class Switch extends Component {
 }
 
 export function ConfigView({ node: nodeView, onClose, onSubmit }) {
-  const feathers = useFungsiMaju();
   const defaultValue = useMemo(() => {
     const { node } = nodeView;
     let rules = node.getData("rules");

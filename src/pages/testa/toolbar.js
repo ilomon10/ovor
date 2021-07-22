@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { Navbar, Button } from "@blueprintjs/core";
 import { useFungsiMaju } from "components/hocs/fungsiMaju";
 import { useFeathers } from "components/feathers";
-import _isEqual from "lodash.isequal";
 import _debounce from "lodash.debounce";
 
 const Toolbar = () => {
@@ -17,7 +16,7 @@ const Toolbar = () => {
     const json = editor.toJSON(true);
     setIsLoading(true);
     console.log("deploy", json);
-    const { id } = params;
+    const id = params.id;
     await feathers.testa.patch(id, {
       version: json.version,
       nodes: json.nodes
@@ -60,11 +59,10 @@ const Toolbar = () => {
       </Navbar.Group>
       <Navbar.Group align="right">
         <Button
-          disabled={editor === null}
           icon="upload"
           text="deploy"
           loading={isLoading}
-          disabled={isReady !== true}
+          disabled={editor === null || isReady !== true}
           onClick={() => { onDeploy() }}
         />
       </Navbar.Group>

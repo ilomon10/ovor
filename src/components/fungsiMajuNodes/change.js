@@ -1,17 +1,8 @@
-import React, { useEffect, useMemo } from "react";
-import ReactDOM from "react-dom";
+import React, { useMemo } from "react";
 import { Component } from "fungsi-maju";
-import { Button, Classes, FormGroup, InputGroup, ControlGroup, HTMLSelect, Text } from "@blueprintjs/core";
+import { Button, Classes, FormGroup, InputGroup, HTMLSelect } from "@blueprintjs/core";
 import { Formik, FieldArray } from "formik";
-import { useFungsiMaju } from "components/hocs/fungsiMaju";
 import { Box } from "components/utility/grid";
-
-const RuleType = {
-  "Set": "set",
-  "Change": "change",
-  "Delete": "delete",
-  "Move": "move",
-}
 
 export class Change extends Component {
   config = {
@@ -41,7 +32,6 @@ export class Change extends Component {
 }
 
 export function ConfigView({ node: nodeView, onClose, onSubmit }) {
-  const feathers = useFungsiMaju();
   const defaultValue = useMemo(() => {
     const { node } = nodeView;
     let rules = node.getData("rules");
@@ -63,9 +53,9 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
         const node = nodeView.node;
         let rules = values["rules"];
 
-        if (defaultValue["rules"].length !== rules.length) {
-          node.outputs = rules.map(() => []);
-        }
+        // if (defaultValue["rules"].length !== rules.length) {
+        //   node.outputs = rules.map(() => []);
+        // }
 
         rules.splice(rules.length - 1, 1);
         node.setData('label', values["label"]);

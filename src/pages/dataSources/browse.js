@@ -77,12 +77,12 @@ const DataSources = () => {
                       <AspectRatio ratio="4:3">
                         <div className="flex flex--col" style={{ height: "100%" }}>
                           <div className={`flex flex--col`}>
-                            <Tooltip content={<div className={Classes.TEXT_SMALL}>{v._id}</div>} position={Position.BOTTOM_RIGHT}>
+                            <Tooltip content={<div className={Classes.TEXT_SMALL}>{v._id}</div>} position={Position.BOTTOM_LEFT}>
                               <Tag minimal className={Classes.MONOSPACE_TEXT}>{v._id.slice(0, 3)}..{v._id.slice(v._id.length - 3, v._id.length)}</Tag>
                             </Tooltip>
                             <Box as="h4" pt={2} className={Classes.HEADING}>{v.name}</Box>
                           </div>
-                          <Flex flexGrow={1} flexWrap="wrap" backgroundColor={Colors.LIGHT_GRAY5} >
+                          <Flex flexGrow={1} flexWrap="wrap" alignContent="baseline" backgroundColor={Colors.LIGHT_GRAY5} >
                             {v.fields.map(({ name, _id }) => (
                               <Box key={_id} my={1} mx={1}>
                                 <Tag key={_id} minimal={true}>{name}</Tag>

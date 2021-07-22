@@ -39,7 +39,12 @@ const Testa = () => {
   }, [list, feathers])
   useEffect(() => {
     feathers.testa.find({
-      query: { $select: ["_id", 'name', 'updatedAt'] }
+      query: {
+        $select: ["_id", 'name', 'updatedAt'],
+        $sort: {
+          updatedAt: -1
+        }
+      }
     }).then((e) => {
       setList([...e.data])
     })

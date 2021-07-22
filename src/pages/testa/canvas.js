@@ -48,7 +48,7 @@ const Canvas = ({ onCreated = () => { } }) => {
     }
     fetch();
 
-  }, [ref, editor]);
+  }, [ref, editor]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!editor) return;
