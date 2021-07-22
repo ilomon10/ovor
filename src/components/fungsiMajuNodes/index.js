@@ -5,3 +5,4 @@ export { DataSourceOut as DataSourceOutComponent } from "./dataSource";
 export { Join as JoinComponent } from "./join";
 export { Switch as SwitchComponent } from "./switch";
 export { Change as ChangeComponent } from "./change";
+export { FunctionComponent } from "./function";

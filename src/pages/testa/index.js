@@ -9,7 +9,8 @@ import {
   DataSourceOutComponent,
   JoinComponent,
   SwitchComponent,
-  ChangeComponent
+  ChangeComponent,
+  FunctionComponent
 } from "components/fungsiMajuNodes";
 import Canvas from "./canvas";
 import Toolbar from "./toolbar";
@@ -25,6 +26,7 @@ const Saraf = ({ className }) => {
     new JoinComponent(),
     new SwitchComponent(),
     new ChangeComponent(),
+    new FunctionComponent(),
   ]);
   const onEditorCreated = (editor) => {
     components.forEach(c => {
