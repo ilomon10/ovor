@@ -21,7 +21,7 @@ const Testa = () => {
     const onSarafCreated = (e) => {
       setList([{
         _id: e._id,
-        title: e.title,
+        name: e.name,
         updatedAt: e.updatedAt,
       }, ...list]);
     }
