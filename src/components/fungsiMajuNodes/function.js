@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
 import { Component } from "fungsi-maju";
-import { Button, Classes, FormGroup, InputGroup, TextArea } from "@blueprintjs/core";
+import { Button, Classes, FormGroup, InputGroup } from "@blueprintjs/core";
 import { Formik } from "formik";
 import { Box } from "components/utility/grid";
+import CodeEditor from "@monaco-editor/react";
 
 export class FunctionComponent extends Component {
   config = {
@@ -38,6 +39,27 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
       code: node.getData("code"),
     }
   }, [nodeView]);
+  const handleEditorWillMount = (monaco) => {
+    monaco.languages.typescript.javascriptDefaults.addExtraLib(`
+      interface Message {
+        from: string;
+        meta: {
+          [key: string]: any
+        };
+        payload: {
+          [key: string]: any
+        };
+      }
+      const msg: Message;
+    `, "lib/Message.d.ts");
+  };
+  const handleEditorMount = (editor) => {
+    console.log(editor);
+    // editor.updateOptions({
+    //   contenteditable: true,
+    //   contextmenu: false
+    // });
+  };
   return (
     <Formik
       initialValues={defaultValue}
@@ -62,14 +84,14 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
                 onChange={handleChange}
               />
             </FormGroup>
-            <FormGroup
+            {/* <FormGroup
               label="Code"
               labelInfo="(Javascript)"
             >
               <TextArea
                 fill={true}
                 growVertically={true}
-                style={{ 
+                style={{
                   resize: "vertical",
                   minHeight: 250
                 }}
@@ -77,6 +99,22 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
                 value={values["code"]}
                 onChange={handleChange}
                 placeholder="Write your code here"
+              />
+            </FormGroup> */}
+            <FormGroup
+              label="Code"
+              labelInfo="(Javascript)"
+            >
+              <CodeEditor
+                height={"250px"}
+                defaultLanguage="javascript"
+                defaultValue="return msg;"
+                value={values["code"]}
+                onChange={(value) => {
+                  setFieldValue("code", value)
+                }}
+                beforeMount={handleEditorWillMount}
+                onMount={handleEditorMount}
               />
             </FormGroup>
           </div>
