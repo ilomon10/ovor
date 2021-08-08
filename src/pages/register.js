@@ -8,6 +8,7 @@ import { Helmet } from 'react-helmet';
 
 const Schema = Yup.object().shape({
   fullName: Yup.string().required('Fill with your name'),
+  username: Yup.string().required('Fill with your username'),
   email: Yup.string().required('Fill with your email'),
   password: Yup.string().required('Password is required'),
   passwordConfirm: Yup.string().oneOf([Yup.ref('password'), null], 'Password must match').required('Fill with previous password')

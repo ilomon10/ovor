@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import { FeathersContext } from 'components/feathers';
 import * as Yup from 'yup';
 import { Helmet } from 'react-helmet';
+import { validateEmail } from 'components/helper';
 
 const Schema = Yup.object().shape({
   email: Yup.string().required('Fill with your email'),
@@ -39,12 +40,18 @@ const Login = () => {
               }}
               validationSchema={Schema}
               onSubmit={async (v, { setSubmitting, setErrors }) => {
+                const payload = {
+                  password: v.password
+                }
+                if (validateEmail(v.email)) {
+                  payload["strategy"] = "local";
+                  payload["email"] = v.email;
+                } else {
+                  payload["strategy"] = "local-username";
+                  payload["username"] = v.email;
+                }
                 try {
-                  await feathers.doAuthenticate({
-                    strategy: 'local',
-                    email: v.email,
-                    password: v.password
-                  });
+                  await feathers.doAuthenticate(payload);
                   history.push('/');
                 } catch (e) {
                   setErrors({ submit: e.message });
@@ -58,7 +65,7 @@ const Login = () => {
                       {errors.submit}
                     </Callout>}
                   <FormGroup
-                    label="Email"
+                    label="Email or username"
                     labelFor="f-email"
                     intent={errors.email ? "danger" : "none"}
                     helperText={errors.email}>
