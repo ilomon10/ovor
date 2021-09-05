@@ -63,7 +63,7 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
         onSubmit();
       }}
     >
-      {({ values, errors, handleSubmit, handleChange, setFieldValue }) =>
+      {({ values, handleSubmit, handleChange, setFieldValue }) =>
         <form onSubmit={handleSubmit}>
           <div className={Classes.DIALOG_BODY}>
             <FormGroup
@@ -81,7 +81,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
               <FieldArray
                 name="rules"
                 render={arr => values["rules"].map((v, i) => {
-                  const error = false;
                   const isLast = !(i < values["rules"].length - 1);
                   return (
                     <FormGroup

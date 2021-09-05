@@ -108,7 +108,7 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
     }
   }, [nodeView]);
   const {
-    values, errors,
+    values,
     handleSubmit, handleChange,
     setFieldValue, isSubmitting
   } = useFormik({
@@ -134,6 +134,7 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
       ret = dataSource.fields;
     }
     return ret;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values["dataSourceId"], dataSourceList]);
 
   useEffect(() => {
@@ -152,6 +153,7 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
     }
 
     fetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <form onSubmit={handleSubmit}>

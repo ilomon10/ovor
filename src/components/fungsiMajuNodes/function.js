@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { Component } from "fungsi-maju";
 import { Button, Classes, FormGroup, InputGroup } from "@blueprintjs/core";
 import { Formik } from "formik";
-import { Box } from "components/utility/grid";
 import CodeEditor from "@monaco-editor/react";
 
 export class FunctionComponent extends Component {
