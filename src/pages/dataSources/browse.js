@@ -40,7 +40,6 @@ const DataSources = () => {
         $select: ["_id", 'name', "fields"]
       }
     }).then((e) => {
-      console.log(e);
       setList(e.data);
     }).catch(e => {
       console.error(e);

@@ -22,7 +22,6 @@ export class Switch extends Component {
 
   async builder(nodeView) {
     const { node } = nodeView;
-    console.log(nodeView.sockets);
 
     node.setData("label", node.getData("label") || this.name);
     node.setData("rules", node.getData("rules") || []);

@@ -102,7 +102,6 @@ const DataSource = () => {
             }
           }
         })
-        console.log(data, dataSource);
         setData([...data.data]);
       } catch (err) {
         console.error(err);

@@ -53,7 +53,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
     `, "lib/Message.d.ts");
   };
   const handleEditorMount = (editor) => {
-    console.log(editor);
     // editor.updateOptions({
     //   contenteditable: true,
     //   contextmenu: false

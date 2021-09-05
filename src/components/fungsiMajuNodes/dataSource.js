@@ -21,7 +21,6 @@ const Element = ({ node }) => {
 }
 
 export function render() {
-  // console.log(node);
   const el = this.element.content;
   const node = this.node;
   return new Promise((res) => ReactDOM.render((
@@ -121,8 +120,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
       node.setData('dataSourceId', values["dataSourceId"]);
       node.setData('dataSource', dataSource);
 
-      console.log(dataSource, dataSourceList);
-
       onSubmit();
     }
   });
@@ -138,7 +135,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
   }, [values["dataSourceId"], dataSourceList]);
 
   useEffect(() => {
-    console.log(feathers);
     const fetch = async () => {
       try {
         const dataSources = await feathers.dataSources.find({

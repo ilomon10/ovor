@@ -13,7 +13,6 @@ class ErrorBoundary extends React.Component {
       message: info
     });
     if (err) console.error(err);
-    console.log(info);
   }
   render() {
     if (this.state.hasError) {

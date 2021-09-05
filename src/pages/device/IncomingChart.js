@@ -26,7 +26,6 @@ export default ({ style }) => {
 
   // Component Did Mount
   useEffect(() => {
-    console.log("hub init");
     const onHubCreated = (e) => {
       let d = { ...e };
       setData(data => ([

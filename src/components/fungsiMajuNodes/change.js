@@ -15,7 +15,6 @@ export class Change extends Component {
 
   async builder(nodeView) {
     const { node } = nodeView;
-    console.log(nodeView.sockets);
 
     node.setData("label", node.getData("label") || this.name);
     node.setData("rules", node.getData("rules") || []);
@@ -104,7 +103,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
                             ]}
                             onChange={(e) => {
                               const type = e.target.value;
-                              console.log(type);
                               setFieldValue(`rules[${i}]`, {
                                 type: type,
                                 property: v["property"]

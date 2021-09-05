@@ -21,7 +21,6 @@ const Element = ({ node }) => {
 }
 
 export function render() {
-  // console.log(node);
   const el = this.element.content;
   const node = this.node;
   return new Promise((res) => ReactDOM.render((
@@ -132,7 +131,6 @@ export function ConfigView({ node: nodeView, onClose, onSubmit }) {
   }, [values["deviceId"], deviceList]);
 
   useEffect(() => {
-    console.log(feathers);
     const fetch = async () => {
       try {
         const devices = await feathers.devices.find({
