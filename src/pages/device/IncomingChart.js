@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import moment from "moment";
 import { ResizeSensor } from "@blueprintjs/core";
 import { LineChart, Line, XAxis, Tooltip } from "recharts";
+import { FeathersContext } from 'components/feathers';
 
-export default ({ style, data }) => {
+export default ({ style }) => {
+  const feathers = useContext(FeathersContext);
+  const [data, setData] = useState([]);
   const [contentSize, setContentSize] = useState({
     height: 100,
     width: 100
@@ -20,6 +23,26 @@ export default ({ style, data }) => {
     if (Math.abs(val.seconds()) > 0) return `${val.seconds()}s`;
     if (Math.abs(val.milliseconds()) > 0) return `${val.milliseconds()}ms`;
   }, []);
+
+  // Component Did Mount
+  useEffect(() => {
+    console.log("hub init");
+    const onHubCreated = (e) => {
+      let d = { ...e };
+      setData(data => ([
+        ...data,
+        {
+          timestamp: d["_timestamp"],
+          size: d["_memSize"]
+        }
+      ]))
+    }
+    feathers.hub.on('created', onHubCreated);
+    return () => {
+      feathers.hub.removeListener('created', onHubCreated);
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     const intervalFunc = setInterval(() => {
       setLatestTime(moment().valueOf());
@@ -28,12 +51,12 @@ export default ({ style, data }) => {
       clearInterval(intervalFunc);
     }
   }, []);
+
   useEffect(() => {
     if (data.length === 0) return;
     let dat = data.map((d) => {
-      let collectedAt = moment(d.collectedAt).valueOf()
-      let x = collectedAt;
-      let y = moment(d.createdAt).valueOf() - collectedAt;
+      let x = moment(d["timestamp"]).valueOf();
+      let y = d["size"];
       return { x, y };
     })
     setSeries(dat.reverse());
@@ -49,6 +72,7 @@ export default ({ style, data }) => {
             isAnimationActive={false}
             type="monotone"
             dataKey="y"
+            name="Tx"
             stroke="#8884d8"
           />
           <XAxis
@@ -58,13 +82,14 @@ export default ({ style, data }) => {
             tickFormatter={(tickItem) => {
               let result = parseDuration(tickItem - latestTime);
               if (result) return result;
-              return `now`;
+              const now = moment().format("HH:mm");
+              return `now (${now})`;
             }}
           />
           <Tooltip labelFormatter={(label) => {
             return moment(label).calendar();
           }} formatter={(value) => {
-            return parseDuration(value);
+            return `${value} byte`;
           }} />
         </LineChart>
       </div>

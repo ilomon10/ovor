@@ -41,6 +41,7 @@ class Feathers {
   get logger() { return this.client.service('logger'); }
   get dataSources() { return this.client.service('data-sources'); }
   get testa() { return this.client.service('testa'); }
+  get hub() { return this.client.service('hub'); }
 
 }
 
