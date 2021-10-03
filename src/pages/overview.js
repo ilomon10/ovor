@@ -163,7 +163,7 @@ const Overview = () => {
                 title: "Devices",
                 list: [...devices.data].splice(0, 3),
                 total: devices.total,
-                linkTo: "/devices/{path}"
+                linkTo: "/device/{path}"
               }, {
                 title: "Ember",
                 list: [...dataSources.data].splice(0, 3),
@@ -178,7 +178,7 @@ const Overview = () => {
                 title: "Data",
                 list: [...data.data].splice(0, 3),
                 total: data.total,
-                linkTo: "/data-sources/{path}"
+                linkTo: "/data-source/{path}"
               }].map(({ title, total, list, linkTo }) => (
                 <Box
                   key={title}

@@ -72,7 +72,7 @@ const Devices = () => {
                 (<Box key={v._id}
                   width={[1, 1 / 2, 1 / 3, 1 / 4]}
                   px={2} mb={3}>
-                  <Card interactive onClick={() => history.push(`/devices/${v._id}`)}>
+                  <Card interactive onClick={() => history.push(`/device/${v._id}`)}>
                     <AspectRatio ratio="4:3">
                       <div className="flex flex--col" style={{ height: "100%" }}>
                         <div className="flex-shrink-0 flex">

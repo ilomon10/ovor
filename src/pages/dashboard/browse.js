@@ -83,7 +83,7 @@ const Dashboards = () => {
                           <Box flexGrow="1" flexShrink="1" width="1%" py={2}>
                             <h6 className={`${Classes.HEADING}`}>
                               <Text ellipsize>
-                                <Link to={`/dashboards/${v._id}`}
+                                <Link to={`/dashboard/${v._id}`}
                                   style={{ lineHeight: 1.5 }}>
                                   {v.title}
                                 </Link>
