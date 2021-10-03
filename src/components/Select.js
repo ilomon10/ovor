@@ -11,12 +11,16 @@ const Select = ({
   allowCreateItem,
   options,
   optionRenderer,
+
   onCreateNew,
   onChange,
   onClick,
   onOpening,
+
   value,
   loading,
+  style,
+  placeholder
 }) => {
   const items = useMemo(() => {
     return options;
@@ -49,14 +53,16 @@ const Select = ({
         disabled={modifiers.disabled}
         onClick={handleClick}
         text={item.label}
+        label={item.info}
       />
     )
   }
 
   const itemPredicate = (query, item) => {
     const normalizeLabel = item.label.toLowerCase();
+    const normalizeInfo = item.info && item.info.toLowerCase();
     const normalizeQuery = query.toLowerCase();
-    return `${item.value} ${normalizeLabel}`.indexOf(normalizeQuery) >= 0;
+    return `${item.value} ${normalizeInfo || ""} ${normalizeLabel}`.indexOf(normalizeQuery) >= 0;
   }
 
   return (
@@ -91,10 +97,11 @@ const Select = ({
       <Button
         id={id}
         fill={fill}
+        style={style}
         alignText="left"
         intent={intent}
         loading={loading}
-        text={activeItem ? activeItem.label : "Select"}
+        text={activeItem ? activeItem.label : (placeholder || "Select")}
         rightIcon="caret-down"
         onClick={onClick}
       />
