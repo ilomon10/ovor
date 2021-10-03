@@ -41,7 +41,7 @@ const nav = [{
 }, {
   hide: true,
   title: 'Dashboard',
-  path: '/dashboards/:id',
+  path: '/dashboard/:id',
   component: Dashboard,
   exact: true,
   permission: 'public'
@@ -62,7 +62,7 @@ const nav = [{
 }, {
   hide: true,
   title: 'Device',
-  path: '/devices/:id',
+  path: '/device/:id',
   component: Device,
   exact: true,
   permission: 'public'
