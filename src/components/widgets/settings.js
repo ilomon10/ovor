@@ -39,7 +39,7 @@ const Settings = ({ onClose }) => {
   const feathers = useContext(FeathersContext);
   const widget = useContext(WidgetContext);
   const [devices, setDevices] = useState([]);
-  const [ember, setEmber] = useState([]);
+  const [dataSources, setDataSources] = useState([]);
   const [optionsIsOpen, setOptionsIsOpen] = useState(false);
   const [loading, setLoading] = useState({
     source: false
@@ -54,7 +54,7 @@ const Settings = ({ onClose }) => {
           value: device["_id"]
         }
       }),
-      ...ember.map((e) => {
+      ...dataSources.map((e) => {
         return {
           label: e["name"],
           info: "ember",
@@ -62,7 +62,7 @@ const Settings = ({ onClose }) => {
         }
       })
     ];
-  }, [devices, ember]);
+  }, [devices, dataSources]);
 
   const fetchSource = useCallback(async () => {
     setLoading(loading => ({ ...loading, source: true }));
@@ -70,11 +70,11 @@ const Settings = ({ onClose }) => {
       let resDevice = await feathers["devices"].find({
         query: { $select: ["_id", "name", "fields"] }
       });
-      let resEmber = await feathers["dataSources"].find({
+      let resDataSource = await feathers["dataSources"].find({
         query: { $select: ["_id", "name", "fields"] }
       });
       setDevices([...resDevice.data]);
-      setEmber([...resEmber.data]);
+      setDataSources([...resDataSource.data]);
     } catch (err) {
       console.error(err);
     }
@@ -197,7 +197,7 @@ const Settings = ({ onClose }) => {
                                 onOpening={() => fetchSource()}
                                 onChange={e => {
                                   setFieldValue(`widgetSeries[${i}].field`, '');
-                                  setFieldValue(`widgetSeries[${i}].type`, e["info"]);
+                                  setFieldValue(`widgetSeries[${i}].type`, e["info"] === "ember" ? "dataSource" : "device");
                                   setFieldValue(`widgetSeries[${i}].id`, e["value"]);
                                   if (i === values.widgetSeries.length - 1) arr.push({ id: "", type: '', field: '' });
                                 }} />
@@ -217,12 +217,12 @@ const Settings = ({ onClose }) => {
                                       let type = _get(v, `type`);
                                       if (!type) return [];
                                       switch (type) {
-                                        case "ember":
-                                          selected = ember.find(device => device._id === values['widgetSeries'][i]["id"]);
+                                        case "dataSource":
+                                          selected = dataSources.find(d => d._id === values['widgetSeries'][i]["id"]);
                                           break;
                                         case "device":
                                         default:
-                                          selected = devices.find(device => device._id === values['widgetSeries'][i]["id"]);
+                                          selected = devices.find(d => d._id === values['widgetSeries'][i]["id"]);
                                       }
                                       if (typeof selected === 'undefined') return [];
                                       let fields = selected.fields;

@@ -48,25 +48,54 @@ const Control = ({ onError, ...props }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
+      const deviceIds = [];
+      const dataSourceIds = [];
 
+      // const ..._uniqBy(props.series.filter(v=>), 'device').map(v => v.device)
+      props.series.map((s) => {
+        switch (s.type) {
+          case "dataSource":
+            dataSourceIds.push(s.id);
+            break;
+          case "device":
+          default:
+            deviceIds.push(s.id);
+        }
+      });
+
+      let dataSources = [];
       let devices = [];
+
       try {
-        let { data } = await feathers.devices.find({
-          query: {
-            _id: { $in: deviceIds },
-            $select: ["_id", 'fields', 'name']
-          }
-        })
-        devices = data;
+        if (deviceIds.length > 0) {
+          let { data } = await feathers.devices.find({
+            query: {
+              _id: { $in: deviceIds },
+              $select: ["_id", 'fields', 'name']
+            }
+          });
+          devices = data;
+        }
+        if (dataSourceIds.length > 0) {
+          let { data } = await feathers.dataSources.find({
+            query: {
+              _id: { $in: dataSourceIds },
+              $select: ["_id", 'fields', 'name']
+            }
+          });
+          dataSources = data;
+        }
       } catch (e) {
         onErr(e);
         return;
       }
 
       const query = {
-        deviceId: { $in: deviceIds },
-        $select: ["_id", 'data', 'deviceId']
+        dataSourceId: { $in: dataSourceIds },
+        $select: ["_id", 'data', 'dataSourceId'],
+        $sort: {
+          createdAt: -1
+        }
       }
 
       let dataLake = [];
@@ -77,42 +106,67 @@ const Control = ({ onError, ...props }) => {
         onErr(e);
         return;
       }
-      let Series = props.series.map(s => {
-        const device = devices.find(d => d._id === s.device);
-        const field = device.fields.find(f => f._id === s.field);
-        let data = dataLake.filter(dl => (dl.deviceId === device._id));
-        if (typeof data[0] !== 'undefined')
-          data = data[0].data[field.name];
-        else
-          data = undefined;
 
-        return {
-          ...s, data,
-          fieldName: field.name,
-          deviceName: device.name,
-          name: field.name
+      let Series = props.series.map(s => {
+        let ret = {
+          ...s,
+          data: undefined,
+          fieldName: undefined,
+          sourceName: undefined,
+          name: undefined
         }
+        let item;
+        switch (s.type) {
+          case "dataSource":
+            item = dataSources.find(d => d._id === s.id);
+            break;
+          case "device":
+          default:
+            item = devices.find(d => d._id === s.id);
+        }
+        const field = item.fields.find(f => f._id === s.field);
+        let data;
+        if (s.type === "dataSource") {
+          data = dataLake.filter(dl => (dl.dataSourceId === item._id));
+        }
+        if (Array.isArray(data) && data[0]) {
+          data = data[0].data[field._id];
+        } else {
+          data = undefined;
+        }
+
+        ret.data = data;
+        ret.fieldName = field.name;
+        ret.name = field.name;
+        ret.sourceName = item.name;
+
+        return ret;
       })
       setSeries([...Series]);
     }
     fetch();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const pushData = useCallback(_debounce((cs, series) => {
     const push = async () => {
       setIsLoading(true);
-      let data = {};
+      const payload = {};
       series.forEach(s => {
         let res = s.data;
-        if (s.device !== cs.device) return;
+        if (s.id !== cs.id) return;
         if (s.fieldName === cs.fieldName) res = cs.data;
-        data[s.fieldName] = res;
-      })
-      const payload = {
-        deviceId: cs.device,
-        data
-      }
+        payload[s.fieldName] = res;
+      });
       try {
-        await feathers.dataLake.create(payload);
+        switch (cs.type) {
+          case "dataSource":
+            payload._dataSourceId = cs.id;
+            break;
+          case "device":
+          default:
+            payload._deviceId = cs.id;
+        }
+        await feathers.hub.create(payload);
       } catch (e) {
         console.error(e);
       }
