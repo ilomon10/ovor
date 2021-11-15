@@ -45,7 +45,7 @@ const BarChart = ({ ...props }) => {
         }
         const field = item.fields.find(f => f._id === s.field);
 
-        let data;
+        let data = [];
         if (s.type === "dataSource") {
           data = dataLake
             .filter(dl => (dl.dataSourceId === item._id))

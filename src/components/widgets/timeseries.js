@@ -1,10 +1,9 @@
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import moment from 'moment';
-import _uniqBy from 'lodash.uniqby';
-import _sortBy from 'lodash.sortby';
 import { NonIdealState } from '@blueprintjs/core';
 import { FeathersContext } from 'components/feathers';
 import BaseTimeseries from './baseTimeseries';
+import { fetchData } from 'components/widgets/helper';
 
 export const timeseriesOptions = {
   "stroke.width": { type: "number" },
@@ -36,38 +35,11 @@ const Timeseries = ({ onError, ...props }) => {
 
   // Component Did Mount
   useEffect(() => {
-    const dataSourceIds = [..._uniqBy(props.series, 'dataSource').map(v => v.dataSource)];
     const fetch = async () => {
-      let dataSources = [];
-      try {
-        let { data } = await feathers.dataSources.find({
-          query: {
-            _id: { $in: dataSourceIds },
-            $select: ["_id", 'fields', 'name']
-          }
-        });
-        dataSources = data;
-      } catch (e) {
-        onErr(e);
-        return;
-      }
-
-      if (dataSources) {
-        props.series.forEach((v, i) => {
-          if (!dataSources.find((d) => d._id === v.dataSource)) {
-            let error = new Error(`Data Source "${v.dataSource}" at series ${i + 1} not found`);
-            onErr(error);
-            return;
-          }
-        });
-      }
-
       let query = {
-        $limit: 1000,
-        dataSourceId: { $in: dataSourceIds },
-        $sort: { createdAt: -1 },
-        $select: ["_id", 'data', 'dataSourceId', 'createdAt']
+        $limit: 1000
       }
+
       if (props.timeRange) {
         query = {
           ...query,
@@ -78,31 +50,46 @@ const Timeseries = ({ onError, ...props }) => {
         }
       }
 
-      let dataLake = [];
-      try {
-        let { data } = await feathers.dataLake.find({ query });
-        dataLake = _sortBy(data, (d) => d.createdAt);
-      } catch (e) {
-        onErr(e);
-        return;
-      }
-      let Series = props.series.map(s => {
-        const dataSource = dataSources.find(d => d._id === s.dataSource);
-        const field = dataSource.fields.find(f => f._id === s.field);
-        const data = dataLake
-          .filter(dl => dl.dataSourceId === dataSource._id)
-          .map(dl => {
-            let val = dl.data[field.name];
-            if (val === true) val = 1;
-            else if (val === false) val = 0;
-            else if (val === undefined) val = null;
-            return [dl.createdAt, val];
-          });
+      const { dataSources, devices, dataLake } = await fetchData(
+        onErr,
+        feathers,
+        query,
+        props.series
+      );
 
-        return {
-          ...s, fieldName: field.name, data,
-          name: `${field.name} (${dataSource.name})`
+      let Series = props.series.map(s => {
+        
+        let ret = {
+          ...s,
+          data: undefined,
+          fieldName: undefined,
+          sourceName: undefined,
+          name: undefined
         }
+        let item;
+        switch (s.type) {
+          case "dataSource":
+            item = dataSources.find(d => d._id === s.id);
+            break;
+          case "device":
+          default:
+            item = devices.find(d => d._id === s.id);
+        }
+        const field = item.fields.find(f => f._id === s.field);
+
+        let data = [];
+        if (s.type === "dataSource") {
+          data = dataLake
+            .filter(dl => (dl.dataSourceId === item._id))
+            .map(dl => [dl.createdAt, dl.data[field._id]]);
+        }
+
+        ret.data = data;
+        ret.fieldName = field.name;
+        ret.name = `${field.name} (${item.name})`;
+        ret.sourceName = item.name;
+
+        return ret;
       })
       setSeries([...Series]);
     }
