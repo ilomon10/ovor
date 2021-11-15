@@ -6,6 +6,7 @@ import _uniqBy from 'lodash.uniqby';
 import _debounce from "lodash.debounce";
 import { FeathersContext } from 'components/feathers';
 import { Box, Flex } from 'components/utility/grid';
+import { fetchData } from 'components/widgets/helper';
 
 export const sliderOptions = {
   max: { type: 'number' },
@@ -48,64 +49,12 @@ const Control = ({ onError, ...props }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const deviceIds = [];
-      const dataSourceIds = [];
-
-      // const ..._uniqBy(props.series.filter(v=>), 'device').map(v => v.device)
-      props.series.map((s) => {
-        switch (s.type) {
-          case "dataSource":
-            dataSourceIds.push(s.id);
-            break;
-          case "device":
-          default:
-            deviceIds.push(s.id);
-        }
-      });
-
-      let dataSources = [];
-      let devices = [];
-
-      try {
-        if (deviceIds.length > 0) {
-          let { data } = await feathers.devices.find({
-            query: {
-              _id: { $in: deviceIds },
-              $select: ["_id", 'fields', 'name']
-            }
-          });
-          devices = data;
-        }
-        if (dataSourceIds.length > 0) {
-          let { data } = await feathers.dataSources.find({
-            query: {
-              _id: { $in: dataSourceIds },
-              $select: ["_id", 'fields', 'name']
-            }
-          });
-          dataSources = data;
-        }
-      } catch (e) {
-        onErr(e);
-        return;
-      }
-
-      const query = {
-        dataSourceId: { $in: dataSourceIds },
-        $select: ["_id", 'data', 'dataSourceId'],
-        $sort: {
-          createdAt: -1
-        }
-      }
-
-      let dataLake = [];
-      try {
-        let { data } = await feathers.dataLake.find({ query });
-        dataLake = data;
-      } catch (e) {
-        onErr(e);
-        return;
-      }
+      const { dataSources, devices, dataLake } = await fetchData(
+        onErr,
+        feathers,
+        { $limit: -1 },
+        props.series
+      );
 
       let Series = props.series.map(s => {
         let ret = {
