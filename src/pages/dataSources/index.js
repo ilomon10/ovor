@@ -112,7 +112,7 @@ const DataSource = () => {
   return (
     <>
       <Helmet>
-        <title>Coba - Ember | Ovor</title>
+        <title>{dataSource["name"]} - Ember | Ovor</title>
         <meta name="description" content="Ember overview" />
       </Helmet>
       <Flex flexDirection={"column"} height="100%">
@@ -130,7 +130,7 @@ const DataSource = () => {
               <h4
                 style={{ margin: 0, maxWidth: columnCount < 2 ? 130 : 'initial' }}
                 className={`${Classes.HEADING} flex flex--i-center`}
-              >Coba</h4>
+              >{dataSource["name"]}</h4>
             </Navbar.Group>
           </Box>
         </Navbar>
@@ -186,7 +186,8 @@ const DataSource = () => {
                                 }
                               }}
                               series={[{
-                                dataSource: dataSource._id,
+                                type: "dataSource",
+                                id: dataSource._id,
                                 field: v._id
                               }]} />
                           </div>
