@@ -2,7 +2,7 @@ export const fetchData = async (onErr, feathers, query = {}, series) => {
   const deviceIds = [];
   const dataSourceIds = [];
 
-  series.map((s) => {
+  series.forEach((s) => {
     switch (s.type) {
       case "dataSource":
         dataSourceIds.push(s.id);

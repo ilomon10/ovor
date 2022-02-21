@@ -1,8 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FeathersContext } from 'components/feathers';
 import BaseBarChart from './baseBarChart';
-import _uniqBy from 'lodash.uniqby';
-import moment from 'moment';
 import { fetchData } from 'components/widgets/helper';
 
 export const barChartConfig = {

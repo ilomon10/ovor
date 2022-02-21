@@ -79,7 +79,7 @@ const Settings = ({ onClose }) => {
       console.error(err);
     }
     setLoading(loading => ({ ...loading, source: true }));
-  }, []);
+  }, [loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetchSource();

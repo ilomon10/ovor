@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { InputGroup, Slider as BPSlider, NonIdealState } from '@blueprintjs/core';
 import styled from 'styled-components';
 import _merge from 'lodash.merge';
-import _uniqBy from 'lodash.uniqby';
 import _debounce from "lodash.debounce";
 import { FeathersContext } from 'components/feathers';
 import { Box, Flex } from 'components/utility/grid';
