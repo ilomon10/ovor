@@ -28,7 +28,7 @@ const Component = ({ className }) => {
     <>
       <Helmet>
         <title>OVoRD | Online Value of Realtime Data</title>
-        <meta name="description" content="OVoRD IoT platform" />
+        <meta name="description" content="OVoRD adalah platform yang terinspirasi dari cara Anda mengerjakan sistem khususnya IoT. Anda dapat menyimpan, melihat dan menyediakan data untuk membangun sistem IoT tanpa banyak membuang waktu." />
       </Helmet>
       <Box className={className} overflow="hidden">
         <Navbar>
@@ -261,7 +261,7 @@ const Component = ({ className }) => {
             </Flex>
           </Box>
           <Box bg={Colors.LIGHT_GRAY5} px={3} py={3}>
-            <Box as="p" textAlign="center" m={0} opacity={0.5}>© {new Date().getFullYear()} tagConn, All rights reserved. — <a href="https://www.github.com">GitHub</a> design inspired.</Box>
+            <Box as="p" textAlign="center" m={0} opacity={0.5}>© {new Date().getFullYear()} Maesalab Tech Indonesia, All rights reserved. — <a href="https://www.github.com">GitHub</a> design inspired.</Box>
           </Box>
         </Box>
       </Box>
