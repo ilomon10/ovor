@@ -2,6 +2,8 @@ import React, { useContext, useState, useEffect, useCallback } from "react";
 import { Button, Classes, NonIdealState } from "@blueprintjs/core";
 import { FeathersContext } from "components/feathers";
 import _merge from "lodash.merge";
+import _get from "lodash.get";
+import _isEmpty from "lodash/isEmpty";
 import { Box } from "components/utility/grid";
 import { fetchData } from "components/widgets/helper";
 import moment from "moment";
@@ -15,6 +17,8 @@ export const buttonOptions = {
     type: "oneOf",
     options: ["vertical", "horizontal"],
   },
+  "state.on.label": [{ type: "string" }],
+  "state.off.label": [{ type: "string" }],
 };
 
 export const buttonConfig = {
@@ -95,7 +99,7 @@ const ControlButton = ({ onError, ...props }) => {
         }
 
         if (typeof data[0] !== "undefined") data = data[0].data[field.name];
-        else data = undefined;
+        else data = false;
 
         ret.data = data;
         ret.fieldName = field.name;
@@ -123,12 +127,14 @@ const ControlButton = ({ onError, ...props }) => {
       ]);
     };
     const onDeviceOutcoming = (e) => {
-      setSeries((series) => [...series.map((s) => {
-        if(s.device !== e._deviceId) return s;
-        if(typeof e[s.fieldName] === "undefined") return s;
-        s.data = e[s.fieldName];
-        return s;
-      })]);
+      setSeries((series) => [
+        ...series.map((s) => {
+          if (s.id !== e._deviceId) return s;
+          if (typeof e[s.fieldName] === "undefined") return s;
+          s.data = e[s.fieldName];
+          return s;
+        }),
+      ]);
     };
     feathers.hub.on("device-outcoming", onDeviceOutcoming);
     feathers.dataLake.on("created", onDataCreated);
@@ -194,20 +200,23 @@ const ControlButton = ({ onError, ...props }) => {
           className="flex-grow"
           loading={isLoading}
           onClick={() => onClick(s)}
-          active={!!s.data}
-          icon={options.iconName}
-          text={
-            <>
-              <div className={Classes.TEXT_OVERFLOW_ELLIPSIS}>{s.name}</div>
-              <div className={Classes.TEXT_OVERFLOW_ELLIPSIS}>
-                <small>{s.deviceName}</small>
-              </div>
-            </>
-          }
+          active={s.data}
+          icon={!_isEmpty(options.iconName) && options.iconName}
+          text={<ButtonText options={options} series={s} />}
         />
       ))}
     </Box>
   );
+};
+
+const ButtonText = ({ options, series }) => {
+  let text = `${series.name}`;
+  if (series.data) {
+    text = _get(options, "state.on.label") || text;
+  } else {
+    text = _get(options, "state.off.label") || text;
+  }
+  return <div>{text}</div>;
 };
 
 export default ControlButton;
