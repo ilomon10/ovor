@@ -7,6 +7,7 @@ import { numericOptions, numericConfig } from './numeric';
 import { iframeConfig, iframeOptions } from './iframe';
 import { tableConfig } from './table';
 import { valuesConfig, valuesOptions } from './values';
+import { htmlConfig, htmlOptions } from './html';
 
 export const GRAPH_TYPE = {
   "Button": 'control.button',
@@ -20,6 +21,7 @@ export const GRAPH_TYPE = {
   "Table": 'table',
   "Geo": 'geo',
   "IFrame": 'iframe',
+  "HTML": "html"
 }
 
 export const GRAPH_OPTIONS = {
@@ -30,6 +32,7 @@ export const GRAPH_OPTIONS = {
   [GRAPH_TYPE["Numeric"]]: numericOptions,
   [GRAPH_TYPE["Values"]]: valuesOptions,
   [GRAPH_TYPE["IFrame"]]: iframeOptions,
+  [GRAPH_TYPE["HTML"]]: htmlOptions,
 }
 export const GRAPH_CONFIG = {
   [GRAPH_TYPE["Button"]]: buttonConfig,
@@ -40,5 +43,6 @@ export const GRAPH_CONFIG = {
   [GRAPH_TYPE["Numeric"]]: numericConfig,
   [GRAPH_TYPE["Values"]]: valuesConfig,
   [GRAPH_TYPE["Table"]]: tableConfig,
-  [GRAPH_TYPE["IFrame"]]: iframeConfig
+  [GRAPH_TYPE["IFrame"]]: iframeConfig,
+  [GRAPH_TYPE["HTML"]]: htmlConfig
 }
