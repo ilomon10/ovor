@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect, useCallback } from "react";
-import { Button, Classes, NonIdealState } from "@blueprintjs/core";
+import { Button, NonIdealState } from "@blueprintjs/core";
 import { FeathersContext } from "components/feathers";
 import _merge from "lodash.merge";
 import _get from "lodash.get";

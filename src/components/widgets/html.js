@@ -2,12 +2,7 @@ import { useFeathers } from "components/feathers";
 import moment from "moment";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { fetchData } from "./helper";
-import _get from "lodash.get";
 import DOMPurify from "dompurify";
-
-const sanitizeOptions = {
-  disallowedTagsMode: [""],
-};
 
 export const htmlOptions = {
   sourceCode: {
@@ -24,7 +19,7 @@ export const htmlConfig = {
 const HTMLWidget = ({ onError, ...props }) => {
   const feathers = useFeathers();
   const [series, setSeries] = useState([]);
-  const [error, setError] = useState();
+  const [error, setError] = useState(); // eslint-disable-line no-unused-vars
 
   const onErr = useCallback(
     (e) => {
@@ -72,8 +67,10 @@ const HTMLWidget = ({ onError, ...props }) => {
         switch (s.type) {
           case "dataSource":
             item = dataSources.find((d) => d._id === s.id);
+            break;
           case "device":
             item = devices.find((d) => d._id === s.id);
+            break;
           default:
             item = devices.find((d) => d._id === s.id);
         }
@@ -97,7 +94,7 @@ const HTMLWidget = ({ onError, ...props }) => {
       setSeries([...Series]);
     };
     fetch();
-  }, [props.timeRange]);
+  }, [props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (props.timeRange) return;
@@ -131,7 +128,6 @@ const HTMLWidget = ({ onError, ...props }) => {
 
   const processed = useMemo(() => {
     let string = sourceCode;
-    console.log(series);
     series.forEach((s) => {
       if (s.data.length === 0) return;
       string = string.replaceAll(
@@ -139,9 +135,8 @@ const HTMLWidget = ({ onError, ...props }) => {
         s.data[s.data.length - 1][1]
       );
     });
-    console.log(string);
     return string;
-  }, [series]);
+  }, [series]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return <div dangerouslySetInnerHTML={{ __html: processed }}></div>;
 };
