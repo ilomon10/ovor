@@ -30,11 +30,11 @@ const DeleteUser = ({ onClose, onDeleted, data }) => {
       {({ values, errors, handleSubmit, handleChange, isSubmitting }) => (
         <form onSubmit={handleSubmit}>
           <div className={Classes.DIALOG_BODY}>
-            <h5 className={Classes.HEADING}>You are about to delete this `{data['email']}` account.</h5>
+            <h5 className={Classes.HEADING}>You are about to delete this `{data['name']}` account.</h5>
             <p>Deleted user will not be recoverable. Every device, data and others that related to that account will get clean removed.</p>
             <p>Are you sure?</p>
             <FormGroup
-              label={(<>Please type <strong>{(data['email']).split(' ').join('_').toLowerCase()}</strong> to confirm</>)}
+              label={(<>Please type <strong>{(data['username']).split(' ').join('_').toLowerCase()}</strong> to confirm</>)}
               labelFor={'last-word'}
               intent={errors['last-word'] ? 'danger' : 'none'}
               helperText={errors['last-word']}>
