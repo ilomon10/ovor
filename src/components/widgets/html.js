@@ -103,7 +103,7 @@ const HTMLWidget = ({ onError, ...props }) => {
         ...series.map((s) => {
           if (s.type !== "dataSource") return s;
           if (s.dataSource !== e.deviceSourceId) return s;
-          s.data.push([e.timestamp, e.data[s.fieldName]]);
+          s.data.push([e.timestamp, e.data[s.field]]);
           return s;
         }),
       ]);
