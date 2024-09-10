@@ -8,6 +8,6 @@ const App = () => {
       <PrivateRouter />
     </CommonProvider>
   );
-}
+};
 
 export default App;
