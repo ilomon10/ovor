@@ -1,6 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Button, Colors, H2, Dialog } from "@blueprintjs/core";
+import {
+  Button,
+  ButtonGroup,
+  HTMLTable,
+  Colors,
+  H2,
+  Dialog,
+  Tag,
+} from "@blueprintjs/core";
 
 import Container from "components/container";
 import Wrapper from "components/wrapper";
@@ -10,32 +18,63 @@ import { useMedia } from "components/helper";
 import { container } from "components/utility/constants";
 
 import AddNewUser from "./addNewUser";
-import { useQuery } from "react-query";
-import { List } from "./list";
+import { useHistory } from "react-router-dom";
+import DeleteUser from "./deleteUser";
 
 const Users = () => {
   const feathers = useContext(FeathersContext);
+  const history = useHistory();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const listSkip = useState(0);
+  const [selectedUser, setSelectedUser] = useState(undefined);
   const columnCount = useMedia(
     container.map((v) => `(min-width: ${v})`).reverse(),
     [5, 4, 3, 2],
     1
   );
-
-  const { isLoading, isError, data, refetch } = useQuery(
-    ["users", listSkip[0]],
-    async () => {
-      return await feathers.users.find({
-        query: {
-          $skip: listSkip[0],
-          $sort: { createdAt: -1 },
-          $select: ["_id", "email", "permissions"],
-        },
-      });
-    }
-  );
-
+  const [list, setList] = useState({
+    data: [],
+    total: 0,
+  });
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const users = await feathers.users.find({
+          query: {
+            $sort: { createdAt: -1 },
+            $select: ["_id", "name", "username", "email", "permissions"],
+          },
+        });
+        setList({
+          data: users.data,
+          total: users.total,
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetch();
+    const onUserCreated = ({ _id, name, username, email, permissions }) => {
+      setList((list) => ({
+        data: [{ _id, name, username, email, permissions }, ...list.data],
+        total: list.total + 1,
+      }));
+    };
+    const onUserRemoved = ({ _id }) => {
+      setList((list) => ({
+        data: list.data.filter((u) => u._id !== _id),
+        total: list.total - 1,
+      }));
+    };
+    feathers.users.on("created", onUserCreated);
+    feathers.users.on("removed", onUserRemoved);
+    return () => {
+      feathers.users.removeListener("created", onUserCreated);
+      feathers.users.removeListener("removed", onUserRemoved);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const removeUser = useCallback((user) => {
+    setSelectedUser(user);
+  }, []);
   return (
     <>
       <Helmet>
@@ -61,32 +100,69 @@ const Users = () => {
               </Box>
             </Flex>
             <p>Manage your user</p>
-            <List
-              isLoading={isLoading}
-              isError={isError}
-              data={data}
-              limit={10}
-              skip={listSkip[0]}
-              onDelete={(user) => refetch()}
-              onPaginate={({ skip }) => {
-                listSkip[1](() => {
-                  return skip;
-                });
-              }}
-            />
+            <Box overflowY={"auto"}>
+              <HTMLTable striped style={{ width: "100%" }}>
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Permissions</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {list.data.map((u) => (
+                    <tr key={u._id}>
+                      <td>{u.username}</td>
+                      <td>{u.email}</td>
+                      <td style={{ minWidth: 150 }}>
+                        {u.permissions.map((p) => (
+                          <Box key={p} display="inline-block" mr={1}>
+                            <Tag>{p}</Tag>
+                          </Box>
+                        ))}
+                      </td>
+                      <td>
+                        <ButtonGroup minimal>
+                          <Button
+                            small
+                            icon="edit"
+                            onClick={() => history.push(`/users/${u._id}`)}
+                          />
+                          <Button
+                            small
+                            icon="trash"
+                            intent="danger"
+                            onClick={() => removeUser(u)}
+                          />
+                        </ButtonGroup>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </HTMLTable>
+            </Box>
             <Dialog
               usePortal={true}
               title="Add new user account"
               isOpen={isDialogOpen}
               canOutsideClickClose={false}
+              onClose={() => setIsDialogOpen(false)}
+            >
+              <AddNewUser onClose={() => setIsDialogOpen(false)} />
+            </Dialog>
+            <Dialog
+              usePortal={true}
+              title="Delete account"
+              isOpen={typeof selectedUser !== "undefined"}
               onClose={() => {
-                setIsDialogOpen(false);
+                setSelectedUser(undefined);
               }}
             >
-              <AddNewUser
+              <DeleteUser
+                data={selectedUser}
                 onClose={() => {
-                  setIsDialogOpen(false);
-                  refetch();
+                  setSelectedUser(undefined);
                 }}
               />
             </Dialog>

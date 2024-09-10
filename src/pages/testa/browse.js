@@ -6,40 +6,45 @@ import AspectRatio from "components/aspectratio";
 import Wrapper from "components/wrapper";
 import Container from "components/container";
 import { FeathersContext } from 'components/feathers';
-import AddNewDashboard from "./addNewDashboard";
+import AddNewSaraf from "./addNewSaraf";
 import { Helmet } from "react-helmet";
 import { Flex, Box } from "components/utility/grid";
-import DeleteDashboard from "./deleteDashboard";
+import DeleteSaraf from "./deleteSaraf";
 
-const Dashboards = () => {
+const Testa = () => {
   const feathers = useContext(FeathersContext);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [selectedDashboard, setSelectedDashboard] = useState(null);
+  const [selectedSaraf, setSelectedSaraf] = useState(null);
   const [list, setList] = useState([]);
   useEffect(() => {
-    const onDashboardCreated = (e) => {
+    const onSarafCreated = (e) => {
       setList([{
         _id: e._id,
-        title: e.title,
+        name: e.name,
         updatedAt: e.updatedAt,
       }, ...list]);
     }
-    const onDashboardRemoved = (e) => {
+    const onSarafRemoved = (e) => {
       setList(ls => (
         [...ls.filter(itm => itm._id !== e._id)]
       ))
     }
-    feathers.dashboards.on('created', onDashboardCreated)
-    feathers.dashboards.on('removed', onDashboardRemoved)
+    feathers.testa.on('created', onSarafCreated)
+    feathers.testa.on('removed', onSarafRemoved)
     return () => {
-      feathers.dashboards.removeListener('created', onDashboardCreated);
-      feathers.dashboards.removeListener('removed', onDashboardRemoved)
+      feathers.testa.removeListener('created', onSarafCreated);
+      feathers.testa.removeListener('removed', onSarafRemoved)
     }
   }, [list, feathers])
   useEffect(() => {
-    feathers.dashboards.find({
-      query: { $select: ["_id", 'title', 'updatedAt'] }
+    feathers.testa.find({
+      query: {
+        $select: ["_id", 'name', 'updatedAt'],
+        $sort: {
+          updatedAt: -1
+        }
+      }
     }).then((e) => {
       setList([...e.data])
     })
@@ -47,8 +52,8 @@ const Dashboards = () => {
   return (
     <>
       <Helmet>
-        <title>Dashboards | Ovor</title>
-        <meta name="description" content="Dashboard browser" />
+        <title>Testa | Ovor</title>
+        <meta name="description" content="Saraf testa browser" />
       </Helmet>
       <div style={{ backgroundColor: Colors.LIGHT_GRAY5, position: 'absolute', top: 0, right: 0, left: 0, bottom: 0 }}>
         <Wrapper style={{ overflowY: 'auto' }}>
@@ -74,7 +79,7 @@ const Dashboards = () => {
                       <AspectRatio ratio="4:3">
                         <Flex justifyContent="center" alignItems="center" height="100%" backgroundColor={Colors.LIGHT_GRAY3}>
                           <Box>
-                            <Icon iconSize={24} icon="vertical-bar-chart-asc" color={Colors.GRAY2} />
+                            <Icon iconSize={24} icon="layout" color={Colors.GRAY2} />
                           </Box>
                         </Flex>
                         {/* <img style={{ height: '100%', width: '100%', display: 'block', backgroundColor: Colors.LIGHT_GRAY3 }} alt="boo" /> */}
@@ -82,10 +87,10 @@ const Dashboards = () => {
                           style={{ position: "absolute", right: 0, bottom: 0, left: 0 }}>
                           <Box flexGrow="1" flexShrink="1" width="1%" py={2}>
                             <h6 className={`${Classes.HEADING}`}>
-                              <Text ellipsize>
-                                <Link to={`/dashboard/${v._id}`}
+                              <Text ellipsize={true}>
+                                <Link to={`/testa/saraf/${v._id}`}
                                   style={{ lineHeight: 1.5 }}>
-                                  {v.title}
+                                  {v.name}
                                 </Link>
                               </Text>
                             </h6>
@@ -116,7 +121,7 @@ const Dashboards = () => {
                                     text="Delete"
                                     title="Delete dashboard"
                                     onClick={() => {
-                                      setSelectedDashboard(v._id);
+                                      setSelectedSaraf(v._id);
                                       setIsDeleteOpen(true);
                                     }} />
                                 </Menu>
@@ -135,24 +140,24 @@ const Dashboards = () => {
                 icon="application"
                 title="Empty"
                 description={<>
-                  <p>You didn't have any dashboard created</p>
+                  <p>You didn't have any saraf of testa created</p>
                   <Button outlined large
                     onClick={() => setIsDialogOpen(true)}
                     icon="plus" text="Make new one" />
                 </>} />}
             <Dialog
-              title="Add New Dashboard"
+              title="Add New Saraf"
               canOutsideClickClose={false}
               isOpen={isDialogOpen}
               onClose={() => setIsDialogOpen(false)}>
-              <AddNewDashboard onClose={() => setIsDialogOpen(false)} />
+              <AddNewSaraf onClose={() => setIsDialogOpen(false)} />
             </Dialog>
             <Dialog
-              title="Delete Dashboard"
+              title="Delete Saraf"
               canOutsideClickClose={false}
               isOpen={isDeleteOpen}
               onClose={() => setIsDeleteOpen(false)}>
-              <DeleteDashboard data={selectedDashboard} onClose={() => setIsDeleteOpen(false)} onDeleted={() => setIsDeleteOpen(false)} />
+              <DeleteSaraf data={selectedSaraf} onClose={() => setIsDeleteOpen(false)} onDeleted={() => setIsDeleteOpen(false)} />
             </Dialog>
           </Container>
         </Wrapper>
@@ -161,4 +166,4 @@ const Dashboards = () => {
   )
 }
 
-export default Dashboards;
+export default Testa;

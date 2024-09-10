@@ -1,8 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FeathersContext } from 'components/feathers';
 import BaseBarChart from './baseBarChart';
-import _uniqBy from 'lodash.uniqby';
-import moment from 'moment';
+import { fetchData } from 'components/widgets/helper';
 
 export const barChartConfig = {
   acceptedType: ["number"],
@@ -16,40 +15,47 @@ const BarChart = ({ ...props }) => {
 
   // Component Did Mount
   useEffect(() => {
-    const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)]
     const fetch = async () => {
-      let devices = (await feathers.devices.find({
-        query: {
-          _id: { $in: deviceIds },
-          $select: ["_id", 'fields', 'name']
-        }
-      })).data;
-      let query = {
-        $limit: 1000,
-        deviceId: { $in: deviceIds },
-        $sort: { createdAt: -1 },
-        $select: ["_id", 'data', 'deviceId', 'createdAt']
-      }
-      if (props.timeRange) {
-        query = {
-          ...query,
-          createdAt: {
-            $gte: moment(props.timeRange[0]).toISOString(),
-            $lte: moment(props.timeRange[1]).toISOString()
-          }
-        }
-      }
-      let dataLake = (await feathers.dataLake.find({ query })).data;
+      const { dataSources, devices, dataLake } = await fetchData(
+        () => { },
+        feathers,
+        {},
+        props.series
+      );
+
       let Series = props.series.map(s => {
-        const device = devices.find(d => d._id === s.device);
-        const field = device.fields.find(f => f._id === s.field);
-        const data = dataLake
-          .filter(dl => dl.deviceId === device._id)
-          .map(dl => [dl.createdAt, dl.data[field.name]]);
-        return {
-          ...s, fieldName: field.name, data,
-          name: `${field.name} (${device.name})`
+        let ret = {
+          ...s,
+          data: undefined,
+          fieldName: undefined,
+          sourceName: undefined,
+          name: undefined
         }
+
+        let item;
+        switch (s.type) {
+          case "dataSource":
+            item = dataSources.find(d => d._id === s.id);
+            break;
+          case "device":
+          default:
+            item = devices.find(d => d._id === s.id);
+        }
+        const field = item.fields.find(f => f._id === s.field);
+
+        let data = [];
+        if (s.type === "dataSource") {
+          data = dataLake
+            .filter(dl => (dl.dataSourceId === item._id))
+            .map(dl => [dl.createdAt, dl.data[field._id]]);
+        }
+
+        ret.data = data;
+        ret.fieldName = field.name;
+        ret.name = `${field.name} (${item.name})`;
+        ret.sourceName = item.name;
+
+        return ret;
       })
       setSeries([...Series]);
     }

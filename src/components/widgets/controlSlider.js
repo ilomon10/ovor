@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { InputGroup, Slider as BPSlider, NonIdealState } from '@blueprintjs/core';
 import styled from 'styled-components';
 import _merge from 'lodash.merge';
-import _uniqBy from 'lodash.uniqby';
 import _debounce from "lodash.debounce";
 import { FeathersContext } from 'components/feathers';
 import { Box, Flex } from 'components/utility/grid';
+import { fetchData } from 'components/widgets/helper';
 
 export const sliderOptions = {
   max: { type: 'number' },
@@ -48,71 +48,73 @@ const Control = ({ onError, ...props }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const deviceIds = [..._uniqBy(props.series, 'device').map(v => v.device)];
+      const { dataSources, devices, dataLake } = await fetchData(
+        onErr,
+        feathers,
+        { $limit: -1 },
+        props.series
+      );
 
-      let devices = [];
-      try {
-        let { data } = await feathers.devices.find({
-          query: {
-            _id: { $in: deviceIds },
-            $select: ["_id", 'fields', 'name']
-          }
-        })
-        devices = data;
-      } catch (e) {
-        onErr(e);
-        return;
-      }
-
-      const query = {
-        deviceId: { $in: deviceIds },
-        $select: ["_id", 'data', 'deviceId']
-      }
-
-      let dataLake = [];
-      try {
-        let { data } = await feathers.dataLake.find({ query });
-        dataLake = data;
-      } catch (e) {
-        onErr(e);
-        return;
-      }
       let Series = props.series.map(s => {
-        const device = devices.find(d => d._id === s.device);
-        const field = device.fields.find(f => f._id === s.field);
-        let data = dataLake.filter(dl => (dl.deviceId === device._id));
-        if (typeof data[0] !== 'undefined')
-          data = data[0].data[field.name];
-        else
-          data = undefined;
-
-        return {
-          ...s, data,
-          fieldName: field.name,
-          deviceName: device.name,
-          name: field.name
+        let ret = {
+          ...s,
+          data: undefined,
+          fieldName: undefined,
+          sourceName: undefined,
+          name: undefined
         }
+        let item;
+        switch (s.type) {
+          case "dataSource":
+            item = dataSources.find(d => d._id === s.id);
+            break;
+          case "device":
+          default:
+            item = devices.find(d => d._id === s.id);
+        }
+        const field = item.fields.find(f => f._id === s.field);
+        let data;
+        if (s.type === "dataSource") {
+          data = dataLake.filter(dl => (dl.dataSourceId === item._id));
+        }
+        if (Array.isArray(data) && data[0]) {
+          data = data[0].data[field._id];
+        } else {
+          data = undefined;
+        }
+
+        ret.data = data;
+        ret.fieldName = field.name;
+        ret.name = field.name;
+        ret.sourceName = item.name;
+
+        return ret;
       })
       setSeries([...Series]);
     }
     fetch();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const pushData = useCallback(_debounce((cs, series) => {
     const push = async () => {
       setIsLoading(true);
-      let data = {};
+      const payload = {};
       series.forEach(s => {
         let res = s.data;
-        if (s.device !== cs.device) return;
+        if (s.id !== cs.id) return;
         if (s.fieldName === cs.fieldName) res = cs.data;
-        data[s.fieldName] = res;
-      })
-      const payload = {
-        deviceId: cs.device,
-        data
-      }
+        payload[s.fieldName] = res;
+      });
       try {
-        await feathers.dataLake.create(payload);
+        switch (cs.type) {
+          case "dataSource":
+            payload._dataSourceId = cs.id;
+            break;
+          case "device":
+          default:
+            payload._deviceId = cs.id;
+        }
+        await feathers.hub.create(payload);
       } catch (e) {
         console.error(e);
       }

@@ -1,32 +1,25 @@
-import React, { useEffect, useContext, useState, useCallback } from "react";
+import { useFeathers } from "components/feathers";
 import moment from "moment";
-import { NonIdealState } from "@blueprintjs/core";
-import { FeathersContext } from "components/feathers";
-import BaseTimeseries from "./baseTimeseries";
-import { fetchData } from "components/widgets/helper";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { fetchData } from "./helper";
+import DOMPurify from "dompurify";
 
-export const timeseriesOptions = {
-  "stroke.width": { type: "number" },
-  "yaxis.max": { type: "number" },
-  "yaxis.min": { type: "number" },
-  colors: [{ type: "string" }],
-  "stroke.colors": [{ type: "string" }],
-  "stroke.curve": {
-    type: "oneOf",
-    options: ["smooth", "straight", "stepline"],
+export const htmlOptions = {
+  sourceCode: {
+    type: "codeEditor",
   },
 };
 
-export const timeseriesConfig = {
-  acceptedType: ["number"],
+export const htmlConfig = {
+  acceptedType: ["number", "string"],
   minSeries: 1,
   seriesEnabled: true,
 };
 
-const Timeseries = ({ onError, ...props }) => {
-  const feathers = useContext(FeathersContext);
+const HTMLWidget = ({ onError, ...props }) => {
+  const feathers = useFeathers();
   const [series, setSeries] = useState([]);
-  const [error, setError] = useState();
+  const [error, setError] = useState(); // eslint-disable-line no-unused-vars
 
   const onErr = useCallback(
     (e) => {
@@ -36,11 +29,14 @@ const Timeseries = ({ onError, ...props }) => {
     [onError]
   );
 
-  // Component Did Mount
+  const sourceCode = useMemo(() => {
+    return DOMPurify.sanitize(props.options.sourceCode);
+  }, [props.options.sourceCode]);
+
   useEffect(() => {
     const fetch = async () => {
       let query = {
-        $limit: 1000,
+        $limit: 100,
       };
 
       if (props.timeRange) {
@@ -52,7 +48,6 @@ const Timeseries = ({ onError, ...props }) => {
           },
         };
       }
-
       const { dataSources, devices, dataLake } = await fetchData(
         onErr,
         feathers,
@@ -74,11 +69,13 @@ const Timeseries = ({ onError, ...props }) => {
             item = dataSources.find((d) => d._id === s.id);
             break;
           case "device":
+            item = devices.find((d) => d._id === s.id);
+            break;
           default:
             item = devices.find((d) => d._id === s.id);
         }
-        const field = item.fields.find((f) => f._id === s.field);
 
+        const field = item.fields.find((f) => f._id === s.field);
         let data = [];
         if (s.type === "dataSource") {
           data = dataLake
@@ -93,6 +90,7 @@ const Timeseries = ({ onError, ...props }) => {
 
         return ret;
       });
+
       setSeries([...Series]);
     };
     fetch();
@@ -101,33 +99,21 @@ const Timeseries = ({ onError, ...props }) => {
   useEffect(() => {
     if (props.timeRange) return;
     const onDataCreated = (e) => {
-      setSeries((d) => [
+      setSeries((series) => [
         ...series.map((s) => {
-          if(s.type !== "dataSource") return s;
-          if (s.dataSource !== e.dataSourceId) return s;
-
-          let val = e.data[s.fieldName];
-          if (val === true) val = 1;
-          else if (val === false) val = 0;
-          else if (val === undefined) val = null;
-
-          s.data.push([e.createdAt, val]);
+          if (s.type !== "dataSource") return s;
+          if (s.dataSource !== e.deviceSourceId) return s;
+          s.data.push([e.timestamp, e.data[s.field]]);
           return s;
         }),
       ]);
     };
     const onDeviceOutcoming = (e) => {
-      setSeries((d) => [
+      setSeries((series) => [
         ...series.map((s) => {
-          if(s.type !== "device") return s;
+          if (s.type !== "device") return s;
           if (s.id !== e._deviceId) return s;
-
-          let val = e[s.fieldName];
-          if (val === true) val = 1;
-          else if (val === false) val = 0;
-          else if (val === undefined) val = null;
-
-          s.data.push([e.timestamp, val]);
+          s.data.push([e.timestamp, e[s.fieldName]]);
           return s;
         }),
       ]);
@@ -135,38 +121,24 @@ const Timeseries = ({ onError, ...props }) => {
     feathers.hub.on("device-outcoming", onDeviceOutcoming);
     feathers.dataLake.on("created", onDataCreated);
     return () => {
-      // Cleanup
       feathers.hub.removeListener("device-outcoming", onDeviceOutcoming);
       feathers.dataLake.removeListener("created", onDataCreated);
     };
-  }, [series, props.timeRange]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (error) {
-    return (
-      <NonIdealState
-        icon="graph-remove"
-        title="Error"
-        description={
-          <>
-            <p>{error.message}</p>
-          </>
-        }
-      />
-    );
-  }
+  const processed = useMemo(() => {
+    let string = sourceCode;
+    series.forEach((s) => {
+      if (s.data.length === 0) return;
+      string = string.replaceAll(
+        `{{{${s.sourceName}.${s.fieldName}}}}`,
+        s.data[s.data.length - 1][1]
+      );
+    });
+    return string;
+  }, [series]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  return (
-    <BaseTimeseries
-      type="line"
-      height="100%"
-      width="100%"
-      options={props.options}
-      series={series.map((s) => ({
-        name: s.name,
-        data: [...s.data],
-      }))}
-    />
-  );
+  return <div dangerouslySetInnerHTML={{ __html: processed }}></div>;
 };
 
-export default Timeseries;
+export default HTMLWidget;

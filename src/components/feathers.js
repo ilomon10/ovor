@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import feathers from '@feathersjs/feathers';
 import feathersAuth from '@feathersjs/authentication-client';
 import feathersSocket from '@feathersjs/socketio-client';
@@ -39,6 +39,9 @@ class Feathers {
   get retes() { return this.client.service('rete'); }
   get users() { return this.client.service('users'); }
   get logger() { return this.client.service('logger'); }
+  get dataSources() { return this.client.service('data-sources'); }
+  get testa() { return this.client.service('testa'); }
+  get hub() { return this.client.service('hub'); }
 
 }
 
@@ -50,4 +53,9 @@ export const FeathersProvider = ({ children }) => {
       {children}
     </FeathersContext.Provider>
   )
+}
+
+export const useFeathers = () => {
+  const feathers = useContext(FeathersContext);
+  return feathers;
 }

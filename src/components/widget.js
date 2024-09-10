@@ -16,6 +16,7 @@ import DashboardContext from './hocs/dashboard';
 import IFrame from './widgets/iframe';
 import Window from "../pages/embed/dashboard/Window";
 import Values from './widgets/values';
+import HTMLWidget from './widgets/html';
 
 const Widget = ({
   type, tileId, title = "Empty Window", path,
@@ -72,6 +73,9 @@ const Widget = ({
     case GRAPH_TYPE["IFrame"]:
       Ret = (<IFrame {...propsForChart} />);
       break;
+    case GRAPH_TYPE["HTML"]:
+      Ret = (<HTMLWidget {...propsForChart} />);
+      break;
     default:
       Ret = (<Empty path={path} />);
       break;
@@ -109,7 +113,7 @@ const Widget = ({
         {children}
         <Dialog
           title={"Configure Widget"}
-          canEscapeKeyClose
+          canEscapeKeyClose={false}
           canOutsideClickClose={false}
           onClose={() => setIsDialogOpen(false)}
           isOpen={isDialogOpen}

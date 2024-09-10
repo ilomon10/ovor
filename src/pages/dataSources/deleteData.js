@@ -4,13 +4,13 @@ import * as Yup from 'yup';
 import { Formik } from 'formik';
 import { FeathersContext } from 'components/feathers';
 
-const DeleteUser = ({ onClose, onDeleted, data }) => {
+const DeleteData = ({ onClose, onDeleted, data }) => {
   const feathers = useContext(FeathersContext);
   const Schema = useMemo(() => (Yup.object().shape({
     'last-word': Yup.string()
-      .oneOf([(data['email']).split(' ').join('_').toLowerCase()], 'Not match')
+      .oneOf(["CONFIRM"], 'Not match')
       .required('Field is required')
-  })), [data]);
+  })), []);
   return (
     <Formik
       initialValues={{
@@ -19,9 +19,9 @@ const DeleteUser = ({ onClose, onDeleted, data }) => {
       validationSchema={Schema}
       onSubmit={async (_value, { setErrors, setSubmitting }) => {
         try {
-          await feathers.users.remove(data._id);
-          if (typeof onDeleted === 'function') onDeleted();
+          await feathers.dataLake.remove([...data]);
           onClose();
+          onDeleted();
         } catch (e) {
           setErrors({ submit: e.message });
           setSubmitting(false);
@@ -30,11 +30,10 @@ const DeleteUser = ({ onClose, onDeleted, data }) => {
       {({ values, errors, handleSubmit, handleChange, isSubmitting }) => (
         <form onSubmit={handleSubmit}>
           <div className={Classes.DIALOG_BODY}>
-            <h5 className={Classes.HEADING}>You are about to delete this `{data['name']}` account.</h5>
-            <p>Deleted user will not be recoverable. Every device, data and others that related to that account will get clean removed.</p>
-            <p>Are you sure?</p>
+            <h5 className={Classes.HEADING}>You are about to delete this `{data.length}` selected data.</h5>
+            <p>Deleted data will not be recoverable. Are you sure?</p>
             <FormGroup
-              label={(<>Please type <strong>{(data['username']).split(' ').join('_').toLowerCase()}</strong> to confirm</>)}
+              label={(<>Please type <strong>CONFIRM</strong> to confirm</>)}
               labelFor={'last-word'}
               intent={errors['last-word'] ? 'danger' : 'none'}
               helperText={errors['last-word']}>
@@ -48,7 +47,7 @@ const DeleteUser = ({ onClose, onDeleted, data }) => {
           </div>
           <div className={Classes.DIALOG_FOOTER}>
             <Button fill
-              text="I understand the consequences, delete this account"
+              text="I understand the consequences, delete this device"
               intent="danger"
               type="submit"
               loading={isSubmitting}
@@ -59,4 +58,4 @@ const DeleteUser = ({ onClose, onDeleted, data }) => {
   )
 }
 
-export default DeleteUser;
+export default DeleteData;

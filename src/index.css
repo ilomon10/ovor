@@ -1,0 +1,16 @@
+.node-editor-container.node-editor-container.node-editor-container {
+  outline: none;
+  border: 0;
+}
+
+.node-wrapper .node .node-content {
+  width: 150px;
+  padding-left: 4px !important;
+  /* white-space: nowrap; */
+}
+.node-editor-container .connection .main-path {
+  stroke-width: 1px;
+}
+.node-editor-container .connection .main-path:hover {
+  stroke-width: 4px;
+}
